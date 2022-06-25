@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "687679885665",
+    "project_id": "liquede-development",
+    "storage_bucket": "liquede-development.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:687679885665:android:e4d65534d2ff764ecc3520",
+        "android_client_info": {
+          "package_name": "dev.com.liduede.app.liquede"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "687679885665-hdpks7mnsasesm4pqu98evnmdntmru19.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUGGVpI3yvJlU1aq8KCTuuG98b_S8-9m4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "687679885665-hdpks7mnsasesm4pqu98evnmdntmru19.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

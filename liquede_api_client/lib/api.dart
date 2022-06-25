@@ -1,0 +1,54 @@
+library swagger.api;
+
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/browser_client.dart';
+import 'package:http/http.dart';
+
+part 'api_client.dart';
+part 'api_helper.dart';
+part 'api_exception.dart';
+part 'auth/authentication.dart';
+part 'auth/api_key_auth.dart';
+part 'auth/oauth.dart';
+part 'auth/http_basic_auth.dart';
+
+part 'api/user_api.dart';
+part 'api/wallet_api.dart';
+part 'model/card.dart';
+part 'model/code.dart';
+part 'model/debit_wallet_model.dart';
+part 'model/fund_wallet_model.dart';
+part 'model/int32_standard_response.dart';
+part 'model/link.dart';
+part 'model/login_model.dart';
+part 'model/media_model.dart';
+part 'model/ngn_transfer_model.dart';
+part 'model/password_reset.dart';
+part 'model/password_reset_model.dart';
+part 'model/payment_log.dart';
+part 'model/payment_view.dart';
+part 'model/payment_view_standard_response.dart';
+part 'model/register.dart';
+part 'model/status.dart';
+part 'model/string_standard_response.dart';
+part 'model/transaction.dart';
+part 'model/transaction_view.dart';
+part 'model/transaction_view_paged_collection.dart';
+part 'model/transaction_view_paged_collection_standard_response.dart';
+part 'model/update_user_model.dart';
+part 'model/user.dart';
+part 'model/user_metrics_view.dart';
+part 'model/user_view.dart';
+part 'model/user_view_i_enumerable_standard_response.dart';
+part 'model/user_view_paged_collection.dart';
+part 'model/user_view_paged_collection_standard_response.dart';
+part 'model/user_view_standard_response.dart';
+part 'model/wallet.dart';
+part 'model/wallet_model.dart';
+part 'model/wallet_pin_model.dart';
+part 'model/wallet_transfer_model.dart';
+part 'model/wallet_view.dart';
+part 'model/wallet_view_standard_response.dart';
+
+ApiClient defaultApiClient = new ApiClient();
