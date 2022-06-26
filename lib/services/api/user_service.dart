@@ -37,9 +37,9 @@ class UserService extends BaseService{
       _api.login(body: request).then((value){
         value!.status.log;
         value.statusCode.log;
-        if(value.status){
-           _userView = value.data;
-          onSuccess(value.data);
+        if(value.status??false){
+           _userView = value.data!;
+          onSuccess(value.data!);
         }else{
 
           onError(APIError.fromString(value.message));
@@ -83,9 +83,9 @@ class UserService extends BaseService{
       _api.verify(token,email).then((value){
         value!.status.log;
         value.statusCode.log;
-        if(value.status){
-          _userView = value.data;
-          onSuccess(value.data);
+        if(value.status??false){
+          _userView = value.data!;
+          onSuccess(value.data!);
         }else{
           onError(APIError.fromString(value.message));
         }
@@ -106,8 +106,8 @@ class UserService extends BaseService{
       _api.delete(email).then((value){
         value!.status.log;
         value.statusCode.log;
-        if(value.status){
-          onSuccess(value.data);
+        if(value.status??false){
+          onSuccess(value.data!);
         }else{
           onError(APIError.fromString(value.message));
         }
@@ -128,8 +128,8 @@ class UserService extends BaseService{
       _api.initiateReset(email).then((value){
         value!.status.log;
         value.statusCode.log;
-        if(value.status){
-          onSuccess(value.data);
+        if(value.status??false){
+          onSuccess(value.data!);
         }else{
           onError(APIError.fromString(value.message));
         }
@@ -149,8 +149,8 @@ class UserService extends BaseService{
       _api.completeReset(body: model).then((value){
         value!.status.log;
         value.statusCode.log;
-        if(value.status){
-          onSuccess(value.data);
+        if(value.status??false){
+          onSuccess(value.data!);
         }else{
           onError(APIError.fromString(value.message));
         }
@@ -171,8 +171,8 @@ class UserService extends BaseService{
       _api.updatePassword(body: model).then((value){
         value!.status.log;
         value.statusCode.log;
-        if(value.status){
-          onSuccess(value.data);
+        if(value.status??false){
+          onSuccess(value.data!);
         }else{
           onError(APIError.fromString(value.message));
         }

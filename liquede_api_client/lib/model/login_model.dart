@@ -1,10 +1,9 @@
 part of swagger.api;
 
 class LoginModel {
-  
-  String email = null;
 
-  String password = null;
+  String? email = null;
+  String? password = null;
 
   LoginModel();
 
@@ -13,7 +12,7 @@ class LoginModel {
     return 'LoginModel[email=$email, password=$password, ]';
   }
 
-  LoginModel.fromJson(Map<String, dynamic> json) {
+  LoginModel.fromJson(Map<String, dynamic>? json) {
     if (json == null) return;
     email = json['email'];
     password = json['password'];
@@ -26,11 +25,11 @@ class LoginModel {
      };
   }
 
-  static List<LoginModel> listFromJson(List<dynamic> json) {
-    return json == null ? new List<LoginModel>() : json.map((value) => new LoginModel.fromJson(value)).toList();
+  static List<LoginModel> listFromJson(List<dynamic>? json) {
+    return json == null ? [] : json.map((value) => new LoginModel.fromJson(value)).toList();
   }
 
-  static Map<String, LoginModel> mapFromJson(Map<String, Map<String, dynamic>> json) {
+  static Map<String, LoginModel> mapFromJson(Map<String, Map<String, dynamic>>? json) {
     var map = new Map<String, LoginModel>();
     if (json != null && json.length > 0) {
       json.forEach((String key, Map<String, dynamic> value) => map[key] = new LoginModel.fromJson(value));

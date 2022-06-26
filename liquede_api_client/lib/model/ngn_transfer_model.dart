@@ -1,16 +1,12 @@
 part of swagger.api;
 
 class NGNTransferModel {
-  
-  String accountBank = null;
 
-  String accountNumber = null;
-
-  String amount = null;
-
-  String narration = null;
-
-  int userId = null;
+  String? accountBank = null;
+  String? accountNumber = null;
+  String? amount = null;
+  String? narration = null;
+  int? userId = null;
 
   NGNTransferModel();
 
@@ -38,11 +34,11 @@ class NGNTransferModel {
      };
   }
 
-  static List<NGNTransferModel> listFromJson(List<dynamic> json) {
-    return json == null ? new List<NGNTransferModel>() : json.map((value) => new NGNTransferModel.fromJson(value)).toList();
+  static List<NGNTransferModel> listFromJson(List<dynamic>? json) {
+    return json == null ? [] : json.map((value) => new NGNTransferModel.fromJson(value)).toList();
   }
 
-  static Map<String, NGNTransferModel> mapFromJson(Map<String, Map<String, dynamic>> json) {
+  static Map<String, NGNTransferModel> mapFromJson(Map<String, Map<String, dynamic>>? json) {
     var map = new Map<String, NGNTransferModel>();
     if (json != null && json.length > 0) {
       json.forEach((String key, Map<String, dynamic> value) => map[key] = new NGNTransferModel.fromJson(value));

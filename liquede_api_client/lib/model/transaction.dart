@@ -1,36 +1,22 @@
 part of swagger.api;
 
 class Transaction {
-  
-  int id = null;
 
-  DateTime dateCreated = null;
-
-  DateTime dateModified = null;
-
-  int userId = null;
-
-  User user = null;
-
-  String zebrraId = null;
-
-  String transactionReference = null;
-
-  int paymentLogId = null;
-
-  PaymentLog paymentLog = null;
-
-  int statusId = null;
-
-  Status status = null;
-
-  String amount = null;
-
-  String description = null;
-
-  String title = null;
-
-  int flutterwaveId = null;
+  int? id = null;
+  DateTime? dateCreated = null;
+  DateTime? dateModified = null;
+  int? userId = null;
+  User? user = null;
+  String? zebrraId = null;
+  String? transactionReference = null;
+  int? paymentLogId = null;
+  PaymentLog? paymentLog = null;
+  int? statusId = null;
+  Status? status = null;
+  String? amount = null;
+  String? description = null;
+  String? title = null;
+  int? flutterwaveId = null;
 
   Transaction();
 
@@ -61,8 +47,8 @@ class Transaction {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'dateCreated': dateCreated == null ? '' : dateCreated.toUtc().toIso8601String(),
-      'dateModified': dateModified == null ? '' : dateModified.toUtc().toIso8601String(),
+      'dateCreated': dateCreated == null ? '' : dateCreated!.toUtc().toIso8601String(),
+      'dateModified': dateModified == null ? '' : dateModified!.toUtc().toIso8601String(),
       'userId': userId,
       'user': user,
       'zebrraId': zebrraId,
@@ -78,11 +64,11 @@ class Transaction {
      };
   }
 
-  static List<Transaction> listFromJson(List<dynamic> json) {
-    return json == null ? new List<Transaction>() : json.map((value) => new Transaction.fromJson(value)).toList();
+  static List<Transaction> listFromJson(List<dynamic>? json) {
+    return json == null ? [] : json.map((value) => new Transaction.fromJson(value)).toList();
   }
 
-  static Map<String, Transaction> mapFromJson(Map<String, Map<String, dynamic>> json) {
+  static Map<String, Transaction> mapFromJson(Map<String, Map<String, dynamic>>? json) {
     var map = new Map<String, Transaction>();
     if (json != null && json.length > 0) {
       json.forEach((String key, Map<String, dynamic> value) => map[key] = new Transaction.fromJson(value));

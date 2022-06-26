@@ -167,13 +167,13 @@ class ApiClient {
                          '?' + ps.join('&') :
                          '';
 
-    String url = basePath + path + queryString;
+    Uri url = Uri.parse(basePath + path + queryString);
 
     headerParams.addAll(_defaultHeaderMap);
     headerParams['Content-Type'] = contentType;
 
     if(body is MultipartRequest) {
-      var request = new MultipartRequest(method, Uri.parse(url));
+      var request = new MultipartRequest(method, url);
       request.fields.addAll(body.fields);
       request.files.addAll(body.files);
       request.headers.addAll(body.headers);

@@ -142,45 +142,44 @@ class _SignUpState extends State<SignUp> {
 
   void attemptSignUp(BuildContext context){
     if(_key.currentState!.validate()){
-      showVerify(context);
+      showVerify(context, ()=> goto(context, const WelcomeScreen()));
     }
   }
 
-
-  void showVerify(BuildContext context) {
-    TextEditingController controller = TextEditingController();
-    launchBottomSheetFull(
-        context,
-        Column(
-          children: [
-            kText("Lets verify your \nmobile number",
-                    weight: FontWeight.w900, fontSize: 24)
-                .paddingX(40),
-            addSpace(y: 20),
-            kText("Enter the code you just received"),
-            addSpace(y: 30),
-            EditTextField(KInputFieldProps(
-                textEditingController: controller,
-                fillColor: Colors.grey[200],
-                textAlign: TextAlign.center,
-                isPassword: true,
-                style:
-                    KTextStyle(weight: FontWeight.bold, fontSize: 24, style: const TextStyle(letterSpacing: 3)).build)),
-            addSpace(y: 20),
-            MaterialButton(
-              onPressed: () => goto(context, const WelcomeScreen()),
-              child: kText("Submit", color: white, weight: FontWeight.bold),
-              color: black,
-            ).stretchSize(h: 45),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                kText("Change number", fontSize: 14, weight: FontWeight.bold),
-                kText("Resend Code", fontSize: 14, weight: FontWeight.bold),
-              ],
-            ).paddingY(20),
-          ],
-        ),
-        hFactor: 0.8);
-  }
+}
+void showVerify(BuildContext context, Function() onVerify) {
+  TextEditingController controller = TextEditingController();
+  launchBottomSheetFull(
+      context,
+      Column(
+        children: [
+          kText("Lets verify your \nmobile number",
+              weight: FontWeight.w900, fontSize: 24)
+              .paddingX(40),
+          addSpace(y: 20),
+          kText("Enter the code you just received"),
+          addSpace(y: 30),
+          EditTextField(KInputFieldProps(
+              textEditingController: controller,
+              fillColor: Colors.grey[200],
+              textAlign: TextAlign.center,
+              isPassword: true,
+              style:
+              KTextStyle(weight: FontWeight.bold, fontSize: 24, style: const TextStyle(letterSpacing: 3)).build)),
+          addSpace(y: 20),
+          MaterialButton(
+            onPressed: onVerify,
+            child: kText("Submit", color: white, weight: FontWeight.bold),
+            color: black,
+          ).stretchSize(h: 45),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              kText("Change number", fontSize: 14, weight: FontWeight.bold),
+              kText("Resend Code", fontSize: 14, weight: FontWeight.bold),
+            ],
+          ).paddingY(20),
+        ],
+      ),
+      hFactor: 0.8);
 }

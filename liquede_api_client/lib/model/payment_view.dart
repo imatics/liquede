@@ -1,12 +1,10 @@
 part of swagger.api;
 
 class PaymentView {
-  
-  String status = null;
 
-  Wallet wallet = null;
-
-  Transaction transaction = null;
+  String? status = null;
+  Wallet? wallet = null;
+  Transaction? transaction = null;
 
   PaymentView();
 
@@ -30,11 +28,11 @@ class PaymentView {
      };
   }
 
-  static List<PaymentView> listFromJson(List<dynamic> json) {
-    return json == null ? new List<PaymentView>() : json.map((value) => new PaymentView.fromJson(value)).toList();
+  static List<PaymentView> listFromJson(List<dynamic>? json) {
+    return json == null ? [] : json.map((value) => new PaymentView.fromJson(value)).toList();
   }
 
-  static Map<String, PaymentView> mapFromJson(Map<String, Map<String, dynamic>> json) {
+  static Map<String, PaymentView> mapFromJson(Map<String, Map<String, dynamic>>? json) {
     var map = new Map<String, PaymentView>();
     if (json != null && json.length > 0) {
       json.forEach((String key, Map<String, dynamic> value) => map[key] = new PaymentView.fromJson(value));

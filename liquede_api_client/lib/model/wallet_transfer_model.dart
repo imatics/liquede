@@ -1,16 +1,12 @@
 part of swagger.api;
 
 class WalletTransferModel {
-  
-  String amount = null;
 
-  String narration = null;
-
-  int userId = null;
-
-  int recipientUserId = null;
-
-  String description = null;
+  String? amount = null;
+  String? narration = null;
+  int? userId = null;
+  int? recipientUserId = null;
+  String? description = null;
 
   WalletTransferModel();
 
@@ -38,11 +34,11 @@ class WalletTransferModel {
      };
   }
 
-  static List<WalletTransferModel> listFromJson(List<dynamic> json) {
-    return json == null ? new List<WalletTransferModel>() : json.map((value) => new WalletTransferModel.fromJson(value)).toList();
+  static List<WalletTransferModel> listFromJson(List<dynamic>? json) {
+    return json == null ? [] : json.map((value) => new WalletTransferModel.fromJson(value)).toList();
   }
 
-  static Map<String, WalletTransferModel> mapFromJson(Map<String, Map<String, dynamic>> json) {
+  static Map<String, WalletTransferModel> mapFromJson(Map<String, Map<String, dynamic>>? json) {
     var map = new Map<String, WalletTransferModel>();
     if (json != null && json.length > 0) {
       json.forEach((String key, Map<String, dynamic> value) => map[key] = new WalletTransferModel.fromJson(value));

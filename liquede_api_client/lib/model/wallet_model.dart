@@ -1,14 +1,14 @@
 part of swagger.api;
 
 class WalletModel {
-  
-  int userId = null;
 
-  String balance = null;
+  int? userId = null;
 
-  String currency = null;
+  String? balance = null;
 
-  int walletTypeId = null;
+  String? currency = null;
+
+  int? walletTypeId = null;
 
   WalletModel();
 
@@ -17,7 +17,7 @@ class WalletModel {
     return 'WalletModel[userId=$userId, balance=$balance, currency=$currency, walletTypeId=$walletTypeId, ]';
   }
 
-  WalletModel.fromJson(Map<String, dynamic> json) {
+  WalletModel.fromJson(Map<String, dynamic>? json) {
     if (json == null) return;
     userId = json['userId'];
     balance = json['balance'];
@@ -34,11 +34,11 @@ class WalletModel {
      };
   }
 
-  static List<WalletModel> listFromJson(List<dynamic> json) {
-    return json == null ? new List<WalletModel>() : json.map((value) => new WalletModel.fromJson(value)).toList();
+  static List<WalletModel> listFromJson(List<dynamic>? json) {
+    return json == null ?  [] : json.map((value) => new WalletModel.fromJson(value)).toList();
   }
 
-  static Map<String, WalletModel> mapFromJson(Map<String, Map<String, dynamic>> json) {
+  static Map<String, WalletModel> mapFromJson(Map<String, Map<String, dynamic>>? json) {
     var map = new Map<String, WalletModel>();
     if (json != null && json.length > 0) {
       json.forEach((String key, Map<String, dynamic> value) => map[key] = new WalletModel.fromJson(value));

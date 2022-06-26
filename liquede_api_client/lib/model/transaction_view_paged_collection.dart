@@ -1,22 +1,15 @@
 part of swagger.api;
 
 class TransactionViewPagedCollection {
-  
-  int offset = null;
 
-  int limit = null;
-
-  int size = null;
-
-  Link first = null;
-
-  Link previous = null;
-
-  Link next = null;
-
-  Link last = null;
-
-  Link self = null;
+  int? offset = null;
+  int? limit = null;
+  int? size = null;
+  Link? first = null;
+  Link? previous = null;
+  Link? next = null;
+  Link? last = null;
+  Link? self = null;
 
   List<TransactionView> value = [];
 
@@ -54,11 +47,11 @@ class TransactionViewPagedCollection {
      };
   }
 
-  static List<TransactionViewPagedCollection> listFromJson(List<dynamic> json) {
-    return json == null ? new List<TransactionViewPagedCollection>() : json.map((value) => new TransactionViewPagedCollection.fromJson(value)).toList();
+  static List<TransactionViewPagedCollection> listFromJson(List<dynamic>? json) {
+    return json == null ? [] : json.map((value) => new TransactionViewPagedCollection.fromJson(value)).toList();
   }
 
-  static Map<String, TransactionViewPagedCollection> mapFromJson(Map<String, Map<String, dynamic>> json) {
+  static Map<String, TransactionViewPagedCollection> mapFromJson(Map<String, Map<String, dynamic>>? json) {
     var map = new Map<String, TransactionViewPagedCollection>();
     if (json != null && json.length > 0) {
       json.forEach((String key, Map<String, dynamic> value) => map[key] = new TransactionViewPagedCollection.fromJson(value));

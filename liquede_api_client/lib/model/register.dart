@@ -1,18 +1,13 @@
 part of swagger.api;
 
 class Register {
-  
-  String email = null;
 
-  String password = null;
-
-  String firstName = null;
-
-  String lastName = null;
-
-  String middleName = null;
-
-  String phoneNumber = null;
+  String? email = null;
+  String? password = null;
+  String? firstName = null;
+  String? lastName = null;
+  String? middleName = null;
+  String? phoneNumber = null;
 
   Register();
 
@@ -42,11 +37,11 @@ class Register {
      };
   }
 
-  static List<Register> listFromJson(List<dynamic> json) {
-    return json == null ? new List<Register>() : json.map((value) => new Register.fromJson(value)).toList();
+  static List<Register> listFromJson(List<dynamic>? json) {
+    return json == null ? [] : json.map((value) => new Register.fromJson(value)).toList();
   }
 
-  static Map<String, Register> mapFromJson(Map<String, Map<String, dynamic>> json) {
+  static Map<String, Register> mapFromJson(Map<String, Map<String, dynamic>>? json) {
     var map = new Map<String, Register>();
     if (json != null && json.length > 0) {
       json.forEach((String key, Map<String, dynamic> value) => map[key] = new Register.fromJson(value));

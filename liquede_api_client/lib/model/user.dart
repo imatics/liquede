@@ -1,62 +1,35 @@
 part of swagger.api;
 
 class User {
-  
-  int id = null;
 
-  String userName = null;
-
-  String normalizedUserName = null;
-
-  String email = null;
-
-  String normalizedEmail = null;
-
-  bool emailConfirmed = null;
-
-  String passwordHash = null;
-
-  String securityStamp = null;
-
-  String concurrencyStamp = null;
-
-  String phoneNumber = null;
-
-  bool phoneNumberConfirmed = null;
-
-  bool twoFactorEnabled = null;
-
-  DateTime lockoutEnd = null;
-
-  bool lockoutEnabled = null;
-
-  int accessFailedCount = null;
-
-  String firstName = null;
-
-  String lastName = null;
-
-  String password = null;
-
-  String token = null;
-
-  DateTime dateCreated = null;
-
-  DateTime dateModified = null;
-
+  int? id = null;
+  String? userName = null;
+  String? normalizedUserName = null;
+  String? email = null;
+  String? normalizedEmail = null;
+  bool? emailConfirmed = null;
+  String? passwordHash = null;
+  String? securityStamp = null;
+  String? concurrencyStamp = null;
+  String? phoneNumber = null;
+  bool? phoneNumberConfirmed = null;
+  bool? twoFactorEnabled = null;
+  DateTime? lockoutEnd = null;
+  bool? lockoutEnabled = null;
+  int? accessFailedCount = null;
+  String? firstName = null;
+  String? lastName = null;
+  String? password = null;
+  String? token = null;
+  DateTime? dateCreated = null;
+  DateTime? dateModified = null;
   List<Code> codes = [];
-
-  String middleName = null;
-
-  String address = null;
-
-  bool isAdmin = null;
-
+  String? middleName = null;
+  String? address = null;
+  bool? isAdmin = null;
   List<Card> cards = [];
-
   List<Transaction> transactions = [];
-
-  Wallet wallet = null;
+  Wallet? wallet = null;
 
   User();
 
@@ -111,15 +84,15 @@ class User {
       'phoneNumber': phoneNumber,
       'phoneNumberConfirmed': phoneNumberConfirmed,
       'twoFactorEnabled': twoFactorEnabled,
-      'lockoutEnd': lockoutEnd == null ? '' : lockoutEnd.toUtc().toIso8601String(),
+      'lockoutEnd': lockoutEnd == null ? '' : lockoutEnd!.toUtc().toIso8601String(),
       'lockoutEnabled': lockoutEnabled,
       'accessFailedCount': accessFailedCount,
       'firstName': firstName,
       'lastName': lastName,
       'password': password,
       'token': token,
-      'dateCreated': dateCreated == null ? '' : dateCreated.toUtc().toIso8601String(),
-      'dateModified': dateModified == null ? '' : dateModified.toUtc().toIso8601String(),
+      'dateCreated': dateCreated == null ? '' : dateCreated!.toUtc().toIso8601String(),
+      'dateModified': dateModified == null ? '' : dateModified!.toUtc().toIso8601String(),
       'codes': codes,
       'middleName': middleName,
       'address': address,
@@ -130,11 +103,11 @@ class User {
      };
   }
 
-  static List<User> listFromJson(List<dynamic> json) {
-    return json == null ? new List<User>() : json.map((value) => new User.fromJson(value)).toList();
+  static List<User> listFromJson(List<dynamic>? json) {
+    return json == null ? [] : json.map((value) => new User.fromJson(value)).toList();
   }
 
-  static Map<String, User> mapFromJson(Map<String, Map<String, dynamic>> json) {
+  static Map<String, User> mapFromJson(Map<String, Map<String, dynamic>>? json) {
     var map = new Map<String, User>();
     if (json != null && json.length > 0) {
       json.forEach((String key, Map<String, dynamic> value) => map[key] = new User.fromJson(value));

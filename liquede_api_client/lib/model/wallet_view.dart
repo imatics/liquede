@@ -1,14 +1,11 @@
 part of swagger.api;
 
 class WalletView {
-  
-  int userId = null;
 
-  double balance = null;
-
-  String currency = null;
-
-  String walletType = null;
+  int? userId = null;
+  double? balance = null;
+  String? currency = null;
+  String? walletType = null;
 
   WalletView();
 
@@ -17,7 +14,7 @@ class WalletView {
     return 'WalletView[userId=$userId, balance=$balance, currency=$currency, walletType=$walletType, ]';
   }
 
-  WalletView.fromJson(Map<String, dynamic> json) {
+  WalletView.fromJson(Map<String, dynamic>? json) {
     if (json == null) return;
     userId = json['userId'];
     balance = json['balance'];
@@ -34,11 +31,11 @@ class WalletView {
      };
   }
 
-  static List<WalletView> listFromJson(List<dynamic> json) {
-    return json == null ? new List<WalletView>() : json.map((value) => new WalletView.fromJson(value)).toList();
+  static List<WalletView> listFromJson(List<dynamic>? json) {
+    return json == null ? [] : json.map((value) => new WalletView.fromJson(value)).toList();
   }
 
-  static Map<String, WalletView> mapFromJson(Map<String, Map<String, dynamic>> json) {
+  static Map<String, WalletView> mapFromJson(Map<String, Map<String, dynamic>>? json) {
     var map = new Map<String, WalletView>();
     if (json != null && json.length > 0) {
       json.forEach((String key, Map<String, dynamic> value) => map[key] = new WalletView.fromJson(value));

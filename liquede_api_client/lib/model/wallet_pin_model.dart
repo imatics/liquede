@@ -1,10 +1,9 @@
 part of swagger.api;
 
 class WalletPinModel {
-  
-  int userId = null;
 
-  int pin = null;
+  int? userId = null;
+  int? pin = null;
 
   WalletPinModel();
 
@@ -13,7 +12,7 @@ class WalletPinModel {
     return 'WalletPinModel[userId=$userId, pin=$pin, ]';
   }
 
-  WalletPinModel.fromJson(Map<String, dynamic> json) {
+  WalletPinModel.fromJson(Map<String, dynamic>? json) {
     if (json == null) return;
     userId = json['userId'];
     pin = json['pin'];
@@ -26,11 +25,11 @@ class WalletPinModel {
      };
   }
 
-  static List<WalletPinModel> listFromJson(List<dynamic> json) {
-    return json == null ? new List<WalletPinModel>() : json.map((value) => new WalletPinModel.fromJson(value)).toList();
+  static List<WalletPinModel> listFromJson(List<dynamic>? json) {
+    return json == null ? [] : json.map((value) => new WalletPinModel.fromJson(value)).toList();
   }
 
-  static Map<String, WalletPinModel> mapFromJson(Map<String, Map<String, dynamic>> json) {
+  static Map<String, WalletPinModel> mapFromJson(Map<String, Map<String, dynamic>>? json) {
     var map = new Map<String, WalletPinModel>();
     if (json != null && json.length > 0) {
       json.forEach((String key, Map<String, dynamic> value) => map[key] = new WalletPinModel.fromJson(value));
