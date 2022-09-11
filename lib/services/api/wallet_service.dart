@@ -37,9 +37,9 @@ class WalletService extends BaseService{
       _api.createUserWallet(body: model).then((value){
         value!.status.log;
         value.statusCode.log;
-        if(value.status){
+        if(value.status == true){
           _walletDetails = value.data;
-          onSuccess(value.data);
+          // onSuccess(value.data);
         }else{
 
           onError(APIError.fromString(value.message));
@@ -61,9 +61,9 @@ class WalletService extends BaseService{
       _api.createTransactionPin(body: model).then((value){
         value!.status.log;
         value.statusCode.log;
-        if(value.status){
+        if(value.status == true){
           _walletDetails = value.data;
-          onSuccess(value.data);
+          // onSuccess(value.data);
         }else{
 
           onError(APIError.fromString(value.message));
@@ -84,8 +84,8 @@ class WalletService extends BaseService{
       _api.fundWallet(body: model).then((value){
         value!.status.log;
         value.statusCode.log;
-        if(value.status){
-          onSuccess(value.data);
+        if(value.status == true){
+          // onSuccess(value.data);
         }else{
 
           onError(APIError.fromString(value.message));
@@ -106,9 +106,9 @@ class WalletService extends BaseService{
       _api.debitWallet(body: model).then((value){
         value!.status.log;
         value.statusCode.log;
-        if(value.status){
+        if(value.status == true){
           _walletDetails = value.data;
-          onSuccess(value.data);
+          // onSuccess(value.data);
         }else{
 
           onError(APIError.fromString(value.message));
@@ -130,8 +130,8 @@ class WalletService extends BaseService{
       _api.walletBalance(userId:userID).then((value){
         value!.status.log;
         value.statusCode.log;
-        if(value.status){
-          // onSuccess(value.data);
+        if(value.status == true && value.data != null){
+          // onSuccess(value.data?.);
         }else{
 
           onError(APIError.fromString(value.message));
@@ -146,7 +146,7 @@ class WalletService extends BaseService{
 
 
 
-  void getTransactionHistory(int userID, APIAction<UserView> onSuccess,
+  void getTransactionHistory(int userID, APIAction<List<TransactionView>> onSuccess,
       APIAction<APIError> onError) async {
     if(!await isNetworkActive(onError)){
       return;
@@ -154,8 +154,8 @@ class WalletService extends BaseService{
       _api.listTransactions(userID, offset: 0, search: '', limit: 10000).then((value){
         value!.status.log;
         value.statusCode.log;
-        if(value.status){
-          // onSuccess(value.data);
+        if(value.status == true){
+          onSuccess(value.data?.value??[]);
         }else{
 
           onError(APIError.fromString(value.message));
@@ -176,7 +176,7 @@ class WalletService extends BaseService{
       _api.listCardsByUserId(userID, offset: 0, limit: 10000).then((value){
         value!.status.log;
         value.statusCode.log;
-        if(value.status){
+        if(value.status == true){
           // onSuccess(value.data);
         }else{
           onError(APIError.fromString(value.message));
@@ -197,7 +197,7 @@ class WalletService extends BaseService{
       _api.statementOfAccount(userID, start, end, offset: 0, limit: 10000).then((value){
         value!.status.log;
         value.statusCode.log;
-        if(value.status){
+        if(value.status == true){
           // onSuccess(value.data);
         }else{
           onError(APIError.fromString(value.message));
@@ -219,7 +219,7 @@ class WalletService extends BaseService{
       _api.transferToNigerianBank(body: model).then((value){
         value!.status.log;
         value.statusCode.log;
-        if(value.status){
+        if(value.status == true){
           // onSuccess(value.data);
         }else{
           onError(APIError.fromString(value.message));
@@ -240,7 +240,7 @@ class WalletService extends BaseService{
       _api.transferToWallet(body: model).then((value){
         value!.status.log;
         value.statusCode.log;
-        if(value.status){
+        if(value.status == true){
           // onSuccess(value.data);
         }else{
           onError(APIError.fromString(value.message));

@@ -29,10 +29,9 @@ class UserService extends BaseService{
   }
 
 
-  void login(LoginModel request, APIAction<UserView> onSuccess,
-      APIAction<APIError> onError) async {
-    if(!await isNetworkActive(onError)){
-      return;
+  Stream<NetworkEvent> login(LoginModel request) async* {
+    if(!await isNetworkActive()){
+      return ;
     }else{
       _api.login(body: request).then((value){
         value!.status.log;

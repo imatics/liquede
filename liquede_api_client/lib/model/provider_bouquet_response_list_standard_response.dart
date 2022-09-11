@@ -12,9 +12,9 @@ class ProviderBouquetResponseListStandardResponse {
 
   List<ProviderBouquetResponse> data = [];
 
-  String statusCode = null;
+  String? statusCode = null;
 
-  Object errors = null;
+  Object? errors = null;
 
   ProviderBouquetResponseListStandardResponse();
 

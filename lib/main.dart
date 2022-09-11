@@ -5,6 +5,7 @@ import 'package:liquede/services/app_preference.dart';
 import 'package:liquede/services/network_service_state.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
+import 'package:swagger/api.dart';
 import 'package:liquede/extensions/string.dart';
 
 void main()async {
