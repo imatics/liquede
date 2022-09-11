@@ -3,6 +3,7 @@ part of swagger.api;
 class FundWalletModel {
 
   String? amount = null;
+
   int? userId = null;
 
   FundWalletModel();

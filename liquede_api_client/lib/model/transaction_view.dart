@@ -9,6 +9,7 @@ class TransactionView {
   String? amount = null;
   String? description = null;
   String? title = null;
+
   DateTime? dateCreated = null;
 
   TransactionView();

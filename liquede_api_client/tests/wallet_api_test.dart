@@ -32,6 +32,11 @@ void main() {
       // TODO
     });
 
+    //Future<CardViewIEnumerableStandardResponse> listCards() async
+    test('test listCards', () async {
+      // TODO
+    });
+
     //Future<TransactionViewPagedCollectionStandardResponse> listCardsByUserId(int userId, { int offset, int limit }) async
     test('test listCardsByUserId', () async {
       // TODO

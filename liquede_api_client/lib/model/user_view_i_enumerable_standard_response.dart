@@ -20,7 +20,7 @@ class UserViewIEnumerableStandardResponse {
     return 'UserViewIEnumerableStandardResponse[href=$href, relations=$relations, method=$method, routeName=$routeName, routeValues=$routeValues, status=$status, message=$message, data=$data, statusCode=$statusCode, errors=$errors, ]';
   }
 
-  UserViewIEnumerableStandardResponse.fromJson(Map<String, dynamic>? json) {
+  UserViewIEnumerableStandardResponse.fromJson(Map<String, dynamic> json) {
     if (json == null) return;
     href = json['href'];
     relations = (json['relations'] as List).map((item) => item as String).toList();

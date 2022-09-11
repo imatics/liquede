@@ -3,11 +3,8 @@ part of swagger.api;
 class WalletModel {
 
   int? userId = null;
-
   String? balance = null;
-
   String? currency = null;
-
   int? walletTypeId = null;
 
   WalletModel();
@@ -35,7 +32,7 @@ class WalletModel {
   }
 
   static List<WalletModel> listFromJson(List<dynamic>? json) {
-    return json == null ?  [] : json.map((value) => new WalletModel.fromJson(value)).toList();
+    return json == null ? [] : json.map((value) => new WalletModel.fromJson(value)).toList();
   }
 
   static Map<String, WalletModel> mapFromJson(Map<String, Map<String, dynamic>>? json) {

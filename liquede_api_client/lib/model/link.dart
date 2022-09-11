@@ -3,9 +3,13 @@ part of swagger.api;
 class Link {
 
   String? href = null;
+
   List<String> relations = [];
+
   String method = "GET";
+
   String? routeName = null;
+
   Object? routeValues = null;
 
   Link();

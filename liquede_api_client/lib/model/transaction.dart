@@ -7,7 +7,6 @@ class Transaction {
   DateTime? dateModified = null;
   int? userId = null;
   User? user = null;
-  String? zebrraId = null;
   String? transactionReference = null;
   int? paymentLogId = null;
   PaymentLog? paymentLog = null;
@@ -17,22 +16,24 @@ class Transaction {
   String? description = null;
   String? title = null;
   int? flutterwaveId = null;
+  int? savingPlansId = null;
+
+  SavingPlans? plan = null;
 
   Transaction();
 
   @override
   String toString() {
-    return 'Transaction[id=$id, dateCreated=$dateCreated, dateModified=$dateModified, userId=$userId, user=$user, zebrraId=$zebrraId, transactionReference=$transactionReference, paymentLogId=$paymentLogId, paymentLog=$paymentLog, statusId=$statusId, status=$status, amount=$amount, description=$description, title=$title, flutterwaveId=$flutterwaveId, ]';
+    return 'Transaction[id=$id, dateCreated=$dateCreated, dateModified=$dateModified, userId=$userId, user=$user, transactionReference=$transactionReference, paymentLogId=$paymentLogId, paymentLog=$paymentLog, statusId=$statusId, status=$status, amount=$amount, description=$description, title=$title, flutterwaveId=$flutterwaveId, savingPlansId=$savingPlansId, plan=$plan, ]';
   }
 
-  Transaction.fromJson(Map<String, dynamic> json) {
+  Transaction.fromJson(Map<String, dynamic>? json) {
     if (json == null) return;
     id = json['id'];
     dateCreated = json['dateCreated'] == null ? null : DateTime.parse(json['dateCreated']);
     dateModified = json['dateModified'] == null ? null : DateTime.parse(json['dateModified']);
     userId = json['userId'];
     user = new User.fromJson(json['user']);
-    zebrraId = json['zebrraId'];
     transactionReference = json['transactionReference'];
     paymentLogId = json['paymentLogId'];
     paymentLog = new PaymentLog.fromJson(json['paymentLog']);
@@ -42,6 +43,8 @@ class Transaction {
     description = json['description'];
     title = json['title'];
     flutterwaveId = json['flutterwaveId'];
+    savingPlansId = json['savingPlansId'];
+    plan = new SavingPlans.fromJson(json['plan']);
   }
 
   Map<String, dynamic> toJson() {
@@ -51,7 +54,6 @@ class Transaction {
       'dateModified': dateModified == null ? '' : dateModified!.toUtc().toIso8601String(),
       'userId': userId,
       'user': user,
-      'zebrraId': zebrraId,
       'transactionReference': transactionReference,
       'paymentLogId': paymentLogId,
       'paymentLog': paymentLog,
@@ -60,7 +62,9 @@ class Transaction {
       'amount': amount,
       'description': description,
       'title': title,
-      'flutterwaveId': flutterwaveId
+      'flutterwaveId': flutterwaveId,
+      'savingPlansId': savingPlansId,
+      'plan': plan
      };
   }
 

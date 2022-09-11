@@ -20,7 +20,7 @@ class UserViewPagedCollection {
     return 'UserViewPagedCollection[offset=$offset, limit=$limit, size=$size, first=$first, previous=$previous, next=$next, last=$last, self=$self, value=$value, ]';
   }
 
-  UserViewPagedCollection.fromJson(Map<String, dynamic>? json) {
+  UserViewPagedCollection.fromJson(Map<String, dynamic> json) {
     if (json == null) return;
     offset = json['offset'];
     limit = json['limit'];

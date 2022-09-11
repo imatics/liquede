@@ -13,7 +13,6 @@ Name | Type | Description | Notes
 **dateModified** | [**DateTime**](DateTime.md) |  | [optional] [default to null]
 **userId** | **int** |  | [optional] [default to null]
 **user** | [**User**](User.md) |  | [optional] [default to null]
-**zebrraId** | **String** |  | [optional] [default to null]
 **transactionReference** | **String** |  | [optional] [default to null]
 **paymentLogId** | **int** |  | [optional] [default to null]
 **paymentLog** | [**PaymentLog**](PaymentLog.md) |  | [optional] [default to null]
@@ -23,6 +22,8 @@ Name | Type | Description | Notes
 **description** | **String** |  | [optional] [default to null]
 **title** | **String** |  | [optional] [default to null]
 **flutterwaveId** | **int** |  | [optional] [default to null]
+**savingPlansId** | **int** |  | [optional] [default to null]
+**plan** | [**SavingPlans**](SavingPlans.md) |  | [optional] [default to null]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -15,7 +15,7 @@ class NGNTransferModel {
     return 'NGNTransferModel[accountBank=$accountBank, accountNumber=$accountNumber, amount=$amount, narration=$narration, userId=$userId, ]';
   }
 
-  NGNTransferModel.fromJson(Map<String, dynamic> json) {
+  NGNTransferModel.fromJson(Map<String, dynamic>? json) {
     if (json == null) return;
     accountBank = json['accountBank'];
     accountNumber = json['accountNumber'];

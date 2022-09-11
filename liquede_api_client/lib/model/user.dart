@@ -27,18 +27,22 @@ class User {
   String? middleName = null;
   String? address = null;
   bool? isAdmin = null;
+
   List<Card> cards = [];
   List<Transaction> transactions = [];
+
   Wallet? wallet = null;
+
+  List<SavingPlans> savings = [];
 
   User();
 
   @override
   String toString() {
-    return 'User[id=$id, userName=$userName, normalizedUserName=$normalizedUserName, email=$email, normalizedEmail=$normalizedEmail, emailConfirmed=$emailConfirmed, passwordHash=$passwordHash, securityStamp=$securityStamp, concurrencyStamp=$concurrencyStamp, phoneNumber=$phoneNumber, phoneNumberConfirmed=$phoneNumberConfirmed, twoFactorEnabled=$twoFactorEnabled, lockoutEnd=$lockoutEnd, lockoutEnabled=$lockoutEnabled, accessFailedCount=$accessFailedCount, firstName=$firstName, lastName=$lastName, password=$password, token=$token, dateCreated=$dateCreated, dateModified=$dateModified, codes=$codes, middleName=$middleName, address=$address, isAdmin=$isAdmin, cards=$cards, transactions=$transactions, wallet=$wallet, ]';
+    return 'User[id=$id, userName=$userName, normalizedUserName=$normalizedUserName, email=$email, normalizedEmail=$normalizedEmail, emailConfirmed=$emailConfirmed, passwordHash=$passwordHash, securityStamp=$securityStamp, concurrencyStamp=$concurrencyStamp, phoneNumber=$phoneNumber, phoneNumberConfirmed=$phoneNumberConfirmed, twoFactorEnabled=$twoFactorEnabled, lockoutEnd=$lockoutEnd, lockoutEnabled=$lockoutEnabled, accessFailedCount=$accessFailedCount, firstName=$firstName, lastName=$lastName, password=$password, token=$token, dateCreated=$dateCreated, dateModified=$dateModified, codes=$codes, middleName=$middleName, address=$address, isAdmin=$isAdmin, cards=$cards, transactions=$transactions, wallet=$wallet, savings=$savings, ]';
   }
 
-  User.fromJson(Map<String, dynamic> json) {
+  User.fromJson(Map<String, dynamic>? json) {
     if (json == null) return;
     id = json['id'];
     userName = json['userName'];
@@ -68,6 +72,7 @@ class User {
     cards = Card.listFromJson(json['cards']);
     transactions = Transaction.listFromJson(json['transactions']);
     wallet = new Wallet.fromJson(json['wallet']);
+    savings = SavingPlans.listFromJson(json['savings']);
   }
 
   Map<String, dynamic> toJson() {
@@ -99,7 +104,8 @@ class User {
       'isAdmin': isAdmin,
       'cards': cards,
       'transactions': transactions,
-      'wallet': wallet
+      'wallet': wallet,
+      'savings': savings
      };
   }
 

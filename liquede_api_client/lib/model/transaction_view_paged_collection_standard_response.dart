@@ -9,8 +9,11 @@ class TransactionViewPagedCollectionStandardResponse {
   Object? routeValues = null;
   bool? status = null;
   String? message = null;
+
   TransactionViewPagedCollection? data = null;
+
   String? statusCode = null;
+
   Object? errors = null;
 
   TransactionViewPagedCollectionStandardResponse();
@@ -20,7 +23,7 @@ class TransactionViewPagedCollectionStandardResponse {
     return 'TransactionViewPagedCollectionStandardResponse[href=$href, relations=$relations, method=$method, routeName=$routeName, routeValues=$routeValues, status=$status, message=$message, data=$data, statusCode=$statusCode, errors=$errors, ]';
   }
 
-  TransactionViewPagedCollectionStandardResponse.fromJson(Map<String, dynamic> json) {
+  TransactionViewPagedCollectionStandardResponse.fromJson(Map<String, dynamic>? json) {
     if (json == null) return;
     href = json['href'];
     relations = (json['relations'] as List).map((item) => item as String).toList();

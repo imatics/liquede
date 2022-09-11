@@ -20,10 +20,10 @@ class StringStandardResponse {
     return 'StringStandardResponse[href=$href, relations=$relations, method=$method, routeName=$routeName, routeValues=$routeValues, status=$status, message=$message, data=$data, statusCode=$statusCode, errors=$errors, ]';
   }
 
-  StringStandardResponse.fromJson(Map<String, dynamic> json) {
+  StringStandardResponse.fromJson(Map<String, dynamic>? json) {
     if (json == null) return;
     href = json['href'];
-    relations = (json['relations'] as List).map((item) => item as String).toList();
+    // relations = (json['relations'] as List).map((item) => item as String).toList();
     method = json['method'];
     routeName = json['routeName'];
     // routeValues = new Object.fromJson(json['routeValues']);
@@ -50,7 +50,7 @@ class StringStandardResponse {
   }
 
   static List<StringStandardResponse> listFromJson(List<dynamic>? json) {
-    return json == null ? [] : json.map((value) => new StringStandardResponse.fromJson(value)).toList();
+    return json == null ? []: json.map((value) => new StringStandardResponse.fromJson(value)).toList();
   }
 
   static Map<String, StringStandardResponse> mapFromJson(Map<String, Map<String, dynamic>>? json) {

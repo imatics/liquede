@@ -3,14 +3,23 @@ part of swagger.api;
 class Int32StandardResponse {
 
   String? href = null;
-  List<String>? relations = [];
-  String? method = "GET";
+
+  List<String> relations = [];
+
+  String method = "GET";
+
   String? routeName = null;
+
   Object? routeValues = null;
+
   bool? status = null;
+
   String? message = null;
+
   int? data = null;
+
   String? statusCode = null;
+
   Object? errors = null;
 
   Int32StandardResponse();

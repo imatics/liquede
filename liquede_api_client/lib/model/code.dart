@@ -3,14 +3,23 @@ part of swagger.api;
 class Code {
 
   int? id = null;
+
   DateTime? dateCreated = null;
+
   DateTime? dateModified = null;
+
   String? codeString = null;
+
   String? key = null;
+
   int? userId = null;
+
   User? user = null;
+
   DateTime? expiryDate = null;
+
   bool? isExpired = null;
+
   String? token = null;
 
   Code();
@@ -20,7 +29,7 @@ class Code {
     return 'Code[id=$id, dateCreated=$dateCreated, dateModified=$dateModified, codeString=$codeString, key=$key, userId=$userId, user=$user, expiryDate=$expiryDate, isExpired=$isExpired, token=$token, ]';
   }
 
-  Code.fromJson(Map<String, dynamic>? json) {
+  Code.fromJson(Map<String, dynamic> json) {
     if (json == null) return;
     id = json['id'];
     dateCreated = json['dateCreated'] == null ? null : DateTime.parse(json['dateCreated']);

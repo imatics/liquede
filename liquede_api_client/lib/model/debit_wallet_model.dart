@@ -3,6 +3,7 @@ part of swagger.api;
 class DebitWalletModel {
 
   int? userId = null;
+
   String? amount = null;
 
   DebitWalletModel();

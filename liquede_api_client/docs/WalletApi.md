@@ -14,6 +14,7 @@ Method | HTTP request | Description
 [**debitWallet**](WalletApi.md#debitWallet) | **POST** /api/Wallet/debit | 
 [**fundWallet**](WalletApi.md#fundWallet) | **POST** /api/Wallet/fund | 
 [**getTransactionPin**](WalletApi.md#getTransactionPin) | **GET** /api/Wallet/pin/{userId} | 
+[**listCards**](WalletApi.md#listCards) | **GET** /api/Wallet/cards/list | 
 [**listCardsByUserId**](WalletApi.md#listCardsByUserId) | **GET** /api/Wallet/card/{userId}/list | 
 [**listTransactions**](WalletApi.md#listTransactions) | **GET** /api/Wallet/transaction/{userId}/list | 
 [**statementOfAccount**](WalletApi.md#statementOfAccount) | **GET** /api/Wallet/statementOfAccount/{userId}/{startDate}/{endDate} | 
@@ -235,6 +236,47 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**Int32StandardResponse**](Int32StandardResponse.md)
+
+### Authorization
+
+[Bearer](../README.md#Bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: text/plain, application/json, text/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **listCards**
+> CardViewIEnumerableStandardResponse listCards()
+
+
+
+### Example
+```dart
+import 'package:swagger/api.dart';
+// TODO Configure API key authorization: Bearer
+//swagger.api.Configuration.apiKey{'Authorization'} = 'YOUR_API_KEY';
+// uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+//swagger.api.Configuration.apiKeyPrefix{'Authorization'} = "Bearer";
+
+var api_instance = new WalletApi();
+
+try {
+    var result = api_instance.listCards();
+    print(result);
+} catch (e) {
+    print("Exception when calling WalletApi->listCards: $e\n");
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**CardViewIEnumerableStandardResponse**](CardViewIEnumerableStandardResponse.md)
 
 ### Authorization
 

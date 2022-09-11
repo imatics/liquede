@@ -33,7 +33,7 @@ class PaymentLog {
     return 'PaymentLog[id=$id, dateCreated=$dateCreated, dateModified=$dateModified, flutterWavePaymentId=$flutterWavePaymentId, transactionReference=$transactionReference, flutterWaveReference=$flutterWaveReference, deviceFingerPrint=$deviceFingerPrint, amount=$amount, currency=$currency, chargedAmount=$chargedAmount, appFee=$appFee, merchantFee=$merchantFee, processorResponse=$processorResponse, authModel=$authModel, ip=$ip, narration=$narration, status=$status, paymentType=$paymentType, accountId=$accountId, amountSettled=$amountSettled, createdAt=$createdAt, cardId=$cardId, card=$card, ]';
   }
 
-  PaymentLog.fromJson(Map<String, dynamic> json) {
+  PaymentLog.fromJson(Map<String, dynamic>? json) {
     if (json == null) return;
     id = json['id'];
     dateCreated = json['dateCreated'] == null ? null : DateTime.parse(json['dateCreated']);

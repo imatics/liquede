@@ -3,16 +3,27 @@ part of swagger.api;
 class Card {
 
   int? id = null;
+
   DateTime? dateCreated = null;
+
   DateTime? dateModified = null;
+
   int? userId = null;
+
   User? user = null;
+
   String? first6Digits = null;
+
   String? last4Digits = null;
+
   String? issuer = null;
+
   String? country = null;
+
   String? type = null;
+
   String? token = null;
+
   String? expiry = null;
 
   Card();

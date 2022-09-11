@@ -5,26 +5,29 @@ class PaymentView {
   String? status = null;
   Wallet? wallet = null;
   Transaction? transaction = null;
+  String? message = null;
 
   PaymentView();
 
   @override
   String toString() {
-    return 'PaymentView[status=$status, wallet=$wallet, transaction=$transaction, ]';
+    return 'PaymentView[status=$status, wallet=$wallet, transaction=$transaction, message=$message, ]';
   }
 
-  PaymentView.fromJson(Map<String, dynamic> json) {
+  PaymentView.fromJson(Map<String, dynamic>? json) {
     if (json == null) return;
     status = json['status'];
     wallet = new Wallet.fromJson(json['wallet']);
     transaction = new Transaction.fromJson(json['transaction']);
+    message = json['message'];
   }
 
   Map<String, dynamic> toJson() {
     return {
       'status': status,
       'wallet': wallet,
-      'transaction': transaction
+      'transaction': transaction,
+      'message': message
      };
   }
 

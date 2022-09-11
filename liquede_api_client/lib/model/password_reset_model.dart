@@ -3,7 +3,6 @@ part of swagger.api;
 class PasswordResetModel {
 
   String? existingPassword = null;
-
   String? newPassword = null;
 
   PasswordResetModel();
@@ -30,7 +29,7 @@ class PasswordResetModel {
     return json == null ? [] : json.map((value) => new PasswordResetModel.fromJson(value)).toList();
   }
 
-  static Map<String, PasswordResetModel> mapFromJson(Map<String, Map<String, dynamic>> json) {
+  static Map<String, PasswordResetModel> mapFromJson(Map<String, Map<String, dynamic>>? json) {
     var map = new Map<String, PasswordResetModel>();
     if (json != null && json.length > 0) {
       json.forEach((String key, Map<String, dynamic> value) => map[key] = new PasswordResetModel.fromJson(value));

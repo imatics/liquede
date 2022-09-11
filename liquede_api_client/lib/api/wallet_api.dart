@@ -10,7 +10,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<WalletViewStandardResponse?> createTransactionPin({ required WalletPinModel body }) async {
+  Future<WalletViewStandardResponse?> createTransactionPin({ WalletPinModel? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -30,9 +30,9 @@ class WalletApi {
 
     if(contentType.startsWith("multipart/form-data")) {
       bool hasFields = false;
-      MultipartRequest mp = new MultipartRequest(null, null);
-      if(hasFields)
-        postBody = mp;
+      // MultipartRequest mp = new MultipartRequest(null, null);
+      // if(hasFields)
+      //   postBody = mp;
     }
     else {
           }
@@ -58,7 +58,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<WalletViewStandardResponse?> createUserWallet({required WalletModel body }) async {
+  Future<WalletViewStandardResponse?> createUserWallet({ WalletModel? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -78,9 +78,9 @@ class WalletApi {
 
     if(contentType.startsWith("multipart/form-data")) {
       bool hasFields = false;
-      MultipartRequest mp = new MultipartRequest(null, null);
-      if(hasFields)
-        postBody = mp;
+      // MultipartRequest mp = new MultipartRequest(null, null);
+      // if(hasFields)
+      //   postBody = mp;
     }
     else {
           }
@@ -106,7 +106,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<WalletViewStandardResponse?> debitWallet({required DebitWalletModel body }) async {
+  Future<WalletViewStandardResponse?> debitWallet({ DebitWalletModel? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -126,9 +126,9 @@ class WalletApi {
 
     if(contentType.startsWith("multipart/form-data")) {
       bool hasFields = false;
-      MultipartRequest mp = new MultipartRequest(null, null);
-      if(hasFields)
-        postBody = mp;
+      // MultipartRequest mp = new MultipartRequest(null, null);
+      // if(hasFields)
+      //   postBody = mp;
     }
     else {
           }
@@ -154,7 +154,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<StringStandardResponse?> fundWallet({required FundWalletModel body }) async {
+  Future<StringStandardResponse?> fundWallet({ FundWalletModel? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -174,9 +174,9 @@ class WalletApi {
 
     if(contentType.startsWith("multipart/form-data")) {
       bool hasFields = false;
-      MultipartRequest mp = new MultipartRequest(null, null);
-      if(hasFields)
-        postBody = mp;
+      // MultipartRequest mp = new MultipartRequest(null, null);
+      // if(hasFields)
+      //   postBody = mp;
     }
     else {
           }
@@ -225,9 +225,9 @@ class WalletApi {
 
     if(contentType.startsWith("multipart/form-data")) {
       bool hasFields = false;
-      MultipartRequest mp = new MultipartRequest(null, null);
-      if(hasFields)
-        postBody = mp;
+      // MultipartRequest mp = new MultipartRequest(null, null);
+      // if(hasFields)
+      //   postBody = mp;
     }
     else {
           }
@@ -253,7 +253,55 @@ class WalletApi {
   ///
   ///
   ///
-  Future<TransactionViewPagedCollectionStandardResponse?> listCardsByUserId(int userId, { required int offset,required int limit }) async {
+  Future<CardViewIEnumerableStandardResponse?> listCards() async {
+    Object? postBody = null;
+
+    // verify required params are set
+
+    // create path and map variables
+    String path = "/api/Wallet/cards/list".replaceAll("{format}","json");
+
+    // query params
+    List<QueryParam> queryParams = [];
+    Map<String, String> headerParams = {};
+    Map<String, String> formParams = {};
+
+    List<String> contentTypes = [];
+
+    String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
+    List<String> authNames = ["Bearer"];
+
+    if(contentType.startsWith("multipart/form-data")) {
+      bool hasFields = false;
+      // MultipartRequest mp = new MultipartRequest(null, null);
+      // if(hasFields)
+      //   postBody = mp;
+    }
+    else {
+          }
+
+    var response = await apiClient.invokeAPI(path,
+                                             'GET',
+                                             queryParams,
+                                             postBody,
+                                             headerParams,
+                                             formParams,
+                                             contentType,
+                                             authNames);
+
+    if(response.statusCode >= 400) {
+      throw new ApiException(response.statusCode, response.body);
+    } else if(response.body != null) {
+      return
+          apiClient.deserialize(response.body, 'CardViewIEnumerableStandardResponse') as CardViewIEnumerableStandardResponse ;
+    } else {
+      return null;
+    }
+  }
+  ///
+  ///
+  ///
+  Future<TransactionViewPagedCollectionStandardResponse?> listCardsByUserId(int userId, { int? offset, int? limit }) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -282,9 +330,9 @@ class WalletApi {
 
     if(contentType.startsWith("multipart/form-data")) {
       bool hasFields = false;
-      MultipartRequest mp = new MultipartRequest(null, null);
-      if(hasFields)
-        postBody = mp;
+      // MultipartRequest mp = new MultipartRequest(null, null);
+      // if(hasFields)
+      //   postBody = mp;
     }
     else {
           }
@@ -310,7 +358,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<TransactionViewPagedCollectionStandardResponse?> listTransactions(int userId, {required int offset,required int limit,required String search }) async {
+  Future<TransactionViewPagedCollectionStandardResponse?> listTransactions(int userId, { int? offset, int? limit, String? search }) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -342,9 +390,9 @@ class WalletApi {
 
     if(contentType.startsWith("multipart/form-data")) {
       bool hasFields = false;
-      MultipartRequest mp = new MultipartRequest(null, null);
-      if(hasFields)
-        postBody = mp;
+      // MultipartRequest mp = new MultipartRequest(null, null);
+      // if(hasFields)
+      //   postBody = mp;
     }
     else {
           }
@@ -370,7 +418,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<TransactionViewPagedCollectionStandardResponse?> statementOfAccount(int userId, DateTime startDate, DateTime endDate, {required int offset, required int limit }) async {
+  Future<TransactionViewPagedCollectionStandardResponse?> statementOfAccount(int? userId, DateTime? startDate, DateTime? endDate, { int? offset, int? limit }) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -405,9 +453,9 @@ class WalletApi {
 
     if(contentType.startsWith("multipart/form-data")) {
       bool hasFields = false;
-      MultipartRequest mp = new MultipartRequest(null, null);
-      if(hasFields)
-        postBody = mp;
+      // MultipartRequest mp = new MultipartRequest(null, null);
+      // if(hasFields)
+      //   postBody = mp;
     }
     else {
           }
@@ -433,7 +481,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<WalletViewStandardResponse?> transferToNigerianBank({required NGNTransferModel body }) async {
+  Future<WalletViewStandardResponse?> transferToNigerianBank({ NGNTransferModel? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -453,9 +501,9 @@ class WalletApi {
 
     if(contentType.startsWith("multipart/form-data")) {
       bool hasFields = false;
-      MultipartRequest mp = new MultipartRequest(null, null);
-      if(hasFields)
-        postBody = mp;
+      // MultipartRequest mp = new MultipartRequest(null, null);
+      // if(hasFields)
+      //   postBody = mp;
     }
     else {
           }
@@ -481,7 +529,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<WalletViewStandardResponse?> transferToWallet({required WalletTransferModel body }) async {
+  Future<WalletViewStandardResponse?> transferToWallet({ WalletTransferModel? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -501,9 +549,9 @@ class WalletApi {
 
     if(contentType.startsWith("multipart/form-data")) {
       bool hasFields = false;
-      MultipartRequest mp = new MultipartRequest(null, null);
-      if(hasFields)
-        postBody = mp;
+      // MultipartRequest mp = new MultipartRequest(null, null);
+      // if(hasFields)
+      //   postBody = mp;
     }
     else {
           }
@@ -555,9 +603,9 @@ class WalletApi {
 
     if(contentType.startsWith("multipart/form-data")) {
       bool hasFields = false;
-      MultipartRequest mp = new MultipartRequest(null, null);
-      if(hasFields)
-        postBody = mp;
+      // MultipartRequest mp = new MultipartRequest(null, null);
+      // if(hasFields)
+      //   postBody = mp;
     }
     else {
           }
@@ -583,7 +631,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<TransactionViewPagedCollectionStandardResponse?> walletBalance({required int userId }) async {
+  Future<TransactionViewPagedCollectionStandardResponse?> walletBalance({ int ?userId }) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -606,9 +654,9 @@ class WalletApi {
 
     if(contentType.startsWith("multipart/form-data")) {
       bool hasFields = false;
-      MultipartRequest mp = new MultipartRequest(null, null);
-      if(hasFields)
-        postBody = mp;
+      // MultipartRequest mp = new MultipartRequest(null, null);
+      // if(hasFields)
+      //   postBody = mp;
     }
     else {
           }

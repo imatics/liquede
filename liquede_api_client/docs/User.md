@@ -36,6 +36,7 @@ Name | Type | Description | Notes
 **cards** | [**List&lt;Card&gt;**](Card.md) |  | [optional] [default to []]
 **transactions** | [**List&lt;Transaction&gt;**](Transaction.md) |  | [optional] [default to []]
 **wallet** | [**Wallet**](Wallet.md) |  | [optional] [default to null]
+**savings** | [**List&lt;SavingPlans&gt;**](SavingPlans.md) |  | [optional] [default to []]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

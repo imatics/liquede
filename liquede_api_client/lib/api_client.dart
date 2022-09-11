@@ -38,22 +38,74 @@ class ApiClient {
           return value is bool ? value : '$value'.toLowerCase() == 'true';
         case 'double':
           return value is double ? value : double.parse('$value');
+        case 'AirtimePurchaseInput':
+          return new AirtimePurchaseInput.fromJson(value);
+        case 'AirtimePurchaseView':
+          return new AirtimePurchaseView.fromJson(value);
+        case 'AirtimePurchaseViewStandardResponse':
+          return new AirtimePurchaseViewStandardResponse.fromJson(value);
+        case 'AvailablePricingOptionResponse':
+          return new AvailablePricingOptionResponse.fromJson(value);
+        case 'BaxiProviderResponse':
+          return new BaxiProviderResponse.fromJson(value);
+        case 'BaxiProvidersResponse':
+          return new BaxiProvidersResponse.fromJson(value);
+        case 'BaxiProvidersResponseStandardResponse':
+          return new BaxiProvidersResponseStandardResponse.fromJson(value);
+        case 'CableSubscriptionModel':
+          return new CableSubscriptionModel.fromJson(value);
         case 'Card':
           return new Card.fromJson(value);
+        case 'CardView':
+          return new CardView.fromJson(value);
+        case 'CardViewIEnumerableStandardResponse':
+          return new CardViewIEnumerableStandardResponse.fromJson(value);
         case 'Code':
           return new Code.fromJson(value);
+        case 'CurrentBouquetRawResponse':
+          return new CurrentBouquetRawResponse.fromJson(value);
+        case 'DataBundlePurchaseInput':
+          return new DataBundlePurchaseInput.fromJson(value);
+        case 'DataProviderResponse':
+          return new DataProviderResponse.fromJson(value);
+        case 'DataProviderResponseStandardResponse':
+          return new DataProviderResponseStandardResponse.fromJson(value);
         case 'DebitWalletModel':
           return new DebitWalletModel.fromJson(value);
         case 'FundWalletModel':
           return new FundWalletModel.fromJson(value);
         case 'Int32StandardResponse':
           return new Int32StandardResponse.fromJson(value);
+        case 'ItemResponse':
+          return new ItemResponse.fromJson(value);
         case 'Link':
           return new Link.fromJson(value);
+        case 'LiquedeSealInput':
+          return new LiquedeSealInput.fromJson(value);
+        case 'LiquiedeGoalInput':
+          return new LiquiedeGoalInput.fromJson(value);
+        case 'LoanModel':
+          return new LoanModel.fromJson(value);
+        case 'LoanView':
+          return new LoanView.fromJson(value);
+        case 'LoanViewIEnumerableStandardResponse':
+          return new LoanViewIEnumerableStandardResponse.fromJson(value);
+        case 'LoanViewPagedCollection':
+          return new LoanViewPagedCollection.fromJson(value);
+        case 'LoanViewPagedCollectionStandardResponse':
+          return new LoanViewPagedCollectionStandardResponse.fromJson(value);
+        case 'LoanViewStandardResponse':
+          return new LoanViewStandardResponse.fromJson(value);
         case 'LoginModel':
           return new LoginModel.fromJson(value);
         case 'MediaModel':
           return new MediaModel.fromJson(value);
+        case 'MultichoiceAccountResponse':
+          return new MultichoiceAccountResponse.fromJson(value);
+        case 'MultichoiceAccountResponseStandardResponse':
+          return new MultichoiceAccountResponseStandardResponse.fromJson(value);
+        case 'MultichoiceUserResponse':
+          return new MultichoiceUserResponse.fromJson(value);
         case 'NGNTransferModel':
           return new NGNTransferModel.fromJson(value);
         case 'PasswordReset':
@@ -66,12 +118,40 @@ class ApiClient {
           return new PaymentView.fromJson(value);
         case 'PaymentViewStandardResponse':
           return new PaymentViewStandardResponse.fromJson(value);
+        case 'ProviderBouquetResponse':
+          return new ProviderBouquetResponse.fromJson(value);
+        case 'ProviderBouquetResponseListStandardResponse':
+          return new ProviderBouquetResponseListStandardResponse.fromJson(value);
+        case 'ProviderBundleResponse':
+          return new ProviderBundleResponse.fromJson(value);
+        case 'ProviderBundleResponseListStandardResponse':
+          return new ProviderBundleResponseListStandardResponse.fromJson(value);
+        case 'ProviderResponse':
+          return new ProviderResponse.fromJson(value);
+        case 'PurchaseElectricityModel':
+          return new PurchaseElectricityModel.fromJson(value);
+        case 'RawOutputResponse':
+          return new RawOutputResponse.fromJson(value);
         case 'Register':
           return new Register.fromJson(value);
+        case 'SavingPlanType':
+          return new SavingPlanType.fromJson(value);
+        case 'SavingPlanTypeIEnumerableStandardResponse':
+          return new SavingPlanTypeIEnumerableStandardResponse.fromJson(value);
+        case 'SavingPlans':
+          return new SavingPlans.fromJson(value);
+        case 'SavingsView':
+          return new SavingsView.fromJson(value);
+        case 'SavingsViewStandardResponse':
+          return new SavingsViewStandardResponse.fromJson(value);
+        case 'SavingsWithdrawalModel':
+          return new SavingsWithdrawalModel.fromJson(value);
         case 'Status':
           return new Status.fromJson(value);
         case 'StringStandardResponse':
           return new StringStandardResponse.fromJson(value);
+        case 'SubscriptionModel':
+          return new SubscriptionModel.fromJson(value);
         case 'Transaction':
           return new Transaction.fromJson(value);
         case 'TransactionView':
