@@ -30,6 +30,21 @@ class UserService extends BaseService{
 
 
   Stream<NetworkEvent> login(LoginModel request) async* {
+
+    await for (final chunk in makeCall(()async*{
+      var res =  await _api.login(body: request);})) {
+      switch(chunk.type){
+        case NetworkEventType.completed: yield "";
+        case NetworkEventType.failed: yield "";
+        case NetworkEventType.completed: yield "";
+      }
+      var lines = chunk.split('\n');
+      lines[0] = partial + lines[0]; // Prepend partial line.
+      partial = lines.removeLast(); // Remove new partial line.
+      for (final line in lines) {
+        yield line; // Add lines to output stream.
+      }
+    }
     if(!await isNetworkActive()){
       return ;
     }else{

@@ -27,7 +27,18 @@ BuildContext context;
 
 
 
+Stream<dynamic> makeCall(EventChuck<String> chuck){
+  final streamController = StreamController<String>();
+  isNetworkActive().then((value){
+    if(value){
+      streamController.addStream(chuck.call());
+    }
+  });
+  if(await isNetworkActive()){
 
+  }
+  return streamController.stream;
+}
   Stream<NetworkEvent> makeCall(EventChuck eventChuck) async*{
     final streamController = StreamController();
     if(await isNetworkActive()){
