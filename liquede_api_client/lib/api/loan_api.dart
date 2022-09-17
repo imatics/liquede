@@ -10,7 +10,7 @@ class LoanApi {
   ///
   ///
   ///
-  Future<LoanViewStandardResponse?> createLoanRequest({ LoanModel? body }) async {
+  Future<BaseResponse<LoanView>?> createLoanRequest({ LoanModel? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -49,8 +49,7 @@ class LoanApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'LoanViewStandardResponse') as LoanViewStandardResponse ;
+      return BaseResponse<LoanView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -58,7 +57,7 @@ class LoanApi {
   ///
   ///
   ///
-  Future<LoanViewStandardResponse?> getLoanRequest(int id) async {
+  Future<BaseResponse<LoanView>?> getLoanRequest(int id) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -100,8 +99,7 @@ class LoanApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'LoanViewStandardResponse') as LoanViewStandardResponse ;
+      return BaseResponse<LoanView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -109,7 +107,7 @@ class LoanApi {
   ///
   ///
   ///
-  Future<LoanViewIEnumerableStandardResponse?> listMyLoans() async {
+  Future<BaseResponse<List<LoanView>>?> listMyLoans() async {
     Object? postBody = null;
 
     // verify required params are set
@@ -148,8 +146,7 @@ class LoanApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'LoanViewIEnumerableStandardResponse') as LoanViewIEnumerableStandardResponse ;
+      return BaseResponse<List<LoanView>>.fromJson(json.decode(response.body));
     } else {
       return null;
     }

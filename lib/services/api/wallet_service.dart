@@ -31,7 +31,7 @@ class WalletService extends BaseService{
 
   void createWallet(WalletModel model, APIAction<WalletView> onSuccess,
       APIAction<APIError> onError) async {
-    if(!await isNetworkActive(onError)){
+    if(!await isNetworkActive()){
       return;
     }else{
       _api.createUserWallet(body: model).then((value){
@@ -55,7 +55,7 @@ class WalletService extends BaseService{
 
   void createPin(WalletPinModel model, APIAction<WalletView> onSuccess,
       APIAction<APIError> onError) async {
-    if(!await isNetworkActive(onError)){
+    if(!await isNetworkActive()){
       return;
     }else{
       _api.createTransactionPin(body: model).then((value){
@@ -78,7 +78,7 @@ class WalletService extends BaseService{
 
   void fundWallet(FundWalletModel model, APIAction<String> onSuccess,
       APIAction<APIError> onError) async {
-    if(!await isNetworkActive(onError)){
+    if(!await isNetworkActive()){
       return;
     }else{
       _api.fundWallet(body: model).then((value){
@@ -87,7 +87,6 @@ class WalletService extends BaseService{
         if(value.status == true){
           // onSuccess(value.data);
         }else{
-
           onError(APIError.fromString(value.message));
         }
       }).onError((error, stackTrace){
@@ -100,7 +99,7 @@ class WalletService extends BaseService{
 
   void debitWallet(DebitWalletModel model, APIAction<WalletView> onSuccess,
       APIAction<APIError> onError) async {
-    if(!await isNetworkActive(onError)){
+    if(!await isNetworkActive()){
       return;
     }else{
       _api.debitWallet(body: model).then((value){
@@ -124,7 +123,7 @@ class WalletService extends BaseService{
 
   void getWalletBalance(int userID, APIAction<UserView> onSuccess,
       APIAction<APIError> onError) async {
-    if(!await isNetworkActive(onError)){
+    if(!await isNetworkActive()){
       return;
     }else{
       _api.walletBalance(userId:userID).then((value){
@@ -148,7 +147,7 @@ class WalletService extends BaseService{
 
   void getTransactionHistory(int userID, APIAction<List<TransactionView>> onSuccess,
       APIAction<APIError> onError) async {
-    if(!await isNetworkActive(onError)){
+    if(!await isNetworkActive()){
       return;
     }else{
       _api.listTransactions(userID, offset: 0, search: '', limit: 10000).then((value){
@@ -170,7 +169,7 @@ class WalletService extends BaseService{
 
   void getUserCards(int userID, APIAction<UserView> onSuccess,
       APIAction<APIError> onError) async {
-    if(!await isNetworkActive(onError)){
+    if(!await isNetworkActive()){
       return;
     }else{
       _api.listCardsByUserId(userID, offset: 0, limit: 10000).then((value){
@@ -191,7 +190,7 @@ class WalletService extends BaseService{
 
   void statementOfAccount(int userID, DateTime start, DateTime end, APIAction<UserView> onSuccess,
       APIAction<APIError> onError) async {
-    if(!await isNetworkActive(onError)){
+    if(!await isNetworkActive()){
       return;
     }else{
       _api.statementOfAccount(userID, start, end, offset: 0, limit: 10000).then((value){
@@ -213,7 +212,7 @@ class WalletService extends BaseService{
 
     void transferToBank(NGNTransferModel model, APIAction<UserView> onSuccess,
       APIAction<APIError> onError) async {
-    if(!await isNetworkActive(onError)){
+    if(!await isNetworkActive()){
       return;
     }else{
       _api.transferToNigerianBank(body: model).then((value){
@@ -234,7 +233,7 @@ class WalletService extends BaseService{
 
       void transferToWallet(WalletTransferModel model, APIAction<UserView> onSuccess,
       APIAction<APIError> onError) async {
-    if(!await isNetworkActive(onError)){
+    if(!await isNetworkActive()){
       return;
     }else{
       _api.transferToWallet(body: model).then((value){

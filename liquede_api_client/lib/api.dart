@@ -93,5 +93,6 @@ part 'model/wallet_pin_model.dart';
 part 'model/wallet_transfer_model.dart';
 part 'model/wallet_view.dart';
 part 'model/wallet_view_standard_response.dart';
+part 'api/base_service_response_model.dart';
 
 ApiClient defaultApiClient = new ApiClient();

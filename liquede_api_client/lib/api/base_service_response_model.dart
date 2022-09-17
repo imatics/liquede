@@ -1,31 +1,67 @@
 part of swagger.api;
 
-class QueryParam {
-  String name;
-  String value;
+class BaseResponse<T>{
 
-  QueryParam(this.name, this.value);
-}
+  String? href = null;
+  List<String> relations = [];
+  String? method = "GET";
+  String? routeName = null;
+  Object? routeValues = null;
+  bool? status = null;
+  String? message = null;
+  T? data = null;
+  String? statusCode = null;
+  Object? errors = null;
 
-class ApiClient {
+  BaseResponse();
 
-  String basePath;
-  var client = new Client();
-
-  Map<String, String> _defaultHeaderMap = {};
-  Map<String, Authentication> _authentications = {};
-
-  final _RegList = new RegExp(r'^List<(.*)>$');
-  final _RegMap = new RegExp(r'^Map<String,(.*)>$');
-
-  ApiClient({this.basePath: "/"}) {
-    // Setup authentications (key: authentication name, value: authentication).
-    _authentications['Bearer'] = new ApiKeyAuth("header", "Authorization");
+  @override
+  String toString() {
+    return 'BaseResponse[href=$href, relations=$relations, method=$method, routeName=$routeName, routeValues=$routeValues, status=$status, message=$message, data=$data, statusCode=$statusCode, errors=$errors, ]';
   }
 
-  void addDefaultHeader(String key, String value) {
-     _defaultHeaderMap[key] = value;
+  BaseResponse.fromJson(json) {
+    if (json == null) return;
+    href = json['href'];
+    relations = (json['relations'] as List).map((item) => item as String).toList();
+    method = json['method'];
+    routeName = json['routeName'];
+    // routeValues = new Object.fromJson(json['routeValues']);
+    status = json['status'];
+    message = json['message'];
+    data = _deserialize(json['data'],T.toString());
+    statusCode = json['statusCode'];
+    // errors = new Object.fromJson(json['errors']);
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'href': href,
+      'relations': relations,
+      'method': method,
+      'routeName': routeName,
+      'routeValues': routeValues,
+      'status': status,
+      'message': message,
+      'data': data,
+      'statusCode': statusCode,
+      'errors': errors
+    };
+  }
+
+  static List<BaseResponse> listFromJson(List<dynamic>? json) {
+    return json == null ? [] : json.map((value) => new BaseResponse.fromJson(value)).toList();
+  }
+
+  static Map<String, BaseResponse> mapFromJson(Map<String, Map<String, dynamic>>? json) {
+    var map = new Map<String, BaseResponse>();
+    if (json != null && json.length > 0) {
+      json.forEach((String key, Map<String, dynamic> value) => map[key] = new BaseResponse.fromJson(value));
+    }
+    return map;
+  }
+
+
 
   dynamic _deserialize(dynamic value, String? targetType) {
     try {
@@ -209,89 +245,6 @@ class ApiClient {
     throw new ApiException(500, 'Could not find a suitable class for deserialization');
   }
 
-  // dynamic deserialize(String jsonVal, String targetType) {
-  //   // Remove all spaces.  Necessary for reg expressions as well.
-  //   targetType = targetType.replaceAll(' ', '');
-  //
-  //   if (targetType == 'String') return jsonVal;
-  //
-  //   var decodedJson = json.decode(jsonVal);
-  //   return BaseResponse.fromJson(decodedJson, targetType);
-  // }
+  final _RegList = new RegExp(r'^List<(.*)>$');
 
-  String serialize(Object obj) {
-    String serialized = '';
-    if (obj == null) {
-      serialized = '';
-    } else {
-      serialized = json.encode(obj);
-    }
-    return serialized;
-  }
-
-  // We don't use a Map<String, String> for queryParams.
-  // If collectionFormat is 'multi' a key might appear multiple times.
-  Future<Response> invokeAPI(String path,
-                             String method,
-                             List<QueryParam> queryParams,
-                             Object? body,
-                             Map<String, String> headerParams,
-                             Map<String, String> formParams,
-                             String contentType,
-                             List<String> authNames) async {
-
-    _updateParamsForAuth(authNames, queryParams, headerParams);
-
-    var ps = queryParams.where((p) => p.value != null).map((p) => '${Uri.encodeComponent(p.name)}=${Uri.encodeComponent(p.value)}');
-    String queryString = ps.isNotEmpty ?
-                         '?' + ps.join('&') :
-                         '';
-
-    Uri url = Uri.parse(basePath + path + queryString);
-
-    headerParams.addAll(_defaultHeaderMap);
-    headerParams['Content-Type'] = contentType;
-
-    if(body is MultipartRequest) {
-      var request = new MultipartRequest(method, url);
-      request.fields.addAll(body.fields);
-      request.files.addAll(body.files);
-      request.headers.addAll(body.headers);
-      request.headers.addAll(headerParams);
-      var response = await client.send(request);
-      return Response.fromStream(response);
-    } else {
-      var msgBody = contentType == "application/x-www-form-urlencoded" ? formParams : serialize(body!);
-      switch(method) {
-        case "POST":
-          return client.post(url, headers: headerParams, body: msgBody);
-        case "PUT":
-          return client.put(url, headers: headerParams, body: msgBody);
-        case "DELETE":
-          return client.delete(url, headers: headerParams);
-        case "PATCH":
-          return client.patch(url, headers: headerParams, body: msgBody);
-        default:
-          return client.get(url, headers: headerParams);
-      }
-    }
-  }
-
-  /// Update query and header parameters based on authentication settings.
-  /// @param authNames The authentications to apply
-  void _updateParamsForAuth(List<String> authNames, List<QueryParam> queryParams, Map<String, String> headerParams) {
-    authNames.forEach((authName) {
-      Authentication? auth = _authentications[authName];
-      if (auth == null) throw new ArgumentError("Authentication undefined: " + authName);
-      auth.applyToParams(queryParams, headerParams);
-    });
-  }
-
-  void setAccessToken(String accessToken) {
-    _authentications.forEach((key, auth) {
-      if (auth is OAuth) {
-        auth.setAccessToken(accessToken);
-      }
-    });
-  }
 }

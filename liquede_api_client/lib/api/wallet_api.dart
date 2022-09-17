@@ -10,7 +10,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<WalletViewStandardResponse?> createTransactionPin({ WalletPinModel? body }) async {
+  Future<BaseResponse<WalletView>?> createTransactionPin({ WalletPinModel? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -49,8 +49,7 @@ class WalletApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'WalletViewStandardResponse') as WalletViewStandardResponse ;
+      return BaseResponse<WalletView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -58,7 +57,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<WalletViewStandardResponse?> createUserWallet({ WalletModel? body }) async {
+  Future<BaseResponse<WalletView>?> createUserWallet({ WalletModel? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -97,8 +96,7 @@ class WalletApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'WalletViewStandardResponse') as WalletViewStandardResponse ;
+      return BaseResponse<WalletView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -106,7 +104,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<WalletViewStandardResponse?> debitWallet({ DebitWalletModel? body }) async {
+  Future<BaseResponse<WalletView>?> debitWallet({ DebitWalletModel? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -145,8 +143,7 @@ class WalletApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'WalletViewStandardResponse') as WalletViewStandardResponse ;
+      return BaseResponse<WalletView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -154,7 +151,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<StringStandardResponse?> fundWallet({ FundWalletModel? body }) async {
+  Future<BaseResponse<String>?> fundWallet({ FundWalletModel? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -193,8 +190,7 @@ class WalletApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'StringStandardResponse') as StringStandardResponse ;
+      return BaseResponse<String>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -202,7 +198,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<Int32StandardResponse?> getTransactionPin(int userId) async {
+  Future<BaseResponse<int>?> getTransactionPin(int userId) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -244,8 +240,7 @@ class WalletApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'Int32StandardResponse') as Int32StandardResponse ;
+      return BaseResponse<int>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -253,7 +248,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<CardViewIEnumerableStandardResponse?> listCards() async {
+  Future<BaseResponse<List<CardView>>?> listCards() async {
     Object? postBody = null;
 
     // verify required params are set
@@ -292,8 +287,7 @@ class WalletApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'CardViewIEnumerableStandardResponse') as CardViewIEnumerableStandardResponse ;
+      return BaseResponse<List<CardView>>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -301,7 +295,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<TransactionViewPagedCollectionStandardResponse?> listCardsByUserId(int userId, { int? offset, int? limit }) async {
+  Future<BaseResponse<TransactionViewPagedCollection>?> listCardsByUserId(int userId, { int? offset, int? limit }) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -349,8 +343,7 @@ class WalletApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'TransactionViewPagedCollectionStandardResponse') as TransactionViewPagedCollectionStandardResponse ;
+      return BaseResponse<TransactionViewPagedCollection>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -358,7 +351,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<TransactionViewPagedCollectionStandardResponse?> listTransactions(int userId, { int? offset, int? limit, String? search }) async {
+  Future<BaseResponse<TransactionViewPagedCollection>?> listTransactions(int userId, { int? offset, int? limit, String? search }) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -409,8 +402,7 @@ class WalletApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'TransactionViewPagedCollectionStandardResponse') as TransactionViewPagedCollectionStandardResponse ;
+      return BaseResponse<TransactionViewPagedCollection>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -418,7 +410,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<TransactionViewPagedCollectionStandardResponse?> statementOfAccount(int? userId, DateTime? startDate, DateTime? endDate, { int? offset, int? limit }) async {
+  Future<BaseResponse<TransactionViewPagedCollection>?> statementOfAccount(int? userId, DateTime? startDate, DateTime? endDate, { int? offset, int? limit }) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -472,8 +464,7 @@ class WalletApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'TransactionViewPagedCollectionStandardResponse') as TransactionViewPagedCollectionStandardResponse ;
+      return BaseResponse<TransactionViewPagedCollection>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -481,7 +472,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<WalletViewStandardResponse?> transferToNigerianBank({ NGNTransferModel? body }) async {
+  Future<BaseResponse<WalletView>?> transferToNigerianBank({ NGNTransferModel? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -520,8 +511,7 @@ class WalletApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'WalletViewStandardResponse') as WalletViewStandardResponse ;
+      return BaseResponse<WalletView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -529,7 +519,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<WalletViewStandardResponse?> transferToWallet({ WalletTransferModel? body }) async {
+  Future<BaseResponse<WalletView>?> transferToWallet({ WalletTransferModel? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -568,8 +558,7 @@ class WalletApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'WalletViewStandardResponse') as WalletViewStandardResponse ;
+      return BaseResponse<WalletView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -577,7 +566,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<PaymentViewStandardResponse?> validatePayment(String transactionReference, int transactionId) async {
+  Future<BaseResponse<PaymentView>?> validatePayment(String transactionReference, int transactionId) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -622,8 +611,7 @@ class WalletApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'PaymentViewStandardResponse') as PaymentViewStandardResponse ;
+      return BaseResponse<PaymentView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -631,7 +619,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<TransactionViewPagedCollectionStandardResponse?> walletBalance({ int ?userId }) async {
+  Future<BaseResponse<TransactionViewPagedCollection>?> walletBalance({ int ?userId }) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -673,8 +661,7 @@ class WalletApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'TransactionViewPagedCollectionStandardResponse') as TransactionViewPagedCollectionStandardResponse ;
+      return BaseResponse<TransactionViewPagedCollection>.fromJson(json.decode(response.body));
     } else {
       return null;
     }

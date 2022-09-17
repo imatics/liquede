@@ -10,7 +10,7 @@ class UserApi {
   ///
   ///
   ///
-  Future<UserViewStandardResponse?> completeReset({required PasswordReset body}) async {
+  Future<BaseResponse<UserView>?> completeReset({required PasswordReset body}) async {
     Object postBody = body;
 
     // verify required params are set
@@ -49,8 +49,7 @@ class UserApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'UserViewStandardResponse') as UserViewStandardResponse ;
+      return BaseResponse<UserView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -58,7 +57,7 @@ class UserApi {
   ///
   ///
   ///
-  Future<UserViewStandardResponse?> delete(String email) async {
+  Future<BaseResponse<UserView>?> delete(String email) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -100,8 +99,7 @@ class UserApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'UserViewStandardResponse') as UserViewStandardResponse ;
+      return BaseResponse<UserView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -109,7 +107,7 @@ class UserApi {
   ///
   ///
   ///
-  Future<UserViewPagedCollectionStandardResponse?> getUser() async {
+  Future<BaseResponse<UserViewPagedCollection>?> getUser() async {
     Object? postBody = null;
 
     // verify required params are set
@@ -148,8 +146,7 @@ class UserApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'UserViewPagedCollectionStandardResponse') as UserViewPagedCollectionStandardResponse ;
+      return BaseResponse<UserViewPagedCollection>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -157,7 +154,7 @@ class UserApi {
   ///
   ///
   ///
-  Future<UserViewStandardResponse?> initiateReset(String email) async {
+  Future<BaseResponse<UserView>?> initiateReset(String email) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -199,8 +196,7 @@ class UserApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'UserViewStandardResponse') as UserViewStandardResponse ;
+      return BaseResponse<UserView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -208,7 +204,7 @@ class UserApi {
   ///
   ///
   ///
-  Future<UserViewPagedCollectionStandardResponse?> listUsers({ required int offset, required int limit }) async {
+  Future<BaseResponse<UserViewPagedCollection>?> listUsers({ required int offset, required int limit }) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -253,8 +249,7 @@ class UserApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'UserViewPagedCollectionStandardResponse') as UserViewPagedCollectionStandardResponse ;
+      return BaseResponse<UserViewPagedCollection>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -262,7 +257,7 @@ class UserApi {
   ///
   ///
   ///
-  Future<UserViewStandardResponse?> login({ required LoginModel body }) async {
+  Future<BaseResponse<UserView>?> login({ required LoginModel body }) async {
     Object postBody = body;
 
     // verify required params are set
@@ -301,8 +296,7 @@ class UserApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'UserViewStandardResponse') as UserViewStandardResponse ;
+      return BaseResponse<UserView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -358,7 +352,7 @@ class UserApi {
   ///
   ///
   ///
-  Future<UserViewIEnumerableStandardResponse?> searchUsers(String search) async {
+  Future<BaseResponse<List<UserView>>?> searchUsers(String search) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -400,8 +394,7 @@ class UserApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'UserViewIEnumerableStandardResponse') as UserViewIEnumerableStandardResponse ;
+      return BaseResponse<List<UserView>>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -409,7 +402,7 @@ class UserApi {
   ///
   ///
   ///
-  Future<UserViewStandardResponse?> updatePassword({ required PasswordResetModel body }) async {
+  Future<BaseResponse<UserView>?> updatePassword({ required PasswordResetModel body }) async {
     Object postBody = body;
 
     // verify required params are set
@@ -448,8 +441,7 @@ class UserApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'UserViewStandardResponse') as UserViewStandardResponse ;
+      return BaseResponse<UserView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -457,7 +449,7 @@ class UserApi {
   ///
   ///
   ///
-  Future<UserViewStandardResponse?> updateUser({ required UpdateUserModel body }) async {
+  Future<BaseResponse<UserView>?> updateUser({ required UpdateUserModel body }) async {
     Object postBody = body;
 
     // verify required params are set
@@ -496,8 +488,7 @@ class UserApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'UserViewStandardResponse') as UserViewStandardResponse ;
+      return BaseResponse<UserView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -505,7 +496,7 @@ class UserApi {
   ///
   ///
   ///
-  Future<UserViewStandardResponse?> verify(String token, String email) async {
+  Future<BaseResponse<UserView>?> verify(String token, String email) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -550,8 +541,7 @@ class UserApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'UserViewStandardResponse') as UserViewStandardResponse ;
+      return BaseResponse<UserView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }

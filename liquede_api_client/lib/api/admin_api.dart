@@ -10,7 +10,7 @@ class AdminApi {
   ///
   ///
   ///
-  Future<UserViewStandardResponse?> authenticate({ LoginModel? body }) async {
+  Future<BaseResponse<UserView>?> authenticate({ LoginModel? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -49,8 +49,7 @@ class AdminApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'UserViewStandardResponse') as UserViewStandardResponse ;
+      return BaseResponse<UserView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -58,7 +57,7 @@ class AdminApi {
   ///
   ///
   ///
-  Future<UserViewStandardResponse?> create({ Register? body }) async {
+  Future<BaseResponse<UserView>?> create({ Register? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -97,8 +96,7 @@ class AdminApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'UserViewStandardResponse') as UserViewStandardResponse ;
+      return BaseResponse<UserView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -106,7 +104,7 @@ class AdminApi {
   ///
   ///
   ///
-  Future<UserViewStandardResponse?> deleteUser(String email) async {
+  Future<BaseResponse<UserView>?> deleteUser(String email) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -148,8 +146,7 @@ class AdminApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'UserViewStandardResponse') as UserViewStandardResponse ;
+      return BaseResponse<UserView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -157,7 +154,7 @@ class AdminApi {
   ///
   ///
   ///
-  Future<UserViewPagedCollectionStandardResponse?> getUserById(int id) async {
+  Future<BaseResponse<UserViewPagedCollection>?> getUserById(int id) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -199,8 +196,7 @@ class AdminApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'UserViewPagedCollectionStandardResponse') as UserViewPagedCollectionStandardResponse ;
+      return BaseResponse<UserViewPagedCollection>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -208,7 +204,7 @@ class AdminApi {
   ///
   ///
   ///
-  Future<UserViewPagedCollectionStandardResponse?> listAdmins({ int? offset, int? limit, String? search }) async {
+  Future<BaseResponse<UserViewPagedCollection>?> listAdmins({ int? offset, int? limit, String? search }) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -257,7 +253,7 @@ class AdminApi {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
       return
-          apiClient.deserialize(response.body, 'UserViewPagedCollectionStandardResponse') as UserViewPagedCollectionStandardResponse ;
+          BaseResponse<UserViewPagedCollection>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -265,7 +261,7 @@ class AdminApi {
   ///
   ///
   ///
-  Future<LoanViewPagedCollectionStandardResponse?> listLoans({ int? offset, int? limit }) async {
+  Future<BaseResponse<LoanViewPagedCollection>?> listLoans({ int? offset, int? limit }) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -310,8 +306,7 @@ class AdminApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'LoanViewPagedCollectionStandardResponse') as LoanViewPagedCollectionStandardResponse ;
+      return BaseResponse<LoanViewPagedCollection>.fromJson(json.decode(response.body));
     } else {
       return null;
     }

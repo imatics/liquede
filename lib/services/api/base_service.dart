@@ -27,24 +27,19 @@ BuildContext context;
 
 
 
-Stream<dynamic> makeCall(EventChuck<String> chuck){
-  final streamController = StreamController<String>();
+Stream<NetworkEvent<dynamic>> execute(EventChuck<dynamic> chuck){
+  final streamController = StreamController<NetworkEvent<dynamic>>();
   isNetworkActive().then((value){
     if(value){
+      chuck.call().listen((event) { });
       streamController.addStream(chuck.call());
+    }else{
+      streamController.add(NetworkEvent(type: NetworkEventType.failed, message: networkErrorMessage));
     }
   });
-  if(await isNetworkActive()){
 
-  }
   return streamController.stream;
 }
-  Stream<NetworkEvent> makeCall(EventChuck eventChuck) async*{
-    final streamController = StreamController();
-    if(await isNetworkActive()){
-   streamController.sink.add("");
-  }
-  }
 
 }
 

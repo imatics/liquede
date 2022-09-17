@@ -10,7 +10,7 @@ class SavingsApi {
   ///
   ///
   ///
-  Future<SavingsViewStandardResponse?> createLiqiedeGoalSavingPlan({ LiquiedeGoalInput? body }) async {
+  Future<BaseResponse<SavingsView>?> createLiqiedeGoalSavingPlan({ LiquiedeGoalInput? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -49,8 +49,7 @@ class SavingsApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'SavingsViewStandardResponse') as SavingsViewStandardResponse ;
+      return BaseResponse<SavingsView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -58,7 +57,7 @@ class SavingsApi {
   ///
   ///
   ///
-  Future<SavingsViewStandardResponse?> createLiqiedeSealSavingPlan({ LiquedeSealInput? body }) async {
+  Future<BaseResponse<SavingsView>?> createLiqiedeSealSavingPlan({ LiquedeSealInput? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -97,8 +96,7 @@ class SavingsApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'SavingsViewStandardResponse') as SavingsViewStandardResponse ;
+      return BaseResponse<SavingsView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -106,7 +104,7 @@ class SavingsApi {
   ///
   ///
   ///
-  Future<SavingPlanTypeIEnumerableStandardResponse?> getSavingPlanTypes() async {
+  Future<BaseResponse<List<SavingPlanType>>?> getSavingPlanTypes() async {
     Object? postBody = null;
 
     // verify required params are set
@@ -145,8 +143,7 @@ class SavingsApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'SavingPlanTypeIEnumerableStandardResponse') as SavingPlanTypeIEnumerableStandardResponse ;
+      return BaseResponse<List<SavingPlanType>>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -154,7 +151,7 @@ class SavingsApi {
   ///
   ///
   ///
-  Future<Int32StandardResponse?> getWithdrawalPenaltyPercentage() async {
+  Future<BaseResponse<int>?> getWithdrawalPenaltyPercentage() async {
     Object? postBody = null;
 
     // verify required params are set
@@ -193,8 +190,7 @@ class SavingsApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'Int32StandardResponse') as Int32StandardResponse ;
+      return BaseResponse.fromJson(json.decode(response.body)) ;
     } else {
       return null;
     }
@@ -202,7 +198,7 @@ class SavingsApi {
   ///
   ///
   ///
-  Future<SavingsViewStandardResponse?> retryPlanPayment(int planId, String paymentMethod) async {
+  Future<BaseResponse<SavingsView>?> retryPlanPayment(int planId, String paymentMethod) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -247,8 +243,7 @@ class SavingsApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'SavingsViewStandardResponse') as SavingsViewStandardResponse ;
+      return BaseResponse<SavingsView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -256,7 +251,7 @@ class SavingsApi {
   ///
   ///
   ///
-  Future<SavingsViewStandardResponse?> withdrawPrematurely({ SavingsWithdrawalModel? body }) async {
+  Future<BaseResponse<SavingsView>?> withdrawPrematurely({ SavingsWithdrawalModel? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -295,8 +290,7 @@ class SavingsApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'SavingsViewStandardResponse') as SavingsViewStandardResponse ;
+      return BaseResponse<SavingsView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }

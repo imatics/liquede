@@ -10,7 +10,7 @@ class BillsApi {
   ///
   ///
   ///
-  Future<AirtimePurchaseViewStandardResponse?> changeCableTvSubscription({ CableSubscriptionModel? body }) async {
+  Future<BaseResponse<AirtimePurchaseView>?> changeCableTvSubscription({ CableSubscriptionModel? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -49,8 +49,7 @@ class BillsApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'AirtimePurchaseViewStandardResponse') as AirtimePurchaseViewStandardResponse ;
+      return BaseResponse<AirtimePurchaseView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -58,7 +57,7 @@ class BillsApi {
   ///
   ///
   ///
-  Future<BaxiProvidersResponseStandardResponse?> getAirtimeProviders() async {
+  Future<BaseResponse<BaxiProvidersResponse>?> getAirtimeProviders() async {
     Object? postBody = null;
 
     // verify required params are set
@@ -97,8 +96,7 @@ class BillsApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'BaxiProvidersResponseStandardResponse') as BaxiProvidersResponseStandardResponse ;
+      return BaseResponse<BaxiProvidersResponse>.fromJson(response.body);
     } else {
       return null;
     }
@@ -106,7 +104,7 @@ class BillsApi {
   ///
   ///
   ///
-  Future<DataProviderResponseStandardResponse?> getDataProviders() async {
+  Future<BaseResponse<DataProviderResponse>?> getDataProviders() async {
     Object? postBody = null;
 
     // verify required params are set
@@ -146,7 +144,7 @@ class BillsApi {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
       return
-          apiClient.deserialize(response.body, 'DataProviderResponseStandardResponse') as DataProviderResponseStandardResponse ;
+        BaseResponse<DataProviderResponse>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -154,7 +152,7 @@ class BillsApi {
   ///
   ///
   ///
-  Future<DataProviderResponseStandardResponse?> getElectricityBillers() async {
+  Future<BaseResponse<DataProviderResponse>?> getElectricityBillers() async {
     Object? postBody = null;
 
     // verify required params are set
@@ -193,8 +191,7 @@ class BillsApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'DataProviderResponseStandardResponse') as DataProviderResponseStandardResponse ;
+      return BaseResponse<DataProviderResponse>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -202,7 +199,7 @@ class BillsApi {
   ///
   ///
   ///
-  Future<ProviderBouquetResponseListStandardResponse?> getProviderAddons(String serviceType, String productCode, { String? body }) async {
+  Future<BaseResponse<List<ProviderBouquetResponse>>?> getProviderAddons(String serviceType, String productCode, { String? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -247,8 +244,7 @@ class BillsApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'ProviderBouquetResponseListStandardResponse') as ProviderBouquetResponseListStandardResponse ;
+      return BaseResponse<List<ProviderBouquetResponse>>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -256,7 +252,7 @@ class BillsApi {
   ///
   ///
   ///
-  Future<ProviderBouquetResponseListStandardResponse?> getProviderBouquets(String serviceType) async {
+  Future<BaseResponse<List<ProviderBouquetResponse>>?> getProviderBouquets(String serviceType) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -298,8 +294,7 @@ class BillsApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'ProviderBouquetResponseListStandardResponse') as ProviderBouquetResponseListStandardResponse ;
+      return BaseResponse<List<ProviderBouquetResponse>>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -307,7 +302,7 @@ class BillsApi {
   ///
   ///
   ///
-  Future<ProviderBundleResponseListStandardResponse?> getProviderBundles(String serviceType, String accountNumber) async {
+  Future<BaseResponse<List<ProviderBundleResponse>>?> getProviderBundles(String serviceType, String accountNumber) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -352,8 +347,7 @@ class BillsApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'ProviderBundleResponseListStandardResponse') as ProviderBundleResponseListStandardResponse ;
+      return BaseResponse<List<ProviderBundleResponse>>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -361,7 +355,7 @@ class BillsApi {
   ///
   ///
   ///
-  Future<AirtimePurchaseViewStandardResponse?> purchaseAirtime({ AirtimePurchaseInput? body }) async {
+  Future<BaseResponse<AirtimePurchaseView>?> purchaseAirtime({ AirtimePurchaseInput? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -400,8 +394,7 @@ class BillsApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'AirtimePurchaseViewStandardResponse') as AirtimePurchaseViewStandardResponse ;
+      return BaseResponse<AirtimePurchaseView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -409,7 +402,7 @@ class BillsApi {
   ///
   ///
   ///
-  Future<AirtimePurchaseViewStandardResponse?> purchaseDataBundle({ DataBundlePurchaseInput? body }) async {
+  Future<BaseResponse<AirtimePurchaseView>?> purchaseDataBundle({ DataBundlePurchaseInput? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -448,8 +441,7 @@ class BillsApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'AirtimePurchaseViewStandardResponse') as AirtimePurchaseViewStandardResponse ;
+      return BaseResponse<AirtimePurchaseView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -457,7 +449,7 @@ class BillsApi {
   ///
   ///
   ///
-  Future<AirtimePurchaseViewStandardResponse?> purchasePostPaidElectricity({ PurchaseElectricityModel? body }) async {
+  Future<BaseResponse<AirtimePurchaseView>?> purchasePostPaidElectricity({ PurchaseElectricityModel? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -496,8 +488,7 @@ class BillsApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'AirtimePurchaseViewStandardResponse') as AirtimePurchaseViewStandardResponse ;
+      return BaseResponse<AirtimePurchaseView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -505,7 +496,7 @@ class BillsApi {
   ///
   ///
   ///
-  Future<AirtimePurchaseViewStandardResponse?> purchasePrePaidElectricity({ PurchaseElectricityModel? body }) async {
+  Future<BaseResponse<AirtimePurchaseView>?> purchasePrePaidElectricity({ PurchaseElectricityModel? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -544,8 +535,7 @@ class BillsApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'AirtimePurchaseViewStandardResponse') as AirtimePurchaseViewStandardResponse ;
+      return BaseResponse<AirtimePurchaseView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -553,7 +543,7 @@ class BillsApi {
   ///
   ///
   ///
-  Future<StringStandardResponse?> renewSubscription({ SubscriptionModel? body }) async {
+  Future<BaseResponse<String>?> renewSubscription({ SubscriptionModel? body }) async {
     Object? postBody = body;
 
     // verify required params are set
@@ -592,8 +582,7 @@ class BillsApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'StringStandardResponse') as StringStandardResponse ;
+      return BaseResponse<String>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -601,7 +590,7 @@ class BillsApi {
   ///
   ///
   ///
-  Future<MultichoiceAccountResponseStandardResponse?> validateMultiChoiceAccount(String serviceType, String accountNumber) async {
+  Future<BaseResponse<MultichoiceAccountResponse>?> validateMultiChoiceAccount(String serviceType, String accountNumber) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -646,8 +635,7 @@ class BillsApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          apiClient.deserialize(response.body, 'MultichoiceAccountResponseStandardResponse') as MultichoiceAccountResponseStandardResponse ;
+      return BaseResponse<MultichoiceAccountResponse>.fromJson(json.decode(response.body));
     } else {
       return null;
     }

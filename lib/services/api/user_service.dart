@@ -30,21 +30,6 @@ class UserService extends BaseService{
 
 
   Stream<NetworkEvent> login(LoginModel request) async* {
-
-    await for (final chunk in makeCall(()async*{
-      var res =  await _api.login(body: request);})) {
-      switch(chunk.type){
-        case NetworkEventType.completed: yield "";
-        case NetworkEventType.failed: yield "";
-        case NetworkEventType.completed: yield "";
-      }
-      var lines = chunk.split('\n');
-      lines[0] = partial + lines[0]; // Prepend partial line.
-      partial = lines.removeLast(); // Remove new partial line.
-      for (final line in lines) {
-        yield line; // Add lines to output stream.
-      }
-    }
     if(!await isNetworkActive()){
       return ;
     }else{
@@ -53,15 +38,15 @@ class UserService extends BaseService{
         value.statusCode.log;
         if(value.status??false){
            _userView = value.data!;
-          onSuccess(value.data!);
+          // onSuccess(value.data!);
         }else{
 
-          onError(APIError.fromString(value.message));
+          // onError(APIError.fromString(value.message));
         }
       }).onError((error, stackTrace){
         error.log;
         stackTrace.log;
-        onError(APIError.fromString(error.toString()));
+        // onError(APIError.fromString(error.toString()));
       });
     }
   }
@@ -69,7 +54,7 @@ class UserService extends BaseService{
 
   void register(Register request, APIAction<bool> onSuccess,
       APIAction<APIError> onError) async {
-    if(!await isNetworkActive(onError)){
+    if(!await isNetworkActive()){
       return;
     }else{
       _api.register(body: request).then((value){
@@ -91,7 +76,7 @@ class UserService extends BaseService{
 
   void verifyUser(String token, String email, APIAction<UserView> onSuccess,
       APIAction<APIError> onError) async {
-    if(!await isNetworkActive(onError)){
+    if(!await isNetworkActive()){
       return;
     }else{
       _api.verify(token,email).then((value){
@@ -114,7 +99,7 @@ class UserService extends BaseService{
 
  void deleteUser(String email, APIAction<UserView> onSuccess,
       APIAction<APIError> onError) async {
-    if(!await isNetworkActive(onError)){
+    if(!await isNetworkActive()){
       return;
     }else{
       _api.delete(email).then((value){
@@ -136,7 +121,7 @@ class UserService extends BaseService{
 
  void requestOTP(String email, APIAction<UserView> onSuccess,
       APIAction<APIError> onError) async {
-    if(!await isNetworkActive(onError)){
+    if(!await isNetworkActive()){
       return;
     }else{
       _api.initiateReset(email).then((value){
@@ -157,7 +142,7 @@ class UserService extends BaseService{
 
   void resetPassword(PasswordReset model, APIAction<UserView> onSuccess,
       APIAction<APIError> onError) async {
-    if(!await isNetworkActive(onError)){
+    if(!await isNetworkActive()){
       return;
     }else{
       _api.completeReset(body: model).then((value){
@@ -179,7 +164,7 @@ class UserService extends BaseService{
 
   void changePassword(PasswordResetModel model, APIAction<UserView> onSuccess,
       APIAction<APIError> onError) async {
-    if(!await isNetworkActive(onError)){
+    if(!await isNetworkActive()){
       return;
     }else{
       _api.updatePassword(body: model).then((value){
