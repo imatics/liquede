@@ -15,110 +15,77 @@ class WalletService extends BaseService{
 
   late WalletApi _api;
   WalletView? _walletDetails;
-  WalletView get walletInfo => _walletDetails!;
-  late BuildContext _context;
-  WalletService(this._context) : super(_context){
+  WalletView? get walletInfo => _walletDetails;
+
+  List<Card> _userCards = [];
+  List<Card>? get userCards => _userCards;
+  WalletService(BuildContext context) : super(context){
     _api = WalletApi();
   }
 
-  @override
-  void update(ApiClient client) {
-    _api = WalletApi(client);
+  // @override
+  // void update(ApiClient client) {
+  //   _api = WalletApi(client);
+  // }
+
+
+
+  Stream<NetworkEvent<WalletView>> createWallet(WalletModel model) {
+    return executeCall(()async{
+      return _api.createUserWallet(body: model);
+    }).map<NetworkEvent<WalletView>>((event){
+      if(event.type == NetworkEventType.completed){
+        _walletDetails = event.data;
+      }
+      return event as NetworkEvent<WalletView>;
+    });
+  }
+
+
+  Stream<NetworkEvent<WalletView>> createPin(WalletPinModel model) {
+    return executeCall(()async{
+      return _api.createTransactionPin(body: model);
+    }).map<NetworkEvent<WalletView>>((event){
+      if(event.type == NetworkEventType.completed){
+        _walletDetails = event.data;
+      }
+      return event as NetworkEvent<WalletView>;
+    });
+  }
+
+
+  Stream<NetworkEvent<String>> fundWallet(FundWalletModel model) {
+    return executeCall(()async{
+      return _api.fundWallet(body: model);
+    }).map<NetworkEvent<String>>((event){return event as NetworkEvent<String>;
+    });
+  }
+
+  Stream<NetworkEvent<String>> debitWallet(DebitWalletModel model) {
+    return executeCall(()async{
+      return _api.debitWallet(body: model);
+    }).map<NetworkEvent<String>>((event){
+      if(event.type == NetworkEventType.completed){
+        _walletDetails = event.data;
+      }
+      return event as NetworkEvent<String>;
+    });
   }
 
 
 
-
-  void createWallet(WalletModel model, APIAction<WalletView> onSuccess,
-      APIAction<APIError> onError) async {
-    if(!await isNetworkActive()){
-      return;
-    }else{
-      _api.createUserWallet(body: model).then((value){
-        value!.status.log;
-        value.statusCode.log;
-        if(value.status == true){
-          _walletDetails = value.data;
-          // onSuccess(value.data);
-        }else{
-
-          onError(APIError.fromString(value.message));
-        }
-      }).onError((error, stackTrace){
-        error.log;
-        stackTrace.log;
-        onError(APIError.fromString(error.toString()));
-      });
-    }
+  Stream<NetworkEvent<TransactionViewPagedCollection>> getTransactionHistory(int userID) {
+    return executeCall(()async{
+      return _api.listTransactions(userID, offset: 0, search: '', limit: 10000);
+    }).map<NetworkEvent<TransactionViewPagedCollection>>((event){
+      if(event.type == NetworkEventType.completed){
+        _walletDetails = event.data;
+      }
+      return event as NetworkEvent<TransactionViewPagedCollection>;
+    });
   }
 
 
-  void createPin(WalletPinModel model, APIAction<WalletView> onSuccess,
-      APIAction<APIError> onError) async {
-    if(!await isNetworkActive()){
-      return;
-    }else{
-      _api.createTransactionPin(body: model).then((value){
-        value!.status.log;
-        value.statusCode.log;
-        if(value.status == true){
-          _walletDetails = value.data;
-          // onSuccess(value.data);
-        }else{
-
-          onError(APIError.fromString(value.message));
-        }
-      }).onError((error, stackTrace){
-        error.log;
-        stackTrace.log;
-        onError(APIError.fromString(error.toString()));
-      });
-    }
-  }
-
-  void fundWallet(FundWalletModel model, APIAction<String> onSuccess,
-      APIAction<APIError> onError) async {
-    if(!await isNetworkActive()){
-      return;
-    }else{
-      _api.fundWallet(body: model).then((value){
-        value!.status.log;
-        value.statusCode.log;
-        if(value.status == true){
-          // onSuccess(value.data);
-        }else{
-          onError(APIError.fromString(value.message));
-        }
-      }).onError((error, stackTrace){
-        error.log;
-        stackTrace.log;
-        onError(APIError.fromString(error.toString()));
-      });
-    }
-  }
-
-  void debitWallet(DebitWalletModel model, APIAction<WalletView> onSuccess,
-      APIAction<APIError> onError) async {
-    if(!await isNetworkActive()){
-      return;
-    }else{
-      _api.debitWallet(body: model).then((value){
-        value!.status.log;
-        value.statusCode.log;
-        if(value.status == true){
-          _walletDetails = value.data;
-          // onSuccess(value.data);
-        }else{
-
-          onError(APIError.fromString(value.message));
-        }
-      }).onError((error, stackTrace){
-        error.log;
-        stackTrace.log;
-        onError(APIError.fromString(error.toString()));
-      });
-    }
-  }
 
 
   void getWalletBalance(int userID, APIAction<UserView> onSuccess,
@@ -144,114 +111,54 @@ class WalletService extends BaseService{
   }
 
 
-
-  void getTransactionHistory(int userID, APIAction<List<TransactionView>> onSuccess,
-      APIAction<APIError> onError) async {
-    if(!await isNetworkActive()){
-      return;
-    }else{
-      _api.listTransactions(userID, offset: 0, search: '', limit: 10000).then((value){
-        value!.status.log;
-        value.statusCode.log;
-        if(value.status == true){
-          onSuccess(value.data?.value??[]);
-        }else{
-
-          onError(APIError.fromString(value.message));
-        }
-      }).onError((error, stackTrace){
-        error.log;
-        stackTrace.log;
-        onError(APIError.fromString(error.toString()));
-      });
-    }
-  }
-
-  void getUserCards(int userID, APIAction<UserView> onSuccess,
-      APIAction<APIError> onError) async {
-    if(!await isNetworkActive()){
-      return;
-    }else{
-      _api.listCardsByUserId(userID, offset: 0, limit: 10000).then((value){
-        value!.status.log;
-        value.statusCode.log;
-        if(value.status == true){
-          // onSuccess(value.data);
-        }else{
-          onError(APIError.fromString(value.message));
-        }
-      }).onError((error, stackTrace){
-        error.log;
-        stackTrace.log;
-        onError(APIError.fromString(error.toString()));
-      });
-    }
-  }
-
-  void statementOfAccount(int userID, DateTime start, DateTime end, APIAction<UserView> onSuccess,
-      APIAction<APIError> onError) async {
-    if(!await isNetworkActive()){
-      return;
-    }else{
-      _api.statementOfAccount(userID, start, end, offset: 0, limit: 10000).then((value){
-        value!.status.log;
-        value.statusCode.log;
-        if(value.status == true){
-          // onSuccess(value.data);
-        }else{
-          onError(APIError.fromString(value.message));
-        }
-      }).onError((error, stackTrace){
-        error.log;
-        stackTrace.log;
-        onError(APIError.fromString(error.toString()));
-      });
-    }
+  Stream<NetworkEvent<List<CardView>>> getUserCards(int userID) {
+    return executeReturnOrCall(_userCards, ()async{
+      return _api.listCards();
+    }, mustEx: _userCards.isEmpty).map<NetworkEvent<List<CardView>>>((event){
+      if(event.type == NetworkEventType.completed){
+        _userCards = event.data;
+      }
+      return event as NetworkEvent<List<CardView>>;
+    });
   }
 
 
-    void transferToBank(NGNTransferModel model, APIAction<UserView> onSuccess,
-      APIAction<APIError> onError) async {
-    if(!await isNetworkActive()){
-      return;
-    }else{
-      _api.transferToNigerianBank(body: model).then((value){
-        value!.status.log;
-        value.statusCode.log;
-        if(value.status == true){
-          // onSuccess(value.data);
-        }else{
-          onError(APIError.fromString(value.message));
-        }
-      }).onError((error, stackTrace){
-        error.log;
-        stackTrace.log;
-        onError(APIError.fromString(error.toString()));
-      });
-    }
+
+  Stream<NetworkEvent<TransactionViewPagedCollection>> getAccountStatement(int userID, DateTime start, DateTime end) {
+    return executeCall(()async{
+      return _api.statementOfAccount(userID, start, end, offset: 0, limit: 10000);
+    }).map<NetworkEvent<TransactionViewPagedCollection>>((event){
+      if(event.type == NetworkEventType.completed){
+        _walletDetails = event.data;
+      }
+      return event as NetworkEvent<TransactionViewPagedCollection>;
+    });
   }
 
-      void transferToWallet(WalletTransferModel model, APIAction<UserView> onSuccess,
-      APIAction<APIError> onError) async {
-    if(!await isNetworkActive()){
-      return;
-    }else{
-      _api.transferToWallet(body: model).then((value){
-        value!.status.log;
-        value.statusCode.log;
-        if(value.status == true){
-          // onSuccess(value.data);
-        }else{
-          onError(APIError.fromString(value.message));
-        }
-      }).onError((error, stackTrace){
-        error.log;
-        stackTrace.log;
-        onError(APIError.fromString(error.toString()));
-      });
-    }
+
+
+  Stream<NetworkEvent<WalletView>> transferToBank(NGNTransferModel model) {
+    return executeCall(()async{
+      return _api.transferToNigerianBank(body: model);
+    }).map<NetworkEvent<WalletView>>((event){
+      if(event.type == NetworkEventType.completed){
+        _walletDetails = event.data;
+      }
+      return event as NetworkEvent<WalletView>;
+    });
   }
 
+
+  Stream<NetworkEvent<WalletView>> transferToWallet(WalletTransferModel model) {
+    return executeCall(()async{
+      return _api.transferToWallet(body: model);
+    }).map<NetworkEvent<WalletView>>((event){
+      if(event.type == NetworkEventType.completed){
+        _walletDetails = event.data;
+      }
+      return event as NetworkEvent<WalletView>;
+    });
+  }
 
 
 }

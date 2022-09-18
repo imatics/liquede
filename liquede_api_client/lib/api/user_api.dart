@@ -3,9 +3,8 @@ part of swagger.api;
 
 
 class UserApi {
-  final ApiClient apiClient;
 
-  UserApi([ApiClient? apiClient]) : apiClient = apiClient ?? defaultApiClient;
+  UserApi();
 
   ///
   ///
@@ -37,7 +36,7 @@ class UserApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -87,7 +86,7 @@ class UserApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'GET',
                                              queryParams,
                                              postBody,
@@ -134,7 +133,7 @@ class UserApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'GET',
                                              queryParams,
                                              postBody,
@@ -184,7 +183,7 @@ class UserApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'GET',
                                              queryParams,
                                              postBody,
@@ -237,7 +236,7 @@ class UserApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'GET',
                                              queryParams,
                                              postBody,
@@ -284,7 +283,7 @@ class UserApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -304,7 +303,7 @@ class UserApi {
   ///
   ///
   ///
-  Future register({ required Register body }) async {
+  Future<BaseResponse<UserView>?> register({ required Register body }) async {
     Object postBody = body;
 
     // verify required params are set
@@ -331,7 +330,7 @@ class UserApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -343,10 +342,9 @@ class UserApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return
-          ;
+      return BaseResponse<UserView>.fromJson(json.decode(response.body));
     } else {
-      return ;
+      return null;
     }
   }
   ///
@@ -382,7 +380,7 @@ class UserApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'GET',
                                              queryParams,
                                              postBody,
@@ -429,7 +427,7 @@ class UserApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -476,7 +474,7 @@ class UserApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'PUT',
                                              queryParams,
                                              postBody,
@@ -529,7 +527,7 @@ class UserApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'GET',
                                              queryParams,
                                              postBody,

@@ -3,9 +3,9 @@ part of swagger.api;
 
 
 class LoanApi {
-  final ApiClient apiClient;
 
-  LoanApi([ApiClient? apiClient]) : apiClient = apiClient ?? defaultApiClient;
+
+  LoanApi();
 
   ///
   ///
@@ -37,7 +37,7 @@ class LoanApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -87,7 +87,7 @@ class LoanApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'GET',
                                              queryParams,
                                              postBody,
@@ -134,7 +134,7 @@ class LoanApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'GET',
                                              queryParams,
                                              postBody,

@@ -3,9 +3,9 @@ part of swagger.api;
 
 
 class BillsApi {
-  final ApiClient apiClient;
 
-  BillsApi([ApiClient? apiClient]) : apiClient = apiClient ?? defaultApiClient;
+
+  BillsApi();
 
   ///
   ///
@@ -37,7 +37,7 @@ class BillsApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -84,7 +84,7 @@ class BillsApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'GET',
                                              queryParams,
                                              postBody,
@@ -131,7 +131,7 @@ class BillsApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'GET',
                                              queryParams,
                                              postBody,
@@ -179,7 +179,7 @@ class BillsApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'GET',
                                              queryParams,
                                              postBody,
@@ -232,7 +232,7 @@ class BillsApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -282,7 +282,7 @@ class BillsApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -335,7 +335,7 @@ class BillsApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -382,7 +382,7 @@ class BillsApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -429,7 +429,7 @@ class BillsApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -476,7 +476,7 @@ class BillsApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -523,7 +523,7 @@ class BillsApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -570,7 +570,7 @@ class BillsApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -623,7 +623,7 @@ class BillsApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,

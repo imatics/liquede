@@ -31,6 +31,13 @@ class APIError{
 return er;
   }
 
+
+  factory APIError.fromTrace(Object? error, StackTrace trace){
+    APIError er = APIError._();
+    er.errorList = [error.toString()];
+return er;
+  }
+
   factory APIError.fromResponse(Response error){
     APIError er = APIError._();
     if(error.statusCode == 503){

@@ -3,9 +3,8 @@ part of swagger.api;
 
 
 class WalletApi {
-  final ApiClient apiClient;
 
-  WalletApi([ApiClient? apiClient]) : apiClient = apiClient ?? defaultApiClient;
+  WalletApi();
 
   ///
   ///
@@ -37,7 +36,7 @@ class WalletApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -84,7 +83,7 @@ class WalletApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -131,7 +130,7 @@ class WalletApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -178,7 +177,7 @@ class WalletApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -228,7 +227,7 @@ class WalletApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'GET',
                                              queryParams,
                                              postBody,
@@ -275,7 +274,7 @@ class WalletApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'GET',
                                              queryParams,
                                              postBody,
@@ -331,7 +330,7 @@ class WalletApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'GET',
                                              queryParams,
                                              postBody,
@@ -390,7 +389,7 @@ class WalletApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'GET',
                                              queryParams,
                                              postBody,
@@ -452,7 +451,7 @@ class WalletApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'GET',
                                              queryParams,
                                              postBody,
@@ -499,7 +498,7 @@ class WalletApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -546,7 +545,7 @@ class WalletApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -599,7 +598,7 @@ class WalletApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'GET',
                                              queryParams,
                                              postBody,
@@ -649,7 +648,7 @@ class WalletApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'GET',
                                              queryParams,
                                              postBody,

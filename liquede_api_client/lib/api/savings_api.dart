@@ -3,9 +3,8 @@ part of swagger.api;
 
 
 class SavingsApi {
-  final ApiClient apiClient;
 
-  SavingsApi([ApiClient? apiClient]) : apiClient = apiClient ?? defaultApiClient;
+  SavingsApi();
 
   ///
   ///
@@ -37,7 +36,7 @@ class SavingsApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -84,7 +83,7 @@ class SavingsApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -131,7 +130,7 @@ class SavingsApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'GET',
                                              queryParams,
                                              postBody,
@@ -178,7 +177,7 @@ class SavingsApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'GET',
                                              queryParams,
                                              postBody,
@@ -231,7 +230,7 @@ class SavingsApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,
@@ -278,7 +277,7 @@ class SavingsApi {
     else {
           }
 
-    var response = await apiClient.invokeAPI(path,
+    var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,
                                              postBody,

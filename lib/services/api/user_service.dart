@@ -1,11 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:liquede/commons/def_types.dart';
 import 'package:liquede/services/api/base_service.dart';
 import 'package:provider/provider.dart';
 import 'package:swagger/api.dart';
-import 'package:liquede/extensions/string.dart';
 
-import 'api_error.dart';
 
 class UserService extends BaseService{
 
@@ -15,172 +12,101 @@ class UserService extends BaseService{
 
 
   late UserApi _api;
-  late UserView _userView;
-  UserView get userView => _userView;
+  late UserView? _userView;
+  UserView? get userView => _userView;
 
-  late BuildContext _context;
-  UserService(this._context) : super(_context){
+  UserService(BuildContext context) : super(context){
     _api = UserApi();
   }
+  //
+  // @override
+  // void update(ApiClient client) {
+  //   _api = UserApi(client);
+  // }
 
-  @override
-  void update(ApiClient client) {
-    _api = UserApi(client);
+
+  Stream<NetworkEvent<UserView>> login(LoginModel request){
+    return executeReturnOrCall(userView, ()async{
+      return _api.login(body: request);
+    }).map<NetworkEvent<UserView>>((event){
+      if(event.type == NetworkEventType.completed){
+        _userView = event.data;
+      }
+      return event as NetworkEvent<UserView>;
+    });
   }
 
 
-  Stream<NetworkEvent> login(LoginModel request) async* {
-    if(!await isNetworkActive()){
-      return ;
-    }else{
-      _api.login(body: request).then((value){
-        value!.status.log;
-        value.statusCode.log;
-        if(value.status??false){
-           _userView = value.data!;
-          // onSuccess(value.data!);
-        }else{
-
-          // onError(APIError.fromString(value.message));
-        }
-      }).onError((error, stackTrace){
-        error.log;
-        stackTrace.log;
-        // onError(APIError.fromString(error.toString()));
-      });
-    }
+  Stream<NetworkEvent<UserView>> register(Register request) {
+    return executeCall(()async{
+      return _api.register(body: request);
+    }).map<NetworkEvent<UserView>>((event){
+      if(event.type == NetworkEventType.completed){
+        _userView = event.data;
+      }
+      return event as NetworkEvent<UserView>;
+    });
   }
 
 
-  void register(Register request, APIAction<bool> onSuccess,
-      APIAction<APIError> onError) async {
-    if(!await isNetworkActive()){
-      return;
-    }else{
-      _api.register(body: request).then((value){
-        value!.status.log;
-        value.statusCode.log;
-        if(value.status){
-          onSuccess(value.data);
-        }else{
-          onError(APIError.fromString(value.message));
-        }
-      }).onError((error, stackTrace){
-        error.log;
-        stackTrace.log;
-        onError(APIError.fromString(error.toString()));
-      });
-    }
+  Stream<NetworkEvent<UserView>> verifyUser(String token, String email, )  {
+    return executeCall(()async{
+      return _api.verify(token, email);
+    }).map<NetworkEvent<UserView>>((event){
+      if(event.type == NetworkEventType.completed){
+        _userView = event.data;
+      }
+      return event as NetworkEvent<UserView>;
+    });
   }
 
 
-  void verifyUser(String token, String email, APIAction<UserView> onSuccess,
-      APIAction<APIError> onError) async {
-    if(!await isNetworkActive()){
-      return;
-    }else{
-      _api.verify(token,email).then((value){
-        value!.status.log;
-        value.statusCode.log;
-        if(value.status??false){
-          _userView = value.data!;
-          onSuccess(value.data!);
-        }else{
-          onError(APIError.fromString(value.message));
-        }
-      }).onError((error, stackTrace){
-        error.log;
-        stackTrace.log;
-        onError(APIError.fromString(error.toString()));
-      });
-    }
+ Stream<NetworkEvent<UserView>> deleteUser(String email)  {
+   return executeCall(()async{
+     return _api.delete(email);
+   }).map<NetworkEvent<UserView>>((event){
+     if(event.type == NetworkEventType.completed){
+       _userView = event.data;
+     }
+     return event as NetworkEvent<UserView>;
+   });
+
   }
 
 
- void deleteUser(String email, APIAction<UserView> onSuccess,
-      APIAction<APIError> onError) async {
-    if(!await isNetworkActive()){
-      return;
-    }else{
-      _api.delete(email).then((value){
-        value!.status.log;
-        value.statusCode.log;
-        if(value.status??false){
-          onSuccess(value.data!);
-        }else{
-          onError(APIError.fromString(value.message));
-        }
-      }).onError((error, stackTrace){
-        error.log;
-        stackTrace.log;
-        onError(APIError.fromString(error.toString()));
-      });
-    }
+ Stream<NetworkEvent<UserView>> requestOTP(String email) {
+   return executeCall(()async{
+     return _api.initiateReset(email);
+   }).map<NetworkEvent<UserView>>((event){
+     if(event.type == NetworkEventType.completed){
+       _userView = event.data;
+     }
+     return event as NetworkEvent<UserView>;
+   });
+
+  }
+
+  Stream<NetworkEvent<UserView>> resetPassword(PasswordReset model) {
+    return executeCall(()async{
+      return _api.completeReset(body: model);
+    }).map<NetworkEvent<UserView>>((event){
+      if(event.type == NetworkEventType.completed){
+        _userView = event.data;
+      }
+      return event as NetworkEvent<UserView>;
+    });
   }
 
 
- void requestOTP(String email, APIAction<UserView> onSuccess,
-      APIAction<APIError> onError) async {
-    if(!await isNetworkActive()){
-      return;
-    }else{
-      _api.initiateReset(email).then((value){
-        value!.status.log;
-        value.statusCode.log;
-        if(value.status??false){
-          onSuccess(value.data!);
-        }else{
-          onError(APIError.fromString(value.message));
-        }
-      }).onError((error, stackTrace){
-        error.log;
-        stackTrace.log;
-        onError(APIError.fromString(error.toString()));
-      });
-    }
-  }
-
-  void resetPassword(PasswordReset model, APIAction<UserView> onSuccess,
-      APIAction<APIError> onError) async {
-    if(!await isNetworkActive()){
-      return;
-    }else{
-      _api.completeReset(body: model).then((value){
-        value!.status.log;
-        value.statusCode.log;
-        if(value.status??false){
-          onSuccess(value.data!);
-        }else{
-          onError(APIError.fromString(value.message));
-        }
-      }).onError((error, stackTrace){
-        error.log;
-        stackTrace.log;
-        onError(APIError.fromString(error.toString()));
-      });
-    }
-  }
-
-
-  void changePassword(PasswordResetModel model, APIAction<UserView> onSuccess,
-      APIAction<APIError> onError) async {
-    if(!await isNetworkActive()){
-      return;
-    }else{
-      _api.updatePassword(body: model).then((value){
-        value!.status.log;
-        value.statusCode.log;
-        if(value.status??false){
-          onSuccess(value.data!);
-        }else{
-          onError(APIError.fromString(value.message));
-        }
-      }).onError((error, stackTrace){
-        error.log;
-        stackTrace.log;
-        onError(APIError.fromString(error.toString()));
-      });
-    }
+  Stream<NetworkEvent<UserView>> changePassword(PasswordResetModel model) {
+    return executeCall(()async{
+      return _api.updatePassword(body: model);
+    }).map<NetworkEvent<UserView>>((event){
+      if(event.type == NetworkEventType.completed){
+        _userView = event.data;
+      }
+      return event as NetworkEvent<UserView>;
+    });
   }
 
 
