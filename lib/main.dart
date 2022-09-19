@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:liquede/commons/theme.dart';
+import 'package:liquede/presentation/onboarding/login.dart';
 import 'package:liquede/presentation/onboarding/onboarding.dart';
+import 'package:liquede/services/api/bills_service.dart';
+import 'package:liquede/services/api/loan_service.dart';
+import 'package:liquede/services/api/user_service.dart';
+import 'package:liquede/services/api/wallet_service.dart';
 import 'package:liquede/services/app_preference.dart';
 import 'package:liquede/services/network_service_state.dart';
 import 'package:logger/logger.dart';
@@ -15,7 +20,10 @@ void main()async {
       providers: [
         ChangeNotifierProvider<BaseWidgetState>(create: (context) => BaseWidgetState()),
         ChangeNotifierProvider<NetworkServiceState2>(create: (context) => NetworkServiceState2()),
-        // ChangeNotifierProvider<AppService>(create: (context) => AppService(context)),
+        ChangeNotifierProvider<UserService>(create: (context) => UserService()),
+        ChangeNotifierProvider<WalletService>(create: (context) => WalletService()),
+        ChangeNotifierProvider<BillsService>(create: (context) => BillsService()),
+        ChangeNotifierProvider<LoanService>(create: (context) => LoanService()),
         ChangeNotifierProvider<AppPreference>(create: (context) => _preference),
       ],
       child: const MyApp()));
@@ -27,18 +35,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('app toured is ${_preference.seenAppTour}');
     return MaterialApp(
       title: 'Liquede',
       theme: theme(),
-      home: const OnboardingScreen(),
+      home: _preference.seenAppTour? const LoginScreen() :const OnboardingScreen(),
     );
   }
 }
 
 late AppPreference _preference;
+late NetworkServiceState2 networkState;
 startServices() async {
   // _setUpLogging();
   _preference = await AppPreference.getInstance();
+  networkState = NetworkServiceState2();
 }
 
 

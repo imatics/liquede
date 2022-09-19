@@ -1,6 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:liquede/main.dart';
 import 'package:provider/provider.dart';
 import 'package:liquede/commons/reusables.dart';
 import 'package:liquede/extensions/widget.dart';
@@ -48,7 +49,7 @@ class _ScaffoldState extends State<BaseScaffold> {
   @override
   void initState() {
     super.initState();
-    showTopBar = !NetworkServiceState2.getInstance(context).networkActive && widget.networkSateAware;
+    showTopBar = !networkState.networkActive && widget.networkSateAware;
     if(BaseWidgetState.getInstance(context).isOverlayShowing) {
       BaseWidgetState.getInstance(context).isOverlayShowing = false;
     }}

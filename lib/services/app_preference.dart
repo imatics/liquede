@@ -118,6 +118,9 @@ class AppPreference with ChangeNotifier{
   set token(String value)=> _preferences.setString("token", value);
   String get token => _preferences.getString("token")??"";
 
+  set seenAppTour(bool value)=> _preferences.setBool("seenAppTour", value);
+  bool get seenAppTour => _preferences.getBool("seenAppTour")??false;
+
 
 
 

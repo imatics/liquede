@@ -24,7 +24,7 @@ class SavingsService extends BaseService{
 
 
 
-  SavingsService(BuildContext context) : super(context){
+  SavingsService(){
     _api = SavingsApi();
   }
 
@@ -39,7 +39,7 @@ class SavingsService extends BaseService{
     return executeCall(()async{
       return _api.createLiqiedeGoalSavingPlan(body: model);
     }).map<NetworkEvent<SavingsView>>((event){
-      return event as NetworkEvent<SavingsView>;
+      return event;
     });
   }
 
@@ -48,7 +48,7 @@ class SavingsService extends BaseService{
     return executeCall(()async{
       return _api.createLiqiedeSealSavingPlan(body: model);
     }).map<NetworkEvent<SavingsView>>((event){
-      return event as NetworkEvent<SavingsView>;
+      return event;
     });
   }
 
@@ -57,7 +57,7 @@ class SavingsService extends BaseService{
     return executeCall(()async{
       return _api.getSavingPlanTypes();
     }).map<NetworkEvent<List<SavingPlanType>>>((event){
-      return event as NetworkEvent<List<SavingPlanType>>;
+      return event;
     });
   }
 

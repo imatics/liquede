@@ -19,7 +19,7 @@ class LoanService extends BaseService{
   List<LoanView>? get userLoans => _userLoans;
 
 
-  LoanService(BuildContext context) : super(context){
+  LoanService(){
     _api = LoanApi();
   }
   //
@@ -53,9 +53,9 @@ class LoanService extends BaseService{
       return _api.listMyLoans();
     }, mustEx: (_userLoans.isEmpty || force)).map<NetworkEvent<List<LoanView>>>((event){
       if(event.type ==  NetworkEventType.completed){
-        _userLoans = event.data;
+        _userLoans = event.data??[];
       }
-      return event as NetworkEvent<List<LoanView>>;
+      return event;
     });
   }
 

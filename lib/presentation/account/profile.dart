@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:liquede/commons/base_scaffold.dart';
 import 'package:liquede/commons/reusables.dart';
 import 'package:liquede/extensions/widget.dart';
+import 'package:liquede/services/api/user_service.dart';
+import 'package:swagger/api.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -12,8 +14,11 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+   UserView? u;
+
   @override
   Widget build(BuildContext context) {
+    u = UserService.I(context).userView;
     return BaseScaffold(context: context,
     title: "Personal Details",
     baseBody: SingleChildScrollView(
@@ -30,12 +35,12 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             child: const Icon(Icons.person, size: 50,)),
          addSpace(y: 30),
-         getInput("First Name", KInputFieldProps(textEditingController: TextEditingController(text: "John"))),
-         getInput("Middle Name", KInputFieldProps(textEditingController: TextEditingController(text: "Vincent"))),
-         getInput("Last Name", KInputFieldProps(textEditingController: TextEditingController(text: "Doe"))),
-         getInput("Email", KInputFieldProps(textEditingController: TextEditingController(text: "Johnv@gmail.com"))),
-         getInput("Mobile Number", KInputFieldProps(textEditingController: TextEditingController(text: "08141791104"))),
-         getInput("Birthday", KInputFieldProps(textEditingController: TextEditingController(text: "22/12/1991"))),
+         getInput("First Name", KInputFieldProps(textEditingController: TextEditingController(text: u?.firstName))),
+         getInput("Middle Name", KInputFieldProps(textEditingController: TextEditingController(text: u?.lastName))),
+         getInput("Last Name", KInputFieldProps(textEditingController: TextEditingController(text: u?.lastName))),
+         getInput("Email", KInputFieldProps(textEditingController: TextEditingController(text: u?.email))),
+         getInput("Mobile Number", KInputFieldProps(textEditingController: TextEditingController(text: u?.phoneNumber))),
+         getInput("Birthday", KInputFieldProps(textEditingController: TextEditingController(text: ""))),
 
         ],
       ),

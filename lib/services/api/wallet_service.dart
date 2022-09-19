@@ -17,9 +17,9 @@ class WalletService extends BaseService{
   WalletView? _walletDetails;
   WalletView? get walletInfo => _walletDetails;
 
-  List<Card> _userCards = [];
-  List<Card>? get userCards => _userCards;
-  WalletService(BuildContext context) : super(context){
+  List<CardView> _userCards = [];
+  List<CardView>? get userCards => _userCards;
+  WalletService (){
     _api = WalletApi();
   }
 
@@ -79,7 +79,7 @@ class WalletService extends BaseService{
       return _api.listTransactions(userID, offset: 0, search: '', limit: 10000);
     }).map<NetworkEvent<TransactionViewPagedCollection>>((event){
       if(event.type == NetworkEventType.completed){
-        _walletDetails = event.data;
+        // _walletDetails = event.data;
       }
       return event as NetworkEvent<TransactionViewPagedCollection>;
     });
@@ -112,13 +112,13 @@ class WalletService extends BaseService{
 
 
   Stream<NetworkEvent<List<CardView>>> getUserCards(int userID) {
-    return executeReturnOrCall(_userCards, ()async{
+    return executeReturnOrCall<List<CardView>>(_userCards, ()async{
       return _api.listCards();
     }, mustEx: _userCards.isEmpty).map<NetworkEvent<List<CardView>>>((event){
       if(event.type == NetworkEventType.completed){
-        _userCards = event.data;
+        _userCards = event.data??[];
       }
-      return event as NetworkEvent<List<CardView>>;
+      return event;
     });
   }
 
@@ -129,9 +129,9 @@ class WalletService extends BaseService{
       return _api.statementOfAccount(userID, start, end, offset: 0, limit: 10000);
     }).map<NetworkEvent<TransactionViewPagedCollection>>((event){
       if(event.type == NetworkEventType.completed){
-        _walletDetails = event.data;
+        // _walletDetails = event.data;
       }
-      return event as NetworkEvent<TransactionViewPagedCollection>;
+      return event;
     });
   }
 
@@ -144,7 +144,7 @@ class WalletService extends BaseService{
       if(event.type == NetworkEventType.completed){
         _walletDetails = event.data;
       }
-      return event as NetworkEvent<WalletView>;
+      return event;
     });
   }
 
@@ -156,7 +156,7 @@ class WalletService extends BaseService{
       if(event.type == NetworkEventType.completed){
         _walletDetails = event.data;
       }
-      return event as NetworkEvent<WalletView>;
+      return event;
     });
   }
 

@@ -9,6 +9,9 @@ import 'package:liquede/presentation/onboarding/terms_and_condition.dart';
 import 'package:liquede/extensions/others.dart';
 import 'package:liquede/presentation/onboarding/onboarding.dart';
 import 'package:liquede/presentation/onboarding/welcome_screen.dart';
+import 'package:liquede/services/api/base_service.dart';
+import 'package:liquede/services/api/user_service.dart';
+import 'package:swagger/api.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -18,12 +21,11 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  late KInputFieldProps
-      firstNameProp; // = KInputFieldProps(hint: "First Name", textEditingController: TextEditingController(), validators: [validateName]);
-  late KInputFieldProps lastNameProp; // = KInputFieldProps.copyFrom(props);
-  late KInputFieldProps emailProp; // = KInputFieldProps();
-  late KInputFieldProps phoneNumberProps; // = KInputFieldProps();
-  late KInputFieldProps passwordProps; // = KInputFieldProps();
+  late KInputFieldProps firstNameProp;
+  late KInputFieldProps lastNameProp;
+  late KInputFieldProps emailProp;
+  late KInputFieldProps phoneNumberProps;
+  late KInputFieldProps passwordProps;
 
   List<KInputFieldProps> props = [];
 
@@ -105,7 +107,7 @@ class _SignUpState extends State<SignUp> {
                     ManyText(
                         text: " terms and conditions ",
                         style: KTextStyle(color: kAppYellow),
-                        onTap: () => goto(context, TermsAndConditionScreen()))
+                        onTap: () => goto(context, const TermsAndConditionScreen()))
                   ], style: KTextStyle(color: black)),
                 ],
               ),
@@ -142,12 +144,39 @@ class _SignUpState extends State<SignUp> {
 
   void attemptSignUp(BuildContext context){
     if(_key.currentState!.validate()){
-      showVerify(context, ()=> goto(context, const WelcomeScreen()));
+      Register model = Register()
+      ..firstName = firstNameProp.textEditingController?.text
+      ..middleName = ""
+      ..lastName = lastNameProp.textEditingController?.text
+      ..password = passwordProps.textEditingController?.text
+      ..email = emailProp.textEditingController?.text
+      ..phoneNumber = phoneNumberProps.textEditingController?.text;
+      UserService.I(context).register(model).listen((event) {
+        event.handleState(context);
+        event.performOnSuccess((p0) {
+
+          showVerify(context, validateOTP);
+        });
+      });
+
+    }
+  }
+
+
+  void validateOTP(String otp){
+    if(_key.currentState!.validate()){
+      UserService.I(context).verifyUser(otp).listen((event) {
+        event.handleState(context);
+        event.performOnSuccess((p0) {
+           goto(context, const WelcomeScreen());
+        });
+      });
+
     }
   }
 
 }
-void showVerify(BuildContext context, Function() onVerify) {
+void showVerify(BuildContext context, Function(String) onVerify) {
   TextEditingController controller = TextEditingController();
   launchBottomSheetFull(
       context,
@@ -168,7 +197,7 @@ void showVerify(BuildContext context, Function() onVerify) {
               KTextStyle(weight: FontWeight.bold, fontSize: 24, style: const TextStyle(letterSpacing: 3)).build)),
           addSpace(y: 20),
           MaterialButton(
-            onPressed: onVerify,
+            onPressed: () => onVerify(controller.text),
             child: kText("Submit", color: white, weight: FontWeight.bold),
             color: black,
           ).stretchSize(h: 45),

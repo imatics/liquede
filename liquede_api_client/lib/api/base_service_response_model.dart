@@ -21,11 +21,12 @@ class BaseResponse<T>{
   }
 
   BaseResponse.fromJson(json) {
+    print(json);
     if (json == null) return;
     href = json['href'];
-    relations = (json['relations'] as List).map((item) => item as String).toList();
-    method = json['method'];
-    routeName = json['routeName'];
+    // relations = (json['relations'] as List).map((item) => item as String).toList();
+    // method = json['method'];
+    // routeName = json['routeName'];
     // routeValues = new Object.fromJson(json['routeValues']);
     status = json['status'];
     message = json['message'];

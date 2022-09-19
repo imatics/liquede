@@ -12,27 +12,21 @@ class UserService extends BaseService{
 
 
   late UserApi _api;
-  late UserView? _userView;
+  UserView? _userView;
   UserView? get userView => _userView;
 
-  UserService(BuildContext context) : super(context){
+  UserService(){
     _api = UserApi();
   }
-  //
-  // @override
-  // void update(ApiClient client) {
-  //   _api = UserApi(client);
-  // }
 
-
-  Stream<NetworkEvent<UserView>> login(LoginModel request){
-    return executeReturnOrCall(userView, ()async{
+  Stream<NetworkEvent<UserView?>> login(LoginModel request){
+    return executeCall(()async{
       return _api.login(body: request);
-    }).map<NetworkEvent<UserView>>((event){
+    }).map<NetworkEvent<UserView?>>((event){
       if(event.type == NetworkEventType.completed){
         _userView = event.data;
       }
-      return event as NetworkEvent<UserView>;
+      return event;
     });
   }
 
@@ -44,19 +38,19 @@ class UserService extends BaseService{
       if(event.type == NetworkEventType.completed){
         _userView = event.data;
       }
-      return event as NetworkEvent<UserView>;
+      return event;
     });
   }
 
 
-  Stream<NetworkEvent<UserView>> verifyUser(String token, String email, )  {
+  Stream<NetworkEvent<UserView>> verifyUser(String token)  {
     return executeCall(()async{
-      return _api.verify(token, email);
+      return _api.verify(token, _userView?.email??"");
     }).map<NetworkEvent<UserView>>((event){
       if(event.type == NetworkEventType.completed){
         _userView = event.data;
       }
-      return event as NetworkEvent<UserView>;
+      return event;
     });
   }
 
@@ -68,7 +62,7 @@ class UserService extends BaseService{
      if(event.type == NetworkEventType.completed){
        _userView = event.data;
      }
-     return event as NetworkEvent<UserView>;
+     return event;
    });
 
   }
@@ -81,7 +75,7 @@ class UserService extends BaseService{
      if(event.type == NetworkEventType.completed){
        _userView = event.data;
      }
-     return event as NetworkEvent<UserView>;
+     return event;
    });
 
   }
@@ -93,7 +87,7 @@ class UserService extends BaseService{
       if(event.type == NetworkEventType.completed){
         _userView = event.data;
       }
-      return event as NetworkEvent<UserView>;
+      return event;
     });
   }
 
@@ -105,7 +99,7 @@ class UserService extends BaseService{
       if(event.type == NetworkEventType.completed){
         _userView = event.data;
       }
-      return event as NetworkEvent<UserView>;
+      return event;
     });
   }
 

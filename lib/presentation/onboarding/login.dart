@@ -2,12 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:liquede/commons/base_scaffold.dart';
 import 'package:liquede/commons/constants.dart';
+import 'package:liquede/commons/encryption.dart';
+import 'package:liquede/commons/overlay.dart';
 import 'package:liquede/commons/reusables.dart';
 import 'package:liquede/commons/size_config.dart';
 import 'package:liquede/commons/utils.dart';
 import 'package:liquede/extensions/widget.dart';
 import 'package:liquede/extensions/string.dart';
 import 'package:liquede/presentation/dashboard/home.dart';
+import 'package:liquede/services/api/base_service.dart';
+import 'package:liquede/services/api/user_service.dart';
+import 'package:liquede/services/app_preference.dart';
+import 'package:swagger/api.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -17,17 +23,24 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+  final _key = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
+
+    AppPreference.I(context).seenAppTour = true;
+
     email = KInputFieldProps(
         hint: "Email or mobile number",
-        textEditingController: TextEditingController(),
+        textEditingController: TextEditingController(text: "otuemeemmanuel@gmail.com"),
         label: "Email or mobile number",
+        validators: [validateEmail],
         inputType: TextInputType.emailAddress);
     password = KInputFieldProps(
         hint: "Password",
-        textEditingController: TextEditingController(),
+        validators: [validatePassword],
+        textEditingController: TextEditingController(text: "123456"),
         label: "Password",
         isPassword: true);
   }
@@ -36,6 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
   late KInputFieldProps password;
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return BaseScaffold(
       context: context,
       baseAppBar: AppBar(
@@ -74,14 +88,26 @@ class _LoginScreenState extends State<LoginScreen> {
               kText("I forgot my password").center,
               addSpace(y: 40),
             ],
-          ).paddingX(20).stretchSize(h: getPercentageHeight(90)),
+          ).withForm(_key).paddingX(20).stretchSize(h: getPercentageHeight(90)),
         ),
       ),
     );
   }
 
   void login() {
-    goto(context, const Home());
+    if(_key.currentState?.validate() == true){
+      LoginModel model = LoginModel()
+        ..email = email.textEditingController?.value.text
+        ..password = password.textEditingController?.value.text;
+    UserService.I(context).login(model).listen((event) {
+      event.handleState(context);
+      event.performOnSuccess((userData) {
+      AppPreference.I(context).token = userData?.token??"";
+      AppPreference.I(context).hasLoggedIn = true;
+      goto(context, const Home());
+      });
+    });
+  }
   }
 }
 

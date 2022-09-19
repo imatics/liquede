@@ -5,11 +5,6 @@ import 'package:provider/provider.dart';
 
 class NetworkServiceState2 with ChangeNotifier{
 
-
-  factory NetworkServiceState2.getInstance(BuildContext context) {
-    return Provider.of<NetworkServiceState2>(context, listen: false);
-  }
-
   bool _networkActive = false;
   bool get networkActive => _networkActive;
   late StreamSubscription _networkStream;
@@ -39,7 +34,6 @@ class NetworkServiceState2 with ChangeNotifier{
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _networkStream.cancel();
   }
