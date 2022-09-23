@@ -5,7 +5,6 @@ import 'package:liquede/commons/overlay.dart';
 import 'package:liquede/commons/utils.dart';
 import 'package:liquede/main.dart';
 import 'package:liquede/services/api/api_error.dart';
-import 'package:liquede/services/network_service_state.dart';
 import 'package:swagger/api.dart';
 
 typedef EventChuck<T> = Stream<NetworkEvent<T>> Function();
@@ -64,6 +63,12 @@ Stream<NetworkEvent<T>> executeReturnOrCall<T>( T data, NetWorkCall<T> workCall,
   }
 }
 
+
+
+void updateClient(String token){
+    defaultApiClient.setAccessToken(token);
+}
+
 }
 
 
@@ -104,12 +109,20 @@ extension NetworkEventEXT<T> on NetworkEvent<T>{
 
   void handleState(BuildContext context, {String message = "Processing", String? errorMessage}){
     if(type == NetworkEventType.processing){
+      print(type);
       showOverlay(context, message: message);
     }else if(type == NetworkEventType.completed){
       hideOverlay(context);
     }else if(type == NetworkEventType.failed){
-      showErrorPopUp(context, errorMessage??message);
+      hideOverlay(context);
+      showErrorPopUp(context, errorMessage??this.message);
     }
+  }
+
+
+  void handleStateAndPerformOnSuccess(BuildContext context, Action<T> action, {String message = "Processing", String? errorMessage}){
+    handleState(context);
+    performOnSuccess(action);
   }
 
 }

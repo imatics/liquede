@@ -326,10 +326,9 @@ class _EditTextFieldState extends State<EditTextField> {
   InputDecoration getDecoration() {
     return (widget.fieldDecorator.inputDecoration ??
         InputDecoration(
-          label: Text(widget.fieldDecorator.label ?? ""),
           suffixIcon: getPasswordWidget(),
           contentPadding:
-              const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+              const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
           border: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide(color: transparent, width: 0.5)),
@@ -342,6 +341,18 @@ class _EditTextFieldState extends State<EditTextField> {
           hintText: widget.fieldDecorator.hint,
           filled: true,
           fillColor: widget.fieldDecorator.fillColor??Colors.grey[200],
+        ));
+  }
+
+  InputDecoration getDecoration2() {
+    return (widget.fieldDecorator.inputDecoration ??
+        InputDecoration(
+          contentPadding: const EdgeInsets.all(0),
+          border:  InputBorder.none,
+          isDense: true,
+          focusedBorder: InputBorder.none,
+          enabledBorder:InputBorder.none,
+          hintText: widget.fieldDecorator.hint,
         ));
   }
 
@@ -360,7 +371,8 @@ class _EditTextFieldState extends State<EditTextField> {
         fontSize: 15,).build!;
     }
 
-    return TextFormField(
+
+    Widget textField =  TextFormField(
       onTap: widget.fieldDecorator.onclick,
       validator: (text) {
         if (!widget.fieldDecorator.validators.hasNothing) {
@@ -382,7 +394,6 @@ class _EditTextFieldState extends State<EditTextField> {
       focusNode: widget.fieldDecorator.focusNode,
       onEditingComplete: () {
         if(widget.fieldDecorator.context != null) {
-          print(widget.fieldDecorator.nextFocusNode);
           FocusScope.of(widget.fieldDecorator.context!)
             .requestFocus(widget.fieldDecorator.nextFocusNode);
         }
@@ -395,7 +406,7 @@ class _EditTextFieldState extends State<EditTextField> {
       maxLines: widget.fieldDecorator.maxLines ?? 1,
       maxLength: widget.fieldDecorator.maxLength,
       style: style,
-      decoration: widget.fieldDecorator.inputDecoration ?? getDecoration(),
+      decoration: widget.fieldDecorator.label == null? (widget.fieldDecorator.inputDecoration ?? getDecoration()) : getDecoration2(),
       autovalidateMode: widget.fieldDecorator.autoValidateMode,
       minLines: widget.fieldDecorator.minLines,
       // textDirection: fieldDecorator.textDirection,
@@ -412,6 +423,30 @@ class _EditTextFieldState extends State<EditTextField> {
         }
         },
     );
+    if(widget.fieldDecorator.label.hasNothing){
+      return textField;
+    }else{
+      return Container(
+        padding: const EdgeInsets.only(left: 10,right: 10, bottom: 5, top: 5),
+        decoration: BoxDecoration(
+          color: widget.fieldDecorator.fillColor??Colors.grey[200],
+          borderRadius: BorderRadius.circular(8)
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  kText(widget.fieldDecorator.label, fontSize: 10, color: textHintGrey),
+                  textField.paddingMerge(t: 2, b: 5)
+                ],
+              ),
+            ), getPasswordWidget()?? const SizedBox(),
+          ],
+        ),
+      );
+    }
   }
 
   Widget? getPasswordWidget() {

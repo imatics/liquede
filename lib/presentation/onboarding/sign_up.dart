@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:liquede/commons/base_scaffold.dart';
 import 'package:liquede/commons/constants.dart';
 import 'package:liquede/commons/reusables.dart';
-import 'package:liquede/commons/size_config.dart';
 import 'package:liquede/commons/utils.dart';
 import 'package:liquede/extensions/widget.dart';
 import 'package:liquede/presentation/commons/bottom_sheet.dart';
+import 'package:liquede/presentation/onboarding/login.dart';
 import 'package:liquede/presentation/onboarding/terms_and_condition.dart';
-import 'package:liquede/extensions/others.dart';
-import 'package:liquede/presentation/onboarding/onboarding.dart';
 import 'package:liquede/presentation/onboarding/welcome_screen.dart';
 import 'package:liquede/services/api/base_service.dart';
 import 'package:liquede/services/api/user_service.dart';
@@ -27,36 +26,63 @@ class _SignUpState extends State<SignUp> {
   late KInputFieldProps phoneNumberProps;
   late KInputFieldProps passwordProps;
 
+  late FocusNode firstNameFN;
+  late FocusNode lastNameFN;
+  late FocusNode emailFN;
+  late FocusNode phoneNumberFN;
+  late FocusNode passwordFN;
+
   List<KInputFieldProps> props = [];
 
   @override
   void initState() {
     super.initState();
 
+
+    firstNameFN = FocusNode();
+    lastNameFN = FocusNode();
+    emailFN = FocusNode();
+    phoneNumberFN = FocusNode();
+    passwordFN = FocusNode();
+
     firstNameProp = KInputFieldProps(
         textEditingController: TextEditingController(),
         validators: [validateField],
         label: "First Name",
+        hint: "John",
+        focusNode: firstNameFN,
+        nextFocusNode: lastNameFN,
         fillColor: Colors.grey[100]);
     lastNameProp = KInputFieldProps.copyFrom(firstNameProp)
       ..validators = [validateField]
       ..textEditingController = TextEditingController()
-      ..label = "Surname";
+      ..label = "Surname"
+      ..focusNode = lastNameFN
+      ..nextFocusNode = emailFN
+    ..hint = "Doe";
     emailProp = KInputFieldProps.copyFrom(firstNameProp)
       ..validators = [validateEmail]
       ..inputType = TextInputType.emailAddress
       ..textEditingController = TextEditingController()
+      ..focusNode = emailFN
+      ..nextFocusNode = phoneNumberFN
+      ..hint = "johndoe@mail.com"
       ..label = "Email";
     phoneNumberProps = KInputFieldProps.copyFrom(firstNameProp)
-      ..validators = [validatePhone]
+      ..validators = [validateField]
       ..inputType = TextInputType.phone
-      ..textEditingController = TextEditingController()
+      ..textEditingController = TextEditingController(text: "+22350097951")
+      ..focusNode = phoneNumberFN
+      ..nextFocusNode = passwordFN
+      ..hint = "080XXXXXXXXX"
       ..label = "Mobile Number";
     passwordProps = KInputFieldProps.copyFrom(firstNameProp)
       ..validators = [validatePassword]
       ..isPassword = true
       ..inputType = TextInputType.visiblePassword
       ..textEditingController = TextEditingController()
+      ..focusNode = passwordFN
+      ..hint = "Enter password"
       ..label = "Password";
     props.add(firstNameProp);
     props.add(lastNameProp);
@@ -70,14 +96,16 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: defaultAppBar,
-      body: Builder(builder: (context) {
+    return BaseScaffold(
+      context: context,
+      baseAppBar: AppBar(toolbarHeight: 0,),
+      baseBody: Builder(builder: (context) {
         return SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 25),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              addSpace(y: 50),
               kText("Hey there!", weight: FontWeight.bold),
               addSpace(y: 20),
               kText("Let's get \nliquede",
@@ -113,6 +141,9 @@ class _SignUpState extends State<SignUp> {
               ),
               // addSpace(y: 10),
               kText("Or Sign up via").paddingMerge(b: 20, t: 10).center,
+              addSpace(y: 10),
+              kText("I already have an account. Sign In").onclickWithRipple(() => gotoAndClear(context, const LoginScreen())).center,
+              addSpace(y: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -154,7 +185,6 @@ class _SignUpState extends State<SignUp> {
       UserService.I(context).register(model).listen((event) {
         event.handleState(context);
         event.performOnSuccess((p0) {
-
           showVerify(context, validateOTP);
         });
       });
@@ -166,10 +196,15 @@ class _SignUpState extends State<SignUp> {
   void validateOTP(String otp){
     if(_key.currentState!.validate()){
       UserService.I(context).verifyUser(otp).listen((event) {
+        print("$event");
         event.handleState(context);
         event.performOnSuccess((p0) {
            goto(context, const WelcomeScreen());
         });
+      }).onError((obj, trace){
+        debugPrint(obj);
+        debugPrint(trace);
+        debugPrint("an error occurred");
       });
 
     }
@@ -204,11 +239,21 @@ void showVerify(BuildContext context, Function(String) onVerify) {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              kText("Change number", fontSize: 14, weight: FontWeight.bold),
-              kText("Resend Code", fontSize: 14, weight: FontWeight.bold),
+              kText("Change number", fontSize: 12, weight: FontWeight.bold).onclickWithRipple(() => goBack(context)),
+              kText("Resend Code", fontSize: 12, weight: FontWeight.bold).onclickWithRipple(() => resendOTP(context)),
             ],
           ).paddingY(20),
         ],
       ),
-      hFactor: 0.8);
+      hFactor: 0.6);
+}
+
+
+void resendOTP(BuildContext context){
+  UserService.I(context).requestOTP().listen((event) {
+    event.handleStateAndPerformOnSuccess(context, (data){
+     showSuccessPopUp(context, "OTP sent!");
+    });
+
+  });
 }

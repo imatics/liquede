@@ -19,7 +19,7 @@ class BaseScaffold extends StatefulWidget {
   late final bool withBackground;
   late final Function(bool) onNetworkStateChange;
   late final BuildContext context;
-  late final BottomAppBar? bottomBar;
+  late final Widget? bottomBar;
   late final Widget? floatingActionButton;
   late final Widget? drawer;
 
@@ -305,7 +305,7 @@ class BaseScaffoldWidget extends Scaffold {
   final bool removeAppBar;
   final bool implyLeading;
   final BuildContext? context;
-  final BottomAppBar? bottomAppBar;
+  final Widget? bottomAppBar;
   final Widget? fab;
   final Widget? mDrawer;
 

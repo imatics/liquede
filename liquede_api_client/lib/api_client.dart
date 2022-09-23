@@ -219,7 +219,7 @@ class ApiClient {
   //   return BaseResponse.fromJson(decodedJson, targetType);
   // }
 
-  String serialize(Object obj) {
+  String serialize(Object? obj) {
     String serialized = '';
     if (obj == null) {
       serialized = '';
@@ -263,7 +263,7 @@ class ApiClient {
       var response = await client.send(request);
       return Response.fromStream(response);
     } else {
-      var msgBody = contentType == "application/x-www-form-urlencoded" ? formParams : serialize(body!);
+      var msgBody = contentType == "application/x-www-form-urlencoded" ? formParams : serialize(body);
       switch(method) {
         case "POST":
           return client.post(url, headers: headerParams, body: msgBody);

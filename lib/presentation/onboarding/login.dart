@@ -10,6 +10,7 @@ import 'package:liquede/commons/utils.dart';
 import 'package:liquede/extensions/widget.dart';
 import 'package:liquede/extensions/string.dart';
 import 'package:liquede/presentation/dashboard/home.dart';
+import 'package:liquede/presentation/onboarding/sign_up.dart';
 import 'package:liquede/services/api/base_service.dart';
 import 'package:liquede/services/api/user_service.dart';
 import 'package:liquede/services/app_preference.dart';
@@ -34,11 +35,11 @@ class _LoginScreenState extends State<LoginScreen> {
     email = KInputFieldProps(
         hint: "Email or mobile number",
         textEditingController: TextEditingController(text: "otuemeemmanuel@gmail.com"),
-        label: "Email or mobile number",
+        label: "Email",
         validators: [validateEmail],
         inputType: TextInputType.emailAddress);
     password = KInputFieldProps(
-        hint: "Password",
+        hint: "Enter Password",
         validators: [validatePassword],
         textEditingController: TextEditingController(text: "123456"),
         label: "Password",
@@ -53,6 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return BaseScaffold(
       context: context,
       baseAppBar: AppBar(
+        toolbarHeight: 0,
         automaticallyImplyLeading: false,
       ),
       baseBody: LayoutBuilder(
@@ -60,24 +62,24 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              addSpace(y: 15),
+              addSpace(y: 65),
               kText("Hello!", weight: FontWeight.bold),
               addSpace(y: 15),
               kText("Glad you're \nback!",
                   weight: FontWeight.w900, fontSize: 35),
               addSpace(y: 15),
               Image.asset("padlock".imagePng).center.paddingY(35).stretch,
-              addSpace(y: 15),
+              addSpace(y: 20),
               Row(
                 children: [
                   EditTextField(email).stretch,
-                  Image.asset("biometric".imagePng)
+                  Image.asset("biometric".imagePng, height: 40,)
                       .paddingXY(y: 5, x: 20)
                       .onclickWithRipple(doBiometricLogin)
                 ],
-              ).stretchSize(h: 50),
-              addSpace(y: 10),
-              EditTextField(password).stretchSize(h: 45),
+              ),
+              addSpace(y: 20),
+              EditTextField(password).stretchSize(h: 50),
               addSpace(y: 20),
               MaterialButton(
                 onPressed: login,
@@ -85,7 +87,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: kText("Login", color: white),
               ).stretchSize(h: 45),
               addSpace(y: 30),
-              kText("I forgot my password").center,
+              kText("I forgot my password", fontSize: 13).center,
+              addSpace(y: 10),
+              kText("I don't have an account. Sign Up", fontSize: 13).onclickWithRipple(() => gotoAndClear(context, const SignUp())).center,
               addSpace(y: 40),
             ],
           ).withForm(_key).paddingX(20).stretchSize(h: getPercentageHeight(90)),

@@ -106,7 +106,7 @@ class UserApi {
   ///
   ///
   ///
-  Future<BaseResponse<UserViewPagedCollection>?> getUser() async {
+  Future<BaseResponse<UserView>?> getUser() async {
     Object? postBody = null;
 
     // verify required params are set
@@ -145,7 +145,7 @@ class UserApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return BaseResponse<UserViewPagedCollection>.fromJson(json.decode(response.body));
+      return BaseResponse<UserView>.fromJson(json.decode(response.body));
     } else {
       return null;
     }

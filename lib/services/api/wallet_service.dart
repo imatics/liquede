@@ -19,6 +19,10 @@ class WalletService extends BaseService{
 
   List<CardView> _userCards = [];
   List<CardView>? get userCards => _userCards;
+
+  String? _balance;
+  String get balance => _balance??"##.##";
+
   WalletService (){
     _api = WalletApi();
   }
@@ -88,26 +92,15 @@ class WalletService extends BaseService{
 
 
 
-  void getWalletBalance(int userID, APIAction<UserView> onSuccess,
-      APIAction<APIError> onError) async {
-    if(!await isNetworkActive()){
-      return;
-    }else{
-      _api.walletBalance(userId:userID).then((value){
-        value!.status.log;
-        value.statusCode.log;
-        if(value.status == true && value.data != null){
-          // onSuccess(value.data?.);
-        }else{
-
-          onError(APIError.fromString(value.message));
-        }
-      }).onError((error, stackTrace){
-        error.log;
-        stackTrace.log;
-        onError(APIError.fromString(error.toString()));
-      });
+  Stream<NetworkEvent<String>> getWalletBalance(int userID) {
+  return executeCall(()async{
+    return _api.walletBalance(userId:userID);
+  }).map<NetworkEvent<String>>((event){
+    if(event.type == NetworkEventType.completed){
+    _balance = event.data;
     }
+    return event;
+  });
   }
 
 

@@ -4,6 +4,7 @@ import 'package:liquede/commons/base_scaffold.dart';
 import 'package:liquede/commons/constants.dart';
 import 'package:liquede/commons/reusables.dart';
 import 'package:liquede/commons/extenstions.dart';
+import 'package:liquede/commons/size_config.dart';
 import 'package:liquede/extensions/string.dart';
 import 'package:liquede/commons/utils.dart';
 import 'package:liquede/extensions/widget.dart';
@@ -12,6 +13,9 @@ import 'package:liquede/presentation/history.dart';
 import 'package:liquede/presentation/model/notification.dart';
 import 'package:liquede/presentation/settings.dart';
 import 'package:liquede/presentation/slipcard.dart';
+import 'package:liquede/services/api/base_service.dart';
+import 'package:liquede/services/api/user_service.dart';
+import 'package:liquede/services/api/wallet_service.dart';
 
 
 class DashBoard extends StatefulWidget {
@@ -28,6 +32,23 @@ class _DashBoardState extends State<DashBoard> {
   int _selectedBalanceType = 0;
 
 
+  late BuildContext _context;
+  void showHideDrawer(){
+    print(Scaffold.of(_context).isDrawerOpen);
+   if(Scaffold.of(_context).isDrawerOpen){
+     Scaffold.of(_context).openDrawer();
+   }else{
+     Scaffold.of(_context).openDrawer();
+   }
+  }
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getWalletInfo();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,21 +56,23 @@ class _DashBoardState extends State<DashBoard> {
       context: context,
       networkSateAware: false,
       drawer: buildDrawer(),
-      // removeAppbar: true,
-      baseAppBar: AppBar(actions: [ kText("Hi Pade", weight: FontWeight.bold, fontSize: 13).paddingRight(20).center],),
+      baseAppBar: PreferredSize(
+        preferredSize: Size.fromHeight(50),
+        child: Builder(
+          builder: (context) {
+            _context = context;
+            return AppBar(
+              leading: IconButton(icon: const Icon(Icons.menu), onPressed: showHideDrawer,),
+              actions: [ kText("Hi ${UserService.I(context).userView?.firstName??""}", weight: FontWeight.bold, fontSize: 13, color: grey).paddingRight(20).center],elevation: 0, backgroundColor: Colors.grey[200],);
+          }
+        ),
+      ),
       baseBody: Container(
         color: Colors.grey[200],
         child: Column(
           children: [
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: [
-            //     IconButton(onPressed: () {  }, icon: const Icon(Icons.menu),),
-            //     kText("Hi Pade", weight: FontWeight.bold, fontSize: 13).paddingRight(20)
-            //   ],
-            // ),
             Expanded(child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
@@ -57,7 +80,7 @@ class _DashBoardState extends State<DashBoard> {
                   addSpace(y: 30),
                   chartCard(),
                   addSpace(y: 30),
-                  kText("Frequent Transactions", weight: FontWeight.bold, fontSize: 20).left.paddingMerge(l:20, b: 10),
+                  kText("Frequent Transactions", weight: FontWeight.bold, fontSize: 18).left.paddingMerge(l:5,b: 10),
                   frequentTransaction(),
                   addSpace(y: 30),
                   getLoanCard(),
@@ -84,7 +107,7 @@ class _DashBoardState extends State<DashBoard> {
       child:Row(
         children: [
           Expanded(
-            flex: 8,
+            flex: 9,
               child:Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -149,6 +172,7 @@ class _DashBoardState extends State<DashBoard> {
   }
 
 
+  bool hideBalance = false;
   Widget balanceCard(){
     return Material(
       borderRadius: BorderRadius.circular(12),
@@ -156,7 +180,13 @@ class _DashBoardState extends State<DashBoard> {
       color: black,
       child: Column(
         children: [
-          Expanded(child: kText(200000.toNairaFormat, color: white, fontSize: 32, weight: FontWeight.bold).center),
+          Expanded(child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              kText(hideBalance?"##,###":WalletService.I(context).balance, color: white, fontSize: 22, weight: FontWeight.bold).center,
+              IconButton(onPressed: _hideBalance, icon: Icon(hideBalance ? Icons.visibility:Icons.visibility_off, color: white,))
+            ],
+          )),
           SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             scrollDirection: Axis.horizontal,
@@ -176,7 +206,7 @@ class _DashBoardState extends State<DashBoard> {
       borderRadius: BorderRadius.circular(12),
       elevation: 1,
       child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 0),
           scrollDirection: Axis.horizontal,
           child: Row(
         children: [
@@ -186,8 +216,8 @@ class _DashBoardState extends State<DashBoard> {
           freTransactionItem("KO", "Transfer"),
           freTransactionItem("MJ", "Transfer"),
         ],
-      )).paddingXY(y: 15, x: 5),
-    ).stretchSize(h: 120);
+      )).paddingXY(y: 15),
+    ).stretchSize(h: 110);
   }
 
   Widget freTransactionItem(String initials, String type){
@@ -195,7 +225,7 @@ class _DashBoardState extends State<DashBoard> {
       children: [
         Container(
           alignment: Alignment.center,
-          height: 70,
+          height: 50,
           width: 50,
           decoration: const BoxDecoration(
             color: black,
@@ -203,9 +233,10 @@ class _DashBoardState extends State<DashBoard> {
           ),
           child: kText(initials, color: white),
         ),
+        addSpace(y: 10),
         kText(type, fontSize: 12)
       ],
-    ).paddingX(8);
+    ).paddingX(10);
   }
 
 
@@ -270,6 +301,17 @@ class _DashBoardState extends State<DashBoard> {
     );
   }
 
+  void getWalletInfo(){
+    int id = UserService.I(context).userView?.id??-1;
+    if(id != -1){
+      WalletService.I(context).getWalletBalance(id).listen((event) {
+      event.performOnSuccess((p0) {
+        setState(() {});
+      });
+      });
+    }
+  }
+
 
   Widget drawerItem(IconData image, String title){
     return Row(
@@ -299,6 +341,13 @@ class _DashBoardState extends State<DashBoard> {
         data: data,
       )
     ];
+  }
+
+
+  void _hideBalance(){
+    setState(() {
+      hideBalance = !hideBalance;
+    });
   }
 
 
@@ -342,5 +391,8 @@ Widget hOption(List<String> options, Color selectedTextColor, Color selectedItem
     }).toList(),
   );
 }
+
+
+
 
 

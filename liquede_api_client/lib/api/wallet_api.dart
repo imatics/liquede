@@ -618,7 +618,7 @@ class WalletApi {
   ///
   ///
   ///
-  Future<BaseResponse<TransactionViewPagedCollection>?> walletBalance({ int ?userId }) async {
+  Future<BaseResponse<String>?> walletBalance({ int ?userId }) async {
     Object? postBody = null;
 
     // verify required params are set
@@ -660,7 +660,7 @@ class WalletApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return BaseResponse<TransactionViewPagedCollection>.fromJson(json.decode(response.body));
+      return BaseResponse<String>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
