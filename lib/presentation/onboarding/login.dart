@@ -9,7 +9,9 @@ import 'package:liquede/commons/size_config.dart';
 import 'package:liquede/commons/utils.dart';
 import 'package:liquede/extensions/widget.dart';
 import 'package:liquede/extensions/string.dart';
+import 'package:liquede/presentation/commons/bottom_sheet.dart';
 import 'package:liquede/presentation/dashboard/home.dart';
+import 'package:liquede/presentation/onboarding/forgot_password.dart';
 import 'package:liquede/presentation/onboarding/sign_up.dart';
 import 'package:liquede/services/api/base_service.dart';
 import 'package:liquede/services/api/user_service.dart';
@@ -87,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: kText("Login", color: white),
               ).stretchSize(h: 45),
               addSpace(y: 30),
-              kText("I forgot my password", fontSize: 13).center,
+              kText("I forgot my password", fontSize: 13).onclickWithRipple(() => goto(context, const ForgotPassword())).center,
               addSpace(y: 10),
               kText("I don't have an account. Sign Up", fontSize: 13).onclickWithRipple(() => gotoAndClear(context, const SignUp())).center,
               addSpace(y: 40),
@@ -113,6 +115,38 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
   }
+}
+
+
+void showForgotPasswordModal(BuildContext context, Function(String) onVerify) {
+  TextEditingController controller = TextEditingController();
+  launchBottomSheetFull(
+      context,
+      Column(
+        children: [
+          kText("Lets reset your \npassword",
+              weight: FontWeight.w900, fontSize: 24)
+              .paddingX(40),
+          addSpace(y: 20),
+          kText("Enter your email"),
+          addSpace(y: 30),
+          EditTextField(KInputFieldProps(
+              textEditingController: controller,
+              fillColor: Colors.grey[200],
+              textAlign: TextAlign.center,
+              inputType: TextInputType.emailAddress,
+              validators: [validateEmail],
+              style:
+              KTextStyle(weight: FontWeight.bold, fontSize: 24, style: const TextStyle(letterSpacing: 3)).build)),
+          addSpace(y: 20),
+          MaterialButton(
+            onPressed: () => onVerify(controller.text),
+            child: kText("Submit", color: white, weight: FontWeight.bold),
+            color: black,
+          ).stretchSize(h: 45),
+        ],
+      ),
+      hFactor: 0.6);
 }
 
 void doBiometricLogin() {}

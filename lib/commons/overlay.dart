@@ -180,32 +180,59 @@ enum Screen {
   none,
 }
 
-void showOverlay(BuildContext context, {String message = ""}){
-  BaseWidgetState.getInstance(context).isOverlayShowing = true;
-  return;
-  // try{
-  // if (OverlayScreen().state != Screen.none) {
-  //   OverlayScreen().pop();
-  // }
-  // }catch(e){
-  //
-  // }
-  // OverlayScreen().show(context, message: message);
+bool _overlayActive = false;
+void showOverlay(BuildContext context, {String message = "processing"}){
+  _overlayActive = true;
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return WillPopScope(
+        onWillPop: () async => true,
+        child: Center(
+          child: SizedBox(
+            height: 150,
+            width: 200,
+            child: Material(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal:15.0, vertical: 25),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    appLoadingWidget,
+                    const SizedBox(height: 10.0),
+                    Text(
+                      message,
+                      style: const TextStyle(
+                        // color: $styles.colors.secondaryColor_900,
+                          fontSize: 12,
+                          decoration: TextDecoration.none,
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: "Baloo_Bhai_2"),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  ).then((value) {
+    _overlayActive = false;
+  });
+
+
 }
-void hideOverlay(BuildContext context, {bool? status}){
-  if(status == null){
-  BaseWidgetState.getInstance(context).isOverlayShowing = false;
-  return;
-  }else{
-    BaseWidgetState.getInstance(context).status = status? OverlayStatus.success : OverlayStatus.error;
-    Future.delayed(const Duration(milliseconds: 300),(){
-      BaseWidgetState.getInstance(context).status = status? OverlayStatus.success : OverlayStatus.error;
-    });
 
 
+void hideOverlay(BuildContext context){
+  if(_overlayActive){
+    Navigator.of(context).pop();
   }
-  // goBack(c);
-  // OverlayScreen().pop();
 }
 
 

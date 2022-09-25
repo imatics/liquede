@@ -42,7 +42,7 @@ class _LoanScreenState extends State<LoanScreen> {
             cardItem(
                 "Business Loan",
                 "get up to ${nairaSymbol}10,000,000 without collateral",
-                () => {}),
+                () => createBusinessLoan(context)),
             addSpace(y: 20),
             cardItem("Use SLIPCARD for credit",
                     "Make payment with your SLIPCARD even with a zero balance liquede account", () => requestCredit(context), customChild: Row(
@@ -56,7 +56,7 @@ class _LoanScreenState extends State<LoanScreen> {
                       decoration: BoxDecoration(color: Colors.grey[100]),
                     )
                   ],
-                ))
+                )).hideIf(true)
 
           ],
         ).paddingX(20);
@@ -89,7 +89,12 @@ class _LoanScreenState extends State<LoanScreen> {
 
   void createPersonalLoan(BuildContext context) {
     showBottomSheetFull(
-        context, "Get a personal Loan", const CreateLoanScreen().stretchSize(h: getPercentageHeight(100)));
+        context, "Get a personal Loan", const CreateLoanScreen(type: LoanType.personal,).stretchSize(h: getPercentageHeight(100)));
+  }
+
+  void createBusinessLoan(BuildContext context) {
+    showBottomSheetFull(
+        context, "Get a Business Loan", const CreateLoanScreen(type: LoanType.business,).stretchSize(h: getPercentageHeight(100)));
   }
 
   void requestCredit(BuildContext context) {
@@ -142,4 +147,7 @@ class _LoanScreenState extends State<LoanScreen> {
           ],
         ).paddingAll(20));
   }
+
+
+
 }

@@ -43,12 +43,13 @@ void launchBottomSheetFull(BuildContext context, Widget child, {double hFactor =
       context: context,
       isScrollControlled: true,
       backgroundColor: transparent,
-      barrierColor: Colors.white60,
+      barrierColor: Colors.black38,
       builder: (context) {
         return FractionallySizedBox(
           heightFactor: hFactor,
           child: Material(
               color: white,
+              elevation: 4,
               shadowColor: Colors.black,
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(

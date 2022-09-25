@@ -23,14 +23,9 @@ class BaseResponse<T>{
   BaseResponse.fromJson(json) {
     print(json);
     if (json == null) return;
-    href = json['href'];
-    // relations = (json['relations'] as List).map((item) => item as String).toList();
-    // method = json['method'];
-    // routeName = json['routeName'];
-    // routeValues = new Object.fromJson(json['routeValues']);
     status = json['status'];
     message = json['message'];
-    data = _deserialize(json['data'],T.toString());
+    data = _deserialize(json['data'],T.toString()) as T;
     statusCode = json['statusCode'];
     // errors = new Object.fromJson(json['errors']);
   }
@@ -225,12 +220,15 @@ class BaseResponse<T>{
           return new WalletView.fromJson(value);
         case 'WalletViewStandardResponse':
           return new WalletViewStandardResponse.fromJson(value);
+          case 'List<ProviderBundleResponse>':
+          return ProviderBundleResponse.listFromJson(value);
         default:
           {
             Match? match = _RegList.firstMatch(targetType??"");
             if (value is List && match != null) {
               var newTargetType = match[1];
-              return value.map((v) => _deserialize(v, newTargetType)).toList();
+              T data =  ((value.map((v) => _deserialize(v, newTargetType)).toList()) as T);
+              return data;
             } else if (value is Map && match != null) {
               var newTargetType = match[1];
               return new Map.fromIterables(value.keys,

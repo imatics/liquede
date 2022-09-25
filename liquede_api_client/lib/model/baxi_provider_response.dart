@@ -22,7 +22,7 @@ class BaxiProviderResponse {
     serviceType = json['serviceType'];
     shortname = json['shortname'];
     name = json['name'];
-    plans = (json['plans'] as List).map((item) => item as String).toList();
+    plans = ((json['plans']??[]) as List).map((item) => item as String).toList();
   }
 
   Map<String, dynamic> toJson() {

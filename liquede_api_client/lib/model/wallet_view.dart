@@ -3,7 +3,7 @@ part of swagger.api;
 class WalletView {
 
   int? userId = null;
-  double? balance = null;
+  String? balance = null;
   String? currency = null;
   String? walletType = null;
 

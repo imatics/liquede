@@ -38,8 +38,6 @@ class SavingsService extends BaseService{
   Stream<NetworkEvent<SavingsView>> createLiquedeGoal(LiquiedeGoalInput model) {
     return executeCall(()async{
       return _api.createLiqiedeGoalSavingPlan(body: model);
-    }).map<NetworkEvent<SavingsView>>((event){
-      return event;
     });
   }
 
@@ -47,8 +45,6 @@ class SavingsService extends BaseService{
   Stream<NetworkEvent<SavingsView>> createLiquedeSeal(LiquedeSealInput model) {
     return executeCall(()async{
       return _api.createLiqiedeSealSavingPlan(body: model);
-    }).map<NetworkEvent<SavingsView>>((event){
-      return event;
     });
   }
 
@@ -63,24 +59,24 @@ class SavingsService extends BaseService{
 
 
   Stream<NetworkEvent<int>> getWithdrawalPenalty({bool force = false}) {
-    return executeReturnOrCall(_withdrawalPenalty,()async{
+    return executeReturnOrCall(() => _withdrawalPenalty,()async{
       return _api.getWithdrawalPenaltyPercentage();
-    }).map<NetworkEvent<int>>((event) => event as NetworkEvent<int>);
+    });
   }
 
 
 
   Stream<NetworkEvent<SavingsView>> withDrawPrematurely(SavingsWithdrawalModel model) {
-    return executeReturnOrCall(null, ()async{
+    return executeCall(()async{
       return _api.withdrawPrematurely(body: model);
-    }).map<NetworkEvent<SavingsView>>((event) => event as NetworkEvent<SavingsView>);
+    });
   }
 
 
   Stream<NetworkEvent<SavingsView>> retryPayment(int planId, String paymentMethod) {
-    return executeReturnOrCall(null, ()async{
+    return executeCall(()async{
       return _api.retryPlanPayment(planId,paymentMethod);
-    }).map<NetworkEvent<SavingsView>>((event) => event as NetworkEvent<SavingsView>);
+    });
   }
 
 

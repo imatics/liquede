@@ -1,3 +1,4 @@
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -6,6 +7,10 @@ import 'package:liquede/commons/reusables.dart';
 import 'package:liquede/commons/style.dart';
 import 'package:liquede/commons/utils.dart';
 import 'package:liquede/extensions/widget.dart';
+import 'package:liquede/services/api/saving_service.dart';
+import 'package:swagger/api.dart';
+import 'package:liquede/services/api/base_service.dart';
+import 'package:liquede/extensions/string.dart';
 
 class CreateLiquedeSealPlan extends StatefulWidget {
   const CreateLiquedeSealPlan({Key? key}) : super(key: key);
@@ -20,15 +25,21 @@ class _CreateLiquedeSealPlanState extends State<CreateLiquedeSealPlan> {
     "Set duration by months",
   ];
 
+  final _key = GlobalKey<FormState>();
+
   String? selected;
   int valueEntered = 0;
+  bool termsChecked = false;
+  Duration _d = const Duration();
 
   late TextEditingController _controller;
   late KInputFieldProps prop;
+  late KInputFieldProps amountProp;
+  late KInputFieldProps titleProps;
 
   @override
   void initState() {
-    // TODO: implement initState
+    selected = options.first;
     super.initState();
     _controller = TextEditingController(text: "$valueEntered");
     prop = KInputFieldProps(
@@ -44,42 +55,62 @@ class _CreateLiquedeSealPlanState extends State<CreateLiquedeSealPlan> {
             radius: 5,
             borderWidth: 1),
         style: KTextStyle(color: black, a: TextAlign.center).build);
+    titleProps = KInputFieldProps(
+      context: context,
+      hint: "Enter title for LiquedeSeal",
+      textEditingController: TextEditingController(),
+    );
+    amountProp = KInputFieldProps(
+      context: context,
+      hint: "Enter Amount",
+      onChange: (e){setState(() {});},
+      style: KTextStyle(weight: FontWeight.bold).build,
+      inputType: TextInputType.number,
+      inputFormatter: [
+        CurrencyTextInputFormatter(decimalDigits: 0, symbol: nairaSymbol)
+      ],
+      textEditingController: TextEditingController(),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    if (selected == options.first) {
+      _d = Duration(days: valueEntered);
+    } else {
+      _d = Duration(days: valueEntered * 30);
+    }
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
-            EditTextField(KInputFieldProps(
-                context: context,
-                textEditingController: TextEditingController(),
-                inputType: TextInputType.number)),
+            EditTextField(amountProp),
             addSpace(y: 20),
             Container(
               decoration: BoxDecoration(
                   color: Colors.grey[100],
                   border:
-                      const Border(bottom: BorderSide(width: 1, color: black))),
+                  const Border(bottom: BorderSide(width: 1, color: black))),
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: DropdownButton<String>(
-                      isExpanded: true,
-                      underline: const SizedBox(),
-                      itemHeight: 90,
-                      onChanged: (e) {},
-                      value: selected,
-                      items: options
-                          .map((e) => DropdownMenuItem(
-                                child: Text(e),
-                                value: e,
-                                onTap: () {
-                                  setState(() {
-                                    selected = e;
-                                  });
-                                },
-                              ))
-                          .toList())
+                  isExpanded: true,
+                  underline: const SizedBox(),
+                  itemHeight: 90,
+                  hint: const Text("Set duration"),
+                  onChanged: (e) {},
+                  value: selected,
+                  items: options
+                      .map((e) =>
+                      DropdownMenuItem(
+                        child: Text(e),
+                        value: e,
+                        onTap: () {
+                          setState(() {
+                            selected = e;
+                          });
+                        },
+                      ))
+                      .toList())
                   .stretchSize(h: 50),
             ),
             addSpace(y: 10),
@@ -104,6 +135,7 @@ class _CreateLiquedeSealPlanState extends State<CreateLiquedeSealPlan> {
                           ).onclickWithRipple(() {
                             if (valueEntered > 0) {
                               _controller.text = "${valueEntered--}";
+                              setState(() {});
                             }
                           }).stretchSize(h: 60, w: 60),
                           addSpace(x: 10),
@@ -115,6 +147,7 @@ class _CreateLiquedeSealPlanState extends State<CreateLiquedeSealPlan> {
                           ).onclickWithRipple(() {
                             if (valueEntered < 30) {
                               _controller.text = "${valueEntered++}";
+                              setState(() {});
                             }
                           }).stretchSize(h: 60, w: 60),
                         ],
@@ -125,30 +158,27 @@ class _CreateLiquedeSealPlanState extends State<CreateLiquedeSealPlan> {
                   ),
                   Expanded(
                       child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      kText("Or set a target date", fontSize: 13)
-                          .paddingMerge(r: 15, b: 15)
-                          .right
-                          .onclick(() {}),
-                    ],
-                  ))
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          kText("Or set a target date", fontSize: 13)
+                              .paddingMerge(r: 15, b: 15)
+                              .right
+                              .onclick(() {}),
+                        ],
+                      ))
                 ],
               ),
             ),
             addSpace(y: 10),
-            previewCard(200),
+            previewCard(),
             addSpace(y: 20),
-            EditTextField(KInputFieldProps(
-              context: context,
-              textEditingController: TextEditingController(),
-            )),
+            EditTextField(titleProps),
             addSpace(y: 20),
             Container(
               decoration: BoxDecoration(
                   color: Colors.grey[100],
                   border:
-                      const Border(bottom: BorderSide(width: 1, color: black))),
+                  const Border(bottom: BorderSide(width: 1, color: black))),
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -157,15 +187,22 @@ class _CreateLiquedeSealPlanState extends State<CreateLiquedeSealPlan> {
                       weight: FontWeight.normal, color: grey),
                   const Icon(Icons.arrow_drop_down)
                 ],
-              ).stretchSize(h: 50).onclickWithRipple(selectPaymentSource),
+              )
+                  .stretchSize(h: 50)
+                  .onclickWithRipple(selectPaymentSource)
+                  .hideIf(true),
             ),
             addSpace(y: 20),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Checkbox(
-                  value: false,
-                  onChanged: (v) {},
+                  value: termsChecked,
+                  onChanged: (v) {
+                    setState(() {
+                      termsChecked = v == true;
+                    });
+                  },
                 ),
                 kText(authText, a: TextAlign.justify, fontSize: 13)
                     .paddingY(15)
@@ -173,13 +210,13 @@ class _CreateLiquedeSealPlanState extends State<CreateLiquedeSealPlan> {
               ],
             ),
             MaterialButton(
-              onPressed: createSeal,
+              onPressed: termsChecked ? createSeal : null,
               color: black,
               child: kText("Create LiquedeSeal", color: white),
             ).stretchSize(h: 45),
             addSpace(y: 30),
           ],
-        ),
+        ).withForm(_key),
       ),
     );
   }
@@ -193,75 +230,85 @@ class _CreateLiquedeSealPlanState extends State<CreateLiquedeSealPlan> {
   }
 
   String authText =
-      """I authorize Lquede to to seal {amount} and return it in full along with the accrued interest on {date} to my liquedeFlex. I also acknowledge that this LiquedeSeal saving cannot be a broken once it is created.
+  """I authorize Lquede to to seal {amount} and return it in full along with the accrued interest on {date} to my liquedeFlex. I also acknowledge that this LiquedeSeal saving cannot be a broken once it is created.
   """;
 
   void createSeal() {
-    showSuccessPopUp(context, "LiquedeSeal successfully created", onClose: () {
-      goBack(context);
+    SavingsService.I(context)
+        .createLiquedeSeal(LiquedeSealInput()
+      ..amount = amountProp.textEditingController?.text.cleanMoneyValue
+      ..durationInDays = _d.inDays
+      // ..cardId = -1
+      ..name = titleProps.textEditingController?.text)
+        .handleStateAndPerformOnSuccess(context, (p0) {
+      showSuccessPopUp(context, "LiquedeSeal successfully created", onClose: () {
+        goBack(context);
+      });
     });
-  }
-}
 
-Widget previewCard(double amount) {
-  KTextStyle label = KTextStyle(
-      fontSize: 14, color: Colors.grey[600], weight: FontWeight.w500);
-  KTextStyle value =
-      KTextStyle(fontSize: 16, color: Colors.black, weight: FontWeight.bold);
-  return Material(
-    color: const Color(0xFFe3e0c8),
-    child: Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          kText("Preview"),
-          addSpace(y: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  kText("Amount to Seal", defaultStyle: label.build!),
-                  addSpace(y: 5),
-                  kText(formatMoney(amount), defaultStyle: value.build!),
-                ],
-              ),
-              const Spacer(),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  kText("Interest to earn", defaultStyle: label.build!),
-                  addSpace(y: 5),
-                  kRichText([
-                    ManyText(
-                        text: "0.6332% ",
-                        style: KTextStyle(color: Colors.green, fontSize: 14)),
-                    ManyText(
-                      text: "/${formatMoney(0)}",
-                      style: KTextStyle(style: value.build!),
-                    )
+  }
+
+
+  Widget previewCard() {
+    KTextStyle label = KTextStyle(
+        fontSize: 14, color: Colors.grey[600], weight: FontWeight.w500);
+    KTextStyle value =
+    KTextStyle(fontSize: 16, color: Colors.black, weight: FontWeight.bold);
+    return Material(
+      color: const Color(0xFFe3e0c8),
+      child: Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            kText("Preview"),
+            addSpace(y: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    kText("Amount to Seal", defaultStyle: label.build!),
+                    addSpace(y: 5),
+                    kText(amountProp.textEditingController?.text, defaultStyle: value.build!),
                   ],
-                      style: KTextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
-                          weight: FontWeight.bold)),
-                ],
-              ),
-            ],
-          ),
-          addSpace(y: 20),
-          kText("Maturity Date", defaultStyle: label.build!),
-          kRichText([
-            ManyText(
-                text: "3rd of Feb 2021",
-                style: KTextStyle(style: value.build!)),
-            ManyText(
-                text: "/10 Days",
-                style: KTextStyle(style: value.build!, fontSize: 12))
-          ], style: value),
-        ],
-      ).paddingAll(20),
-    ),
-  );
+                ),
+                const Spacer(),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    kText("Interest to earn", defaultStyle: label.build!),
+                    addSpace(y: 5),
+                    kRichText([
+                      ManyText(
+                          text: "0.6332% ",
+                          style: KTextStyle(color: Colors.green, fontSize: 14)),
+                      ManyText(
+                        text: "/${formatMoney(0)}",
+                        style: KTextStyle(style: value.build!),
+                      )
+                    ],
+                        style: KTextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                            weight: FontWeight.bold)),
+                  ],
+                ),
+              ],
+            ),
+            addSpace(y: 20),
+            kText("Maturity Date", defaultStyle: label.build!),
+            kRichText([
+              ManyText(
+                  text: format1.format(DateTime.now().add(_d)),
+                  style: KTextStyle(style: value.build!)),
+              ManyText(
+                  text: "/${_d.inDays} Days",
+                  style: KTextStyle(style: value.build!, fontSize: 12))
+            ], style: value),
+          ],
+        ).paddingAll(20),
+      ),
+    );
+  }
 }

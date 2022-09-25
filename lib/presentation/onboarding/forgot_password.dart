@@ -3,8 +3,13 @@ import 'package:liquede/commons/base_scaffold.dart';
 import 'package:liquede/commons/constants.dart';
 import 'package:liquede/commons/reusables.dart';
 import 'package:liquede/commons/size_config.dart';
+import 'package:liquede/commons/utils.dart';
 import 'package:liquede/extensions/string.dart';
 import 'package:liquede/extensions/widget.dart';
+import 'package:liquede/presentation/onboarding/sign_up.dart';
+import 'package:liquede/services/api/base_service.dart';
+import 'package:liquede/services/api/user_service.dart';
+import 'package:swagger/api.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({Key? key}) : super(key: key);
@@ -14,23 +19,36 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
+
+  final _key = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
-    email = KInputFieldProps(
-        hint: "Email or mobile number",
+    emailProps = KInputFieldProps(
+        hint: "Enter email or Phone number",
         textEditingController: TextEditingController(),
-        label: "Email or mobile number",
+        label: "Email",
+        validators: [validateEmail],
         inputType: TextInputType.emailAddress);
-    password = KInputFieldProps(
-        hint: "Password",
+    newPassProp = KInputFieldProps(
+      hint: "Enter new Password",
+      textEditingController: TextEditingController(),
+      label: "New Password",
+      validators: [validateField],
+      isPassword: true,
+    );
+    confirmPassProp = KInputFieldProps(
+        hint: "Enter password again",
+        validators: [(e) => newPassProp.textEditingController?.text == e? null : "Password mismatch"],
         textEditingController: TextEditingController(),
-        label: "Password",
+        label: "Confirm Password",
         isPassword: true);
   }
 
-  late KInputFieldProps email;
-  late KInputFieldProps password;
+  late KInputFieldProps emailProps;
+  late KInputFieldProps newPassProp;
+  late KInputFieldProps confirmPassProp;
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
@@ -46,41 +64,52 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               addSpace(y: 15),
               kText("Hello!", weight: FontWeight.bold),
               addSpace(y: 15),
-              kText("Glad you're \nback!",
+              kText("Lets get you \nback in",
                   weight: FontWeight.w900, fontSize: 35),
-              addSpace(y: 15),
-              Image.asset("padlock".imagePng).center.paddingY(35).stretch,
-              addSpace(y: 15),
-              Row(
-                children: [
-                  EditTextField(email).stretch,
-                  Image.asset("biometric".imagePng)
-                      .paddingXY(y: 5, x: 20)
-                      .onclickWithRipple((){})
-                ],
-              ).stretchSize(h: 50),
-              addSpace(y: 10),
-              EditTextField(password).stretchSize(h: 45),
+              addSpace(y: 55),
+              EditTextField(emailProps),
               addSpace(y: 20),
+              EditTextField(newPassProp),
+              addSpace(y: 20),
+              EditTextField(confirmPassProp),
+              addSpace(y: 20),
+              Spacer(),
               MaterialButton(
-                onPressed: resetPassword,
+                onPressed: requestOtp,
                 color: black,
-                child: kText("Login", color: white),
+                child: kText("Update password", color: white),
               ).stretchSize(h: 45),
               addSpace(y: 30),
-              kText("I forgot my password").center,
               addSpace(y: 40),
             ],
-          ).paddingX(20).stretchSize(h: getPercentageHeight(90)),
+          ).withForm(_key).paddingX(20).stretchSize(h: getPercentageHeight(90)),
         ),
       ),
     );
   }
 
-
-  resetPassword(){
-
+  resetPassword() {
+    showVerify(context, (p0) {
+      UserService.I(context)
+          .resetPassword(PasswordReset()
+            ..code = p0
+            ..newPassword = newPassProp.textEditingController?.text)
+          .handleStateAndPerformOnSuccess(context, (data) {
+        showSuccessPopUp(context, "Password Reset Successful", onClose: () {
+          goBack(context);
+          goBack(context);
+        });
+      });
+    });
   }
 
-
+  requestOtp() {
+    if(_key.currentState?.validate() == true){
+      UserService.I(context)
+          .requestOTP(email: emailProps.textEditingController?.text)
+          .handleStateAndPerformOnSuccess(context, (data) {
+        resetPassword();
+      });
+    }
+  }
 }

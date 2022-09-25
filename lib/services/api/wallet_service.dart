@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:liquede/commons/def_types.dart';
+import 'package:liquede/commons/utils.dart';
 import 'package:liquede/extensions/string.dart';
 import 'package:liquede/services/api/base_service.dart';
 import 'package:provider/provider.dart';
@@ -41,7 +42,7 @@ class WalletService extends BaseService{
       if(event.type == NetworkEventType.completed){
         _walletDetails = event.data;
       }
-      return event as NetworkEvent<WalletView>;
+      return event;
     });
   }
 
@@ -53,7 +54,7 @@ class WalletService extends BaseService{
       if(event.type == NetworkEventType.completed){
         _walletDetails = event.data;
       }
-      return event as NetworkEvent<WalletView>;
+      return event;
     });
   }
 
@@ -61,7 +62,6 @@ class WalletService extends BaseService{
   Stream<NetworkEvent<String>> fundWallet(FundWalletModel model) {
     return executeCall(()async{
       return _api.fundWallet(body: model);
-    }).map<NetworkEvent<String>>((event){return event as NetworkEvent<String>;
     });
   }
 
@@ -81,23 +81,21 @@ class WalletService extends BaseService{
   Stream<NetworkEvent<TransactionViewPagedCollection>> getTransactionHistory(int userID) {
     return executeCall(()async{
       return _api.listTransactions(userID, offset: 0, search: '', limit: 10000);
-    }).map<NetworkEvent<TransactionViewPagedCollection>>((event){
-      if(event.type == NetworkEventType.completed){
-        // _walletDetails = event.data;
-      }
-      return event as NetworkEvent<TransactionViewPagedCollection>;
     });
   }
 
 
 
 
-  Stream<NetworkEvent<String>> getWalletBalance(int userID) {
+  Stream<NetworkEvent<WalletView>> getWalletBalance(int userID) {
   return executeCall(()async{
     return _api.walletBalance(userId:userID);
-  }).map<NetworkEvent<String>>((event){
+  }).map<NetworkEvent<WalletView>>((event){
     if(event.type == NetworkEventType.completed){
-    _balance = event.data;
+    _walletDetails = event.data;
+    if(_walletDetails?.balance != null){
+      _balance = formatMoney(double.parse(_walletDetails!.balance!));
+    }
     }
     return event;
   });
@@ -105,7 +103,7 @@ class WalletService extends BaseService{
 
 
   Stream<NetworkEvent<List<CardView>>> getUserCards(int userID) {
-    return executeReturnOrCall<List<CardView>>(_userCards, ()async{
+    return executeReturnOrCall<List<CardView>>(() => _userCards, ()async{
       return _api.listCards();
     }, mustEx: _userCards.isEmpty).map<NetworkEvent<List<CardView>>>((event){
       if(event.type == NetworkEventType.completed){

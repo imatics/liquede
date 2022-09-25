@@ -4,6 +4,7 @@ import 'package:liquede/presentation/onboarding/login.dart';
 import 'package:liquede/presentation/onboarding/onboarding.dart';
 import 'package:liquede/services/api/bills_service.dart';
 import 'package:liquede/services/api/loan_service.dart';
+import 'package:liquede/services/api/saving_service.dart';
 import 'package:liquede/services/api/user_service.dart';
 import 'package:liquede/services/api/wallet_service.dart';
 import 'package:liquede/services/app_preference.dart';
@@ -24,6 +25,7 @@ void main()async {
         ChangeNotifierProvider<WalletService>(create: (context) => WalletService()),
         ChangeNotifierProvider<BillsService>(create: (context) => BillsService()),
         ChangeNotifierProvider<LoanService>(create: (context) => LoanService()),
+        ChangeNotifierProvider<SavingsService>(create: (context) => SavingsService()),
         ChangeNotifierProvider<AppPreference>(create: (context) => _preference),
       ],
       child: const MyApp()));

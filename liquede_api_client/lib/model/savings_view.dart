@@ -26,7 +26,7 @@ class SavingsView {
     return 'SavingsView[name=$name, description=$description, savingPlanType=$savingPlanType, durationInDays=$durationInDays, amount=$amount, interestRate=$interestRate, monthlyPayment=$monthlyPayment, maturityDate=$maturityDate, paymentMethod=$paymentMethod, targetAmount=$targetAmount, targetDate=$targetDate, debitFrequencyInDays=$debitFrequencyInDays, preferredRecurringPaymentDate=$preferredRecurringPaymentDate, startDate=$startDate, user=$user, status=$status, ]';
   }
 
-  SavingsView.fromJson(Map<String, dynamic> json) {
+  SavingsView.fromJson(Map<String, dynamic>? json) {
     if (json == null) return;
     name = json['name'];
     description = json['description'];

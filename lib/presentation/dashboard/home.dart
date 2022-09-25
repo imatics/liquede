@@ -21,7 +21,7 @@ class Home extends StatefulWidget {
 List<BottomNavigationBarItem> bottomBarItem = [
    BottomNavigationBarItem(icon: ImageIcon(AssetImage("home_icon".imagePng)).paddingY(8), label: "Home"),
    BottomNavigationBarItem(icon: ImageIcon(AssetImage("pay_icon".imagePng)).paddingY(8), label: "Pay"),
-   BottomNavigationBarItem(icon: ImageIcon(AssetImage("invest_icon".imagePng)).paddingY(8), label: "Invest"),
+   // BottomNavigationBarItem(icon: ImageIcon(AssetImage("invest_icon".imagePng)).paddingY(8), label: "Invest"),
    BottomNavigationBarItem(icon: ImageIcon(AssetImage("savings_icon".imagePng)).paddingY(8), label: "saving"),
    BottomNavigationBarItem(icon: ImageIcon(AssetImage("loan_icon".imagePng)).paddingY(8), label: "Loans"),
 ];
@@ -71,11 +71,11 @@ return true;
   }
 
   List<Widget> pages = [
-    const DashBoard(),
-    const PaymentHome(),
-    const DashBoard(),
-    const Savings(),
-    const LoanScreen(),
+     DashBoard(),
+     PaymentHome(),
+    // const DashBoard(),
+     Savings(),
+     LoanScreen(),
   ];
 
 }

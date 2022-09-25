@@ -42,14 +42,12 @@ class LoanService extends BaseService{
   Stream<NetworkEvent<LoanView>> getRequest(int loanId) {
     return executeCall(()async{
       return _api.getLoanRequest(loanId);
-    }).map<NetworkEvent<LoanView>>((event){
-      return event as NetworkEvent<LoanView>;
     });
   }
 
 
   Stream<NetworkEvent<List<LoanView>>> getUserLoans({bool force = false}) {
-    return executeReturnOrCall(_userLoans,()async{
+    return executeReturnOrCall(() => _userLoans,()async{
       return _api.listMyLoans();
     }, mustEx: (_userLoans.isEmpty || force)).map<NetworkEvent<List<LoanView>>>((event){
       if(event.type ==  NetworkEventType.completed){

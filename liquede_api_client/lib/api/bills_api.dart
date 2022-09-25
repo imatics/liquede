@@ -96,7 +96,7 @@ class BillsApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
-      return BaseResponse<BaxiProvidersResponse>.fromJson(response.body);
+      return BaseResponse<BaxiProvidersResponse>.fromJson(json.decode(response.body));
     } else {
       return null;
     }
@@ -347,6 +347,7 @@ class BillsApi {
     if(response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
     } else if(response.body != null) {
+      print(response.body);
       return BaseResponse<List<ProviderBundleResponse>>.fromJson(json.decode(response.body));
     } else {
       return null;

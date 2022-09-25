@@ -324,6 +324,9 @@ class BaseScaffoldWidget extends Scaffold {
     assert(context != null, "context can not be null");
   }
 
+  @override
+  // TODO: implement resizeToAvoidBottomInset
+  bool? get resizeToAvoidBottomInset => false;
 
   @override
   // TODO: implement appBar

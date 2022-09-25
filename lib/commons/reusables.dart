@@ -208,10 +208,11 @@ class ManyText {
 
 class KTextStyle {
 
-   KTextStyle({this.decoration, this.a, this.color, this.fontSize, this.fontStyle, this.maxLines, this.overflow, this.weight, this.height, this.style, this.useDefaultFont});
+   KTextStyle({this.decoration, this.a, this.color, this.fontSize, this.fontStyle, this.maxLines, this.overflow, this.weight, this.height, this.style, this.useDefaultFont, this.letterSpacing});
 
   double? fontSize;
   double? height;
+  double? letterSpacing;
   int? maxLines;
   FontWeight? weight;
   TextAlign? a;
@@ -235,6 +236,7 @@ extension TextStyleExt on KTextStyle?{
         decoration: this!.decoration,
         fontStyle: this!.fontStyle,
         height: this!.height,
+        letterSpacing: this!.letterSpacing,
         fontFamily: (this!.useDefaultFont??false)?"Roboto":null
     );
   }else {
@@ -476,6 +478,14 @@ class _EditTextFieldState extends State<EditTextField> {
   }
 }
 
+Widget appBtn(String text, Function() onClick){
+  return  MaterialButton(
+    onPressed: onClick,
+    child: kText(text, color: white, weight: FontWeight.bold),
+    color: black,
+  ).stretchSize(h: 45);
+}
+
 enum BorderType { underline, outline, none }
 
 
@@ -655,12 +665,12 @@ showBottomSheetFull(BuildContext context, String title, Widget child){
             const Spacer(),
             kText(title, weight: FontWeight.bold, fontSize: 14),
             Expanded(
-              child: const Icon(Icons.close, size: 30,).onclickWithRipple((){
+              child: const Icon(Icons.close, size: 25,).onclickWithRipple((){
                 goBack(context);
               }).right,
             )
           ],
-        ).paddingMerge(t:20, b: 10),
+        ).paddingMerge(t:50, b: 20),
         Expanded(child: child.paddingMerge(t: 10))
       ],
     ),

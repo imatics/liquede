@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:liquede/extensions/string.dart';
 import 'package:liquede/model/api_response.dart';
+import 'package:liquede/presentation/onboarding/login.dart';
 
 import 'constants.dart';
 import 'overlay.dart';
@@ -25,10 +26,10 @@ Future<dynamic> gotoAndClear(BuildContext context, Widget page) {
       MaterialPageRoute(builder: (c) => page), (route) => false);
 }
 
-// Future<dynamic> gotoDashboard(BuildContext context) {
-//   return Navigator.pushAndRemoveUntil(context,
-//       MaterialPageRoute(builder: (c) => const DashboardParentPage()), (r) => false);
-// }
+Future<dynamic> gotoLogin(BuildContext context) {
+  return Navigator.pushAndRemoveUntil(context,
+      MaterialPageRoute(builder: (c) => const LoginScreen()), (r) => false);
+}
 
 void backToHome(BuildContext context) {
   return Navigator.popUntil(context, (route) => route.isFirst);
@@ -266,7 +267,9 @@ String? validateEmail(String? t) {
 String? validatePhone(String? t) {
   if(t == null){
     return "Please input a valid phone number";
-  }else if(t.length != 14){
+  }else if(t.length == 11 || t.length == 14) {
+    return null;
+  }else{
     return "Please input a valid phone number";
   }
   // String text = t??"";

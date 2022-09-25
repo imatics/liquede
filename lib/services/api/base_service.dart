@@ -9,6 +9,7 @@ import 'package:swagger/api.dart';
 
 typedef EventChuck<T> = Stream<NetworkEvent<T>> Function();
 typedef NetWorkCall<T> = Future<BaseResponse<T>?> Function();
+typedef ReturnDefault<T> = T? Function();
 
 abstract class BaseService with ChangeNotifier{
 
@@ -38,25 +39,31 @@ Stream<NetworkEvent<T>> executeCall<T>(NetWorkCall<T> workCall){
       streamController.add(NetworkEvent<T>(message: "",type: NetworkEventType.processing));
       workCall.call().then((value){
         if(value?.status == true){
-          streamController.add(NetworkEvent<T>(message: "",type: NetworkEventType.completed, data: value?.data));
+          streamController.add(NetworkEvent<T>(message: value?.message??"Operation Successful",type: NetworkEventType.completed, data: value?.data));
         }else{
           streamController.add(NetworkEvent<T>(message: value?.message??"Something went wrong",type: NetworkEventType.failed,));
         }
+      }).onError((error, stackTrace){
+        print(error);
+        print(stackTrace);
+        streamController.add(NetworkEvent<T>(message: "Something went wrong",type: NetworkEventType.failed,));
       });
     }else{
       streamController.add(NetworkEvent<T>(type: NetworkEventType.failed, message: networkErrorMessage));
     }
   }).onError((error, stackTrace){
-    streamController.add(NetworkEvent<T>(type: NetworkEventType.failed, message: "Something went wrong", error: APIError.fromTrace(error, stackTrace)));
+    print(error);
+    print(stackTrace);
+    streamController.add(NetworkEvent<T>(type: NetworkEventType.failed, message: "An Error occurred", error: APIError.fromTrace(error, stackTrace)));
   });
   return streamController.stream;
 }
 
 
-Stream<NetworkEvent<T>> executeReturnOrCall<T>( T data, NetWorkCall<T> workCall, {bool mustEx = false}){
+Stream<NetworkEvent<T>> executeReturnOrCall<T>( ReturnDefault<T> rDefault, NetWorkCall<T> workCall, {bool mustEx = false}){
   final streamController = StreamController<NetworkEvent<T>>();
-  if(data != null || mustEx){
-    streamController.add(NetworkEvent(type: NetworkEventType.completed, message: "", data:  data));
+  if(rDefault() != null || mustEx){
+    streamController.add(NetworkEvent(type: NetworkEventType.completed, message: "", data:  rDefault()));
     return streamController.stream;
   }else{
     return executeCall(workCall);
@@ -123,6 +130,32 @@ extension NetworkEventEXT<T> on NetworkEvent<T>{
   void handleStateAndPerformOnSuccess(BuildContext context, Action<T> action, {String message = "Processing", String? errorMessage}){
     handleState(context);
     performOnSuccess(action);
+  }
+
+}
+
+
+extension StreamNetworkEventEXT<T> on Stream<NetworkEvent<T>>{
+
+  performOnSuccess(Action<T> action){
+    listen((event){
+     event.performOnSuccess(action);
+    });
+  }
+
+
+  void handleState(BuildContext context, {String message = "Processing", String? errorMessage}){
+    listen((event){
+      event.handleState(context, message: message, errorMessage: errorMessage);
+    });
+  }
+
+
+  void handleStateAndPerformOnSuccess(BuildContext context, Action<T> action, {String message = "Processing", String? errorMessage}){
+        listen((event){
+      event.handleState(context);
+      event.performOnSuccess(action);
+    });
   }
 
 }
