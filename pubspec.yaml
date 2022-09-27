@@ -25,6 +25,7 @@ dependencies:
   pin_code_fields: ^7.3.0
   open_mail_app: ^0.1.1
   fl_chart: ^0.45.0
+  animations: ^2.0.4
   webview_flutter: ^3.0.0
   flutter_share: ^2.0.0
   chopper:

@@ -208,6 +208,8 @@ class BaseResponse<T>{
           return new UserViewPagedCollectionStandardResponse.fromJson(value);
         case 'UserViewStandardResponse':
           return new UserViewStandardResponse.fromJson(value);
+          case 'List<BankInfo>':
+          return BankInfo.listFromJson(value);
         case 'Wallet':
           return new Wallet.fromJson(value);
         case 'WalletModel':

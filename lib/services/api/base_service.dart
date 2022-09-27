@@ -113,10 +113,15 @@ extension NetworkEventEXT<T> on NetworkEvent<T>{
     }
   }
 
+  performOnError(Action<String>? action, String message){
+    if(type == NetworkEventType.failed && action != null){
+      action.call(message);
+    }
+  }
+
 
   void handleState(BuildContext context, {String message = "Processing", String? errorMessage}){
     if(type == NetworkEventType.processing){
-      print(type);
       showOverlay(context, message: message);
     }else if(type == NetworkEventType.completed){
       hideOverlay(context);
@@ -127,9 +132,13 @@ extension NetworkEventEXT<T> on NetworkEvent<T>{
   }
 
 
-  void handleStateAndPerformOnSuccess(BuildContext context, Action<T> action, {String message = "Processing", String? errorMessage}){
-    handleState(context);
+  void handleStateAndPerformOnSuccess(BuildContext context, Action<T> action, {String message = "Processing", String? errorMessage,  Action<String>? onError,}){
+    handleState(context,message: message, errorMessage: errorMessage);
     performOnSuccess(action);
+    onError?.call(errorMessage??this.message);
+    if(onError!= null){
+    performOnError(onError, message);
+  }
   }
 
 }
@@ -151,10 +160,12 @@ extension StreamNetworkEventEXT<T> on Stream<NetworkEvent<T>>{
   }
 
 
-  void handleStateAndPerformOnSuccess(BuildContext context, Action<T> action, {String message = "Processing", String? errorMessage}){
+  void handleStateAndPerformOnSuccess(BuildContext context, Action<T> action, {String message = "Processing", String? errorMessage,  Action<String>? onError}){
         listen((event){
-      event.handleState(context);
+      event.handleState(context,errorMessage: errorMessage, message: message);
       event.performOnSuccess(action);
+      event.performOnError(onError, message);
+
     });
   }
 

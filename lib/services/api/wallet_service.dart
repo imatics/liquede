@@ -15,6 +15,10 @@ class WalletService extends BaseService{
   }
 
   late WalletApi _api;
+  late FlutterWaveApi _flwApi;
+
+  List<BankInfo> _bankList = [];
+  List<BankInfo> get bankList => _bankList;
   WalletView? _walletDetails;
   WalletView? get walletInfo => _walletDetails;
 
@@ -150,6 +154,28 @@ class WalletService extends BaseService{
       return event;
     });
   }
+
+
+  Stream<NetworkEvent<BankAccountInfo>> getAccountDetails(String bankCode, String accountNumber,
+      {bool force = false}) {
+    return executeCall(()  async {
+      return _flwApi.getAccountInfo(bankCode, accountNumber);
+    });
+  }
+
+  Stream<NetworkEvent<List<BankInfo>>> getBankList(
+      {bool force = false}) {
+    return executeReturnOrCall(() => _bankList, () async {
+      return _flwApi.getBankList();
+    }, mustEx: (_bankList.isEmpty == true || force))
+        .map<NetworkEvent<List<BankInfo>>>((event) {
+      if (event.type == NetworkEventType.completed) {
+        _bankList = event.data ?? [];
+      }
+      return event;
+    });
+  }
+
 
 
 }

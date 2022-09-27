@@ -11,6 +11,8 @@ part 'auth/authentication.dart';
 part 'auth/api_key_auth.dart';
 part 'auth/oauth.dart';
 part 'auth/http_basic_auth.dart';
+part 'api/flutterwave_api.dart';
+
 
 part 'api/admin_api.dart';
 part 'api/bills_api.dart';
@@ -94,5 +96,8 @@ part 'model/wallet_transfer_model.dart';
 part 'model/wallet_view.dart';
 part 'model/wallet_view_standard_response.dart';
 part 'api/base_service_response_model.dart';
+part 'model/bank_info.dart';
+part 'model/flutterwave_acct_verification_response.dart';
 
 ApiClient defaultApiClient = new ApiClient();
+ApiClient flutterwaveClient = new ApiClient(basePath: "https://api.flutterwave.com/v3");
