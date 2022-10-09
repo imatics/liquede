@@ -44,10 +44,11 @@ Stream<NetworkEvent<T>> executeCall<T>(NetWorkCall<T> workCall){
           streamController.add(NetworkEvent<T>(message: value?.message??"Something went wrong",type: NetworkEventType.failed,));
         }
       }).onError((error, stackTrace){
-        print(error);
-        print(stackTrace);
-        streamController.add(NetworkEvent<T>(message: "Something went wrong",type: NetworkEventType.failed,));
-      });
+        if(error is ApiException){
+          streamController.add(NetworkEvent<T>(message: error.getServerMessage()??"Something went wrong",type: NetworkEventType.failed,));
+        }else{
+          streamController.add(NetworkEvent<T>(message: "Something went wrong",type: NetworkEventType.failed,));
+        }      });
     }else{
       streamController.add(NetworkEvent<T>(type: NetworkEventType.failed, message: networkErrorMessage));
     }
@@ -62,7 +63,7 @@ Stream<NetworkEvent<T>> executeCall<T>(NetWorkCall<T> workCall){
 
 Stream<NetworkEvent<T>> executeReturnOrCall<T>( ReturnDefault<T> rDefault, NetWorkCall<T> workCall, {bool mustEx = false}){
   final streamController = StreamController<NetworkEvent<T>>();
-  if(rDefault() != null || mustEx){
+  if(rDefault() != null && !mustEx){
     streamController.add(NetworkEvent(type: NetworkEventType.completed, message: "", data:  rDefault()));
     return streamController.stream;
   }else{

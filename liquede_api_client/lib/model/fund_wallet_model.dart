@@ -22,7 +22,8 @@ class FundWalletModel {
   Map<String, dynamic> toJson() {
     return {
       'amount': amount,
-      'userId': userId
+      'userId': userId,
+      'mobile': true,
      };
   }
 

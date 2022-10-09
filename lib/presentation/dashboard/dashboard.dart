@@ -12,14 +12,17 @@ import 'package:liquede/presentation/commons/bottom_sheet.dart';
 import 'package:liquede/presentation/history.dart';
 import 'package:liquede/presentation/model/notification.dart';
 import 'package:liquede/presentation/payment/payment_screen.dart';
-import 'package:liquede/presentation/settings.dart';
+import 'package:liquede/presentation/account/settings.dart';
 import 'package:liquede/presentation/slipcard.dart';
 import 'package:liquede/services/api/base_service.dart';
+import 'package:liquede/services/api/saving_service.dart';
 import 'package:liquede/services/api/user_service.dart';
 import 'package:liquede/services/api/wallet_service.dart';
 import 'package:swagger/api.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+
+import '../../services/flutter_payment.dart';
 
 class DashBoard extends StatefulWidget {
   const DashBoard({Key? key}) : super(key: key);
@@ -30,9 +33,9 @@ class DashBoard extends StatefulWidget {
 
 class _DashBoardState extends State<DashBoard> {
   List<String> balanceTypes = [
-    // "Net Worth",
-    // "LiquedeFlex",
-    // "Savings",
+    "Net Worth",
+    "LiquedeFlex",
+    "Savings",
     // "Investments"
   ];
   int _selectedBalanceType = 0;
@@ -51,6 +54,7 @@ class _DashBoardState extends State<DashBoard> {
     // TODO: implement initState
     super.initState();
     getWalletInfo();
+    getTransactions();
   }
 
   @override
@@ -93,12 +97,19 @@ class _DashBoardState extends State<DashBoard> {
                   addSpace(y: 30),
                   chartCard(),
                   addSpace(y: 30),
-                  kText("Frequent Transactions",
-                          weight: FontWeight.bold, fontSize: 18)
-                      .left
-                      .paddingMerge(l: 5, b: 10),
-                  frequentTransaction(),
-                  addSpace(y: 30),
+                  Column(
+                    children: [
+                      kText("Frequent Transactions",
+                              weight: FontWeight.bold, fontSize: 18)
+                          .left
+
+
+                          .paddingMerge(l: 5, b: 10),
+                      frequentTransaction(),
+                      addSpace(y: 30),
+                    ],
+                  ).hideIf(true),
+
                   getLoanCard(),
                   addSpace(y: 30),
                   startSavingCard(),
@@ -224,6 +235,18 @@ class _DashBoardState extends State<DashBoard> {
     );
   }
 
+  String getBalance(){
+    switch(_selectedBalanceType){
+      case 0: return WalletService.I(context).balance;
+      case 1: return WalletService.I(context).balance;
+      case 2:{
+         return SavingsService.I(context).getWorth();
+      }
+    }
+    return  "Balance unavailable";
+  }
+
+
   bool hideBalance = false;
   Widget balanceCard() {
     return Material(
@@ -236,7 +259,7 @@ class _DashBoardState extends State<DashBoard> {
               child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              kText(hideBalance ? "##,###" : WalletService.I(context).balance,
+              kText(hideBalance ? "##,###" : getBalance(),
                       color: white, fontSize: 22, weight: FontWeight.bold)
                   .center,
               IconButton(
@@ -245,8 +268,6 @@ class _DashBoardState extends State<DashBoard> {
                     hideBalance ? Icons.visibility : Icons.visibility_off,
                     color: white,
                   )),
-              kText("Add", color: white, weight: FontWeight.bold)
-                  .onclickWithRipple(() => fundWallet(context))
             ],
           )),
           SingleChildScrollView(
@@ -310,17 +331,17 @@ class _DashBoardState extends State<DashBoard> {
       child: Column(
         children: [
           charts.TimeSeriesChart(
-            _createSampleData(),
+            _createSampleData(WalletService.I(context).transactions),
             animate: true,
             dateTimeFactory: const charts.LocalDateTimeFactory(),
           ).stretch,
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: hOption(filter, white, black, black, white, (index) {
-              _selectedFilter = index;
-              setState(() {});
-            }, _selectedFilter, w: 80),
-          ).paddingY(5)
+          // SingleChildScrollView(
+          //   scrollDirection: Axis.horizontal,
+          //   child: hOption(filter, white, black, black, white, (index) {
+          //     _selectedFilter = index;
+          //     setState(() {});
+          //   }, _selectedFilter, w: 80),
+          // ).paddingY(5)
         ],
       ).stretchSize(h: 240).paddingAll(10),
     );
@@ -328,9 +349,6 @@ class _DashBoardState extends State<DashBoard> {
 
   Drawer buildDrawer() {
     return Drawer(
-      // Add a ListView to the drawer. This ensures the user can scroll
-      // through the options in the drawer if there isn't enough vertical
-      // space to fit everything.
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
@@ -363,6 +381,13 @@ class _DashBoardState extends State<DashBoard> {
       ),
     );
   }
+
+  void getTransactions(){
+    WalletService.I(context).getTransactionHistory(UserService.I(context).userView!.id!).performOnSuccess((p0) {
+      setState(() {});
+    });
+  }
+
 
   void getWalletInfo({bool pinCreated = false}) {
     WalletService ws = WalletService.I(context);
@@ -400,21 +425,25 @@ class _DashBoardState extends State<DashBoard> {
     ).paddingMerge(l: 30, t: 10, b: 10);
   }
 
-  static List<charts.Series<TimeSeriesSales, DateTime>> _createSampleData() {
-    final data = [
-      TimeSeriesSales(DateTime(2017, 9, 19), 5),
-      TimeSeriesSales(DateTime(2017, 9, 26), 25),
-      TimeSeriesSales(DateTime(2017, 10, 3), 100),
-      TimeSeriesSales(DateTime(2017, 10, 10), 75),
-    ];
+  static List<charts.Series<TimeSeriesSales, DateTime>> _createSampleData(List<TransactionView> list) {
+
+    List<TimeSeriesSales> data = [];
+
+    for(var v in list){
+      if(v.dateCreated != null && v.amount != null){
+        data.add(TimeSeriesSales(v.dateCreated!, v.amount.cleanMoneyValue.toInt()));
+      }
+    }
+
 
     return [
       charts.Series<TimeSeriesSales, DateTime>(
         id: 'Sales',
-        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        colorFn: (_, __) => charts.MaterialPalette.black,
         domainFn: (TimeSeriesSales sales, _) => sales.time,
         measureFn: (TimeSeriesSales sales, _) => sales.sales,
         data: data,
+
       )
     ];
   }
@@ -508,59 +537,6 @@ showCreatePinBottomSheet(BuildContext context, Function(int) onCreatePin) {
 }
 
 void fundWallet(BuildContext context){
-  showFunWalletModal(context, (amount) {
-    goBack(context);
-    WalletService.I(context)
-        .fundWallet(FundWalletModel()
-          ..amount = amount
-          ..userId = UserService.I(context).userView?.id)
-        .listen((event) {
-      event.handleState(context);
-      event.performOnSuccess((p0)async {
-        //goto(context, PaymentScreen(url: event.message));
-         launchUrlString(event.message, mode: LaunchMode.platformDefault).then((value){
-           WalletService.I(context).getWalletBalance(UserService.I(context).userView!.id!).handleStateAndPerformOnSuccess(context, (p0) { });
-         });
-      });
-    });
-  });
+
 }
 
-void showFunWalletModal(BuildContext context, Function(String) onFundWallet) {
-  TextEditingController controller = TextEditingController();
-  launchBottomSheetFull(
-      context,
-      Column(
-        children: [
-          addSpace(y: 20),
-          kText("Wallet Top up", weight: FontWeight.w900, fontSize: 24)
-              .paddingX(40),
-          addSpace(y: 50),
-          EditTextField(KInputFieldProps(
-              textEditingController: controller,
-              fillColor: Colors.grey[200],
-              textAlign: TextAlign.center,
-              hint: "Enter Amount",
-              inputType: TextInputType.number,
-              validators: [validateField],
-              inputFormatter: [
-                CurrencyTextInputFormatter(
-                    symbol: nairaSymbol, decimalDigits: 0)
-              ],
-              style: KTextStyle(
-                      weight: FontWeight.bold,
-                      fontSize: 18,
-                      style: const TextStyle(letterSpacing: 3))
-                  .build)),
-          addSpace(y: 20),
-          Spacer(),
-          MaterialButton(
-            onPressed: () => onFundWallet("${controller.text.cleanMoneyValue}"),
-            child: kText("Fund Wallet", color: white, weight: FontWeight.bold),
-            color: black,
-          ).stretchSize(h: 45),
-          addSpace(y: 50),
-        ],
-      ),
-      hFactor: 0.6);
-}

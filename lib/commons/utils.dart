@@ -307,7 +307,7 @@ void showSuccessPopUp(BuildContext context, String message, {Function? onClose})
 enum DialogType { error, success }
 void showCustomDialog(DialogType type, BuildContext context,String title,
     String message, String actionText, VoidCallback onClose,
-    {bool hasClose = false}) async {
+    {bool hasClose = false, bool showIcon = true}) async {
   showGeneralDialog(
       context: context,
       barrierColor: Colors.white70,
@@ -352,17 +352,21 @@ void showCustomDialog(DialogType type, BuildContext context,String title,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  Image.asset(
-                    (type == DialogType.success)
-                        ? '$image_path/green_check_icon.png'
-                        : "$image_path/red_close_icon.png",
-                    height: 50,
-                    width: 50,
-                    // color: (type == DialogType.success)
-                    //     ? Colors.green[800]
-                    //     : Colors.red[700],
-                  ).paddingBottom(10),
+                  Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      Image.asset(
+                        (type == DialogType.success)
+                            ? '$image_path/green_check_icon.png'
+                            : "$image_path/red_close_icon.png",
+                        height: 50,
+                        width: 50,
+                        // color: (type == DialogType.success)
+                        //     ? Colors.green[800]
+                        //     : Colors.red[700],
+                      ).paddingBottom(10),
+                    ],
+                  ).hideIf(!showIcon),
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
@@ -479,7 +483,7 @@ void showAllPDialog(BuildContext context, Widget child) async {
 
 
 
-String formatMoney(double? amount, {bool floor = false, String symbol = "₦"}) {
+String formatMoney(double? amount, {bool floor = true, String symbol = "₦"}) {
   if(amount != null) {
     return NumberFormat.currency(symbol: symbol, decimalDigits: (floor) ? 0 : 2)
         .format(amount);

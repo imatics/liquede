@@ -13,7 +13,9 @@ import 'package:liquede/services/api/wallet_service.dart';
 import 'package:swagger/api.dart';
 
 class Transfer extends StatefulWidget {
-  const Transfer({Key? key}) : super(key: key);
+  const Transfer({Key? key, this.beneficiaryModel}) : super(key: key);
+
+  final BeneficiaryModel? beneficiaryModel;
 
   @override
   State<Transfer> createState() => _TransferState();
@@ -26,6 +28,9 @@ class _TransferState extends State<Transfer> {
   final _key1 = GlobalKey<FormState>();
   final _key2 = GlobalKey<FormState>();
   bool _saveToBeneficiaries = false;
+  BankAccountInfo? info;
+
+
 
   @override
   void initState() {
@@ -35,18 +40,24 @@ class _TransferState extends State<Transfer> {
         textEditingController: TextEditingController(),
         inputType: TextInputType.number,
         hint: "account number",
+        onChange: (e) => clearInfoCache(),
         validators: [validateField]);
 
     amountProps = KInputFieldProps(
       textEditingController: TextEditingController(),
       inputType: TextInputType.number,
-      hint: "account number",
+      hint: "Amount number",
+      style: KTextStyle(fontSize: 14).build,
       inputFormatter: [
         CurrencyTextInputFormatter(symbol: nairaSymbol, decimalDigits: 0)
       ],
     );
     getBankInfo();
+
+
   }
+
+
 
   int _currentPage = 1;
   bool reverse = false;
@@ -55,6 +66,7 @@ class _TransferState extends State<Transfer> {
   Widget build(BuildContext context) {
     return BaseScaffold(
       context: context,
+      title: "Pay a Liquede User",
       baseBody: buildBody(),
     );
   }
@@ -99,11 +111,21 @@ class _TransferState extends State<Transfer> {
 
   Widget buildPayOne() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        kText("Enter account number"),
+        addSpace(y: 50),
+        Image.asset("send_money".imagePng, width: 80).center.paddingAll(20),
+        addSpace(y: 20),
+        kText("Enter account number", fontSize: 11, weight: FontWeight.w600)
+            .paddingAll(5),
         EditTextField(accountNumberProps),
+        addSpace(y: 20),
+        kText("Bank", fontSize: 11, weight: FontWeight.w600)
+            .paddingAll(5),
         buildDropDown(),
-        appBtn("Next", verifyAndNext)
+        const Spacer(),
+        appBtn("Next", verifyAndNext),
+        addSpace(y: 50),
       ],
     ).withForm(_key1);
   }
@@ -121,14 +143,16 @@ class _TransferState extends State<Transfer> {
                 Border(bottom: BorderSide(width: 2, color: Colors.grey[700]!))),
         child: DropdownButton<BankInfo>(
           value: _selectedItem,
+          isExpanded: true,
           underline: SizedBox(),
           onChanged: (v) {
             _selectedItem = v;
+            clearInfoCache();
           },
           items: WalletService.I(context)
               .bankList
               .map((e) => DropdownMenuItem(
-                    child: Text(e.name ?? ""),
+                    child: kText("${e.name}", fontSize: 13),
                     value: e,
                     onTap: () {
                       setState(() {
@@ -137,82 +161,145 @@ class _TransferState extends State<Transfer> {
                     },
                   ))
               .toList(),
-          hint: kText("Select Bank"),
+          hint: kText("Select Bank", fontSize: 14),
         ),
       ),
     );
   }
 
   void verifyAndNext() {
+    if (info != null) {
+      next();
+      return;
+    }
     if (_selectedItem != null) {
       WalletService.I(context)
-          .getAccountDetails(_selectedItem!.code!,
-              accountNumberProps.textEditingController?.text ?? "")
+          .getAccountDetails(AccountDetailsRequestModel()
+            ..account_bank = _selectedItem!.code!
+            ..account_number =
+                accountNumberProps.textEditingController?.text ?? "")
           .handleStateAndPerformOnSuccess(context, (p0) {
-            next();
-      }, onError: (s){
-            accountNumberProps.textEditingController?.clear();
+        info = p0;
+        next();
+      }, onError: (s) {
+        // accountNumberProps.textEditingController?.clear();
       });
     }
+  }
+
+  void clearInfoCache() {
+    info = null;
   }
 
   void getBankInfo() {
     WalletService.I(context)
         .getBankList()
         .handleStateAndPerformOnSuccess(context, (list) {
+      _selectedItem = list.firstWhere(
+          (element) => element.code?.contains("044") == true);
       setState(() {});
-    }, onError: (s){
-          goBack(context);
+
+      if(widget.beneficiaryModel != null){
+        accountNumberProps.textEditingController?.text = widget.beneficiaryModel!.accountNumber??"";
+        _selectedItem = list.firstWhere(
+                (element) => element.code?.contains(widget.beneficiaryModel!.bankCode??" ") == true);
+      }
+
+    }, onError: (s) {
+      goBack(context);
     });
   }
 
   Widget buildPayTwo() {
     return Column(
       children: [
-        Image.asset("avatar".imagePng),
-        kText("User name"),
-        kText("Enter Amount"),
+        addSpace(y: 50),
+        Image.asset("send_money".imagePng, width: 80).paddingAll(20),
+        kText(info?.accountName ?? "Account Name",
+                fontSize: 18, weight: FontWeight.bold)
+            .paddingY(30),
+        kText("Enter Amount", fontSize: 12).paddingMerge(l: 5, b: 5).left,
         EditTextField(amountProps),
         addSpace(y: 20),
         Container(
+          padding: const EdgeInsets.all(5),
           child: Row(
             children: [
-              const Icon(Icons.restart_alt),
-              kText("Add to beneficiaries"),
+              Container(
+                  decoration: BoxDecoration(
+                      color: Colors.grey[800], shape: BoxShape.circle),
+                  padding: const EdgeInsets.all(5),
+                  margin: const EdgeInsets.only(right: 10),
+                  child: const Icon(
+                    Icons.person_add_alt_1_sharp,
+                    color: white,
+                    size: 15,
+                  )),
+              Expanded(child: kText("Add to beneficiaries", fontSize: 12)),
               Checkbox(
+                  activeColor: Colors.black,
                   value: _saveToBeneficiaries,
                   onChanged: (e) {
                     _saveToBeneficiaries = e ?? false;
+                    setState(() {});
                   })
             ],
           ),
         ),
         Spacer(),
-        appBtn("Transfer", processTransfer)
+        appBtn("Transfer", processTransfer),
+        addSpace(y: 50),
       ],
     ).withForm(_key2);
   }
 
   Future<bool> shouldPop() async {
     if (_currentPage != 1) {
-      _currentPage = 1;
-      setState(() {});
+      back();
       return false;
     }
     return true;
   }
 
-  void processTransfer(){
-    WalletService.I(context).transferToBank(NGNTransferModel()
-    ..amount = amountProps.textEditingController?.text
-    ..accountNumber = accountNumberProps.textEditingController?.text
-    ..accountBank = _selectedItem?.code
-    ..userId = UserService.I(context).userView?.id
-    ..narration = "Transfer to ${_selectedItem?.name}"
-    ).handleStateAndPerformOnSuccess(context, (p0) {
-      showSuccessPopUp(context, "Transfer successful", onClose: (){
-        goBack(context);
+  void processTransfer() {
+    WalletService.I(context)
+        .transferToBank(NGNTransferModel()
+          ..amount =
+              "${amountProps.textEditingController?.text.cleanMoneyValue.toInt()}"
+          ..accountNumber = accountNumberProps.textEditingController?.text
+          ..accountBank = _selectedItem?.code
+          ..userId = UserService.I(context).userView?.id
+          ..narration = "Transfer to ${_selectedItem?.name}")
+        .handleStateAndPerformOnSuccess(context, (p0) {
+      showSuccessPopUp(context, "Transfer successful", onClose: () {
+        saveBeneficiary();
       });
     });
   }
+
+  void saveBeneficiary() {
+    if (_saveToBeneficiaries) {
+      WalletService.I(context)
+          .saveBeneficiary(BeneficiaryModel()
+            ..name = info?.accountName
+            ..bankName = _selectedItem?.name
+            ..accountNumber = info?.accountNumber
+            ..bankCode = _selectedItem?.code)
+          .handleStateAndPerformOnSuccess(context, (p0) {
+        _pop();
+      });
+    }else{
+      _pop();
+    }
+
+  }
+
+  void _pop(){
+    goBack(context);
+    if(widget.beneficiaryModel != null){
+      goBack(context);
+    }
+  }
+
+
 }

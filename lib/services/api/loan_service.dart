@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:liquede/commons/def_types.dart';
 import 'package:liquede/extensions/string.dart';
@@ -16,26 +18,29 @@ class LoanService extends BaseService{
   late LoanApi _api;
 
   List<LoanView> _userLoans = [];
-  List<LoanView>? get userLoans => _userLoans;
+  List<LoanView> get userLoans => _userLoans;
 
 
   LoanService(){
     _api = LoanApi();
   }
-  //
-  // @override
-  // void update(ApiClient client) {
-  //   _api = LoanApi(client);
-  // }
 
 
 
-  Stream<NetworkEvent<LoanView>> createLoanRequest(LoanModel model) {
-    return executeCall(()async{
+  Stream<NetworkEvent<List<LoanView?>>> createLoanRequest(LoanModel model) {
+    StreamController<NetworkEvent<List<LoanView?>>> streamController = StreamController();
+    executeCall(()async{
       return _api.createLoanRequest(body: model);
-    }).map<NetworkEvent<LoanView>>((event){
-      return event as NetworkEvent<LoanView>;
+    }).map((event) => NetworkEvent(message: event.message, data: [event.data], error: event.error, type: event.type)).listen((event) {
+     if(event.type == NetworkEventType.completed){
+       streamController.addStream(getUserLoans(force: true));
+     }else{
+       streamController.add(event);
+     }
     });
+
+
+    return streamController.stream;
   }
 
 

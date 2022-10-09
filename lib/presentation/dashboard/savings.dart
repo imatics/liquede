@@ -1,5 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterwave_standard/core/flutterwave.dart';
+import 'package:flutterwave_standard/models/requests/customer.dart';
+import 'package:flutterwave_standard/models/requests/customizations.dart';
+import 'package:flutterwave_standard/models/responses/charge_response.dart';
+import 'package:flutterwave_standard/view/flutterwave_style.dart';
 import 'package:liquede/commons/base_scaffold.dart';
 import 'package:liquede/commons/constants.dart';
 import 'package:liquede/commons/reusables.dart';
@@ -11,6 +16,14 @@ import 'package:liquede/presentation/flex_details.dart';
 import 'package:liquede/presentation/savings/create_liquede_goal_plan.dart';
 import 'package:liquede/presentation/savings/create_liquede_seal_plan.dart';
 import 'package:liquede/commons/extenstions.dart';
+import 'package:liquede/presentation/savings/savings_details.dart';
+import 'package:liquede/services/api/base_service.dart';
+import 'package:liquede/services/api/saving_service.dart';
+import 'package:liquede/services/api/user_service.dart';
+import 'package:liquede/services/api/wallet_service.dart';
+import 'package:swagger/api.dart';
+
+import '../../services/flutter_payment.dart';
 
 class Savings extends StatefulWidget {
   const Savings({Key? key}) : super(key: key);
@@ -20,6 +33,13 @@ class Savings extends StatefulWidget {
 }
 
 class _SavingsState extends State<Savings> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getSavings(true);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,21 +57,34 @@ class _SavingsState extends State<Savings> {
                   card(),
                   addSpace(y: 35),
                   kText("My Active Savings",
-                      fontSize: 20, weight: FontWeight.bold),
-                  addSpace(y: 10),
-                  activeCard(context).onclickWithRipple(() => goto(context, FlexDetails(() => choosePaymentOption(context), () => chooseDestinationOption(context)))),
-                  addSpace(y: 20),
-                  activeSavingCard(),
-                  addSpace(y: 35),
-                  kText("New Savings", fontSize: 20, weight: FontWeight.bold),
+                      fontSize: 16, weight: FontWeight.bold),
+                  addSpace(y: 5),
+                  activeCard(context).onclickWithRipple(() => goto(
+                      context,
+                      FlexDetails(() => choosePaymentOption(context),
+                          () => chooseDestinationOption(context)))),
+                  addSpace(y: 30),
+                  ...SavingsService.I(context)
+                      .userSavings
+                      .map((e) => activeSavingCard(e))
+                      .toList(),
+                  addSpace(y: 40),
+                  kText("New Savings", fontSize: 16, weight: FontWeight.bold),
                   kText("Choose an option below to create a new savings plan",
-                      fontSize: 12, color: Colors.grey),
-                  addSpace(y: 15),
+                          fontSize: 12, color: Colors.grey)
+                      .paddingY(4),
+                  addSpace(y: 10),
                   Row(
                     children: [
-                      twinCardLiquedeSeal().withElevation(1, r: 10).onclickWithRipple(createLiquedeSealPlan).stretch,
+                      twinCardLiquedeSeal()
+                          .withElevation(1, r: 10)
+                          .onclickWithRipple(createLiquedeSealPlan)
+                          .stretch,
                       addSpace(x: 15),
-                      twinCardLiquedeGoal().withElevation(1, r: 10).onclickWithRipple(createLiquedeGoalPlan).stretch
+                      twinCardLiquedeGoal()
+                          .withElevation(1, r: 10)
+                          .onclickWithRipple(createLiquedeGoalPlan)
+                          .stretch
                     ],
                   ).stretchSize(h: 170),
                   addSpace(y: 20)
@@ -132,7 +165,7 @@ class _SavingsState extends State<Savings> {
                     topRight: Radius.circular(10))),
             alignment: Alignment.centerLeft,
             child: kText("My LiquedeFlex",
-                    weight: FontWeight.bold, fontSize: 14, color: white)
+                    weight: FontWeight.bold, fontSize: 12, color: white)
                 .paddingXY(
               x: 20,
             ),
@@ -143,19 +176,19 @@ class _SavingsState extends State<Savings> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   kText("Balance", fontSize: 12, color: Colors.grey),
-                  kText(formatMoney(0),
-                          color: black, fontSize: 20, weight: FontWeight.w900)
+                  kText(WalletService.I(context).balance ?? "",
+                          color: black, fontSize: 18, weight: FontWeight.w900)
                       .paddingY(10),
                   Row(
                     children: [
                       Image.asset(
                         "plus".imagePng,
-                        width: 45,
+                        width: 40,
                       ).onclickWithRipple(() => choosePaymentOption(context)),
                       addSpace(x: 15),
                       Image.asset(
                         "minus".imagePng,
-                        width: 45,
+                        width: 40,
                       ).onclickWithRipple(
                           () => chooseDestinationOption(context)),
                     ],
@@ -164,8 +197,8 @@ class _SavingsState extends State<Savings> {
               ).paddingAll(20).stretch,
               kText(longText,
                       fontSize: 13,
-                      color: Colors.grey[600],
-                      weight: FontWeight.w500)
+                      color: Colors.grey[800],
+                      weight: FontWeight.w400)
                   .paddingTop(10)
                   .paddingRight(20)
                   .stretch
@@ -181,7 +214,7 @@ class _SavingsState extends State<Savings> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         kText(title,
-                weight: FontWeight.bold, fontSize: 14, color: Colors.grey[800])
+                weight: FontWeight.bold, fontSize: 12, color: Colors.grey[800])
             .paddingXY(y: 15, x: 10),
         const Divider(
           height: 1,
@@ -189,7 +222,9 @@ class _SavingsState extends State<Savings> {
         )..paddingY(20),
         addSpace(y: 10),
         kText(desc,
-                fontSize: 14, weight: FontWeight.normal, color: Colors.grey[800])
+                fontSize: 12,
+                weight: FontWeight.normal,
+                color: Colors.grey[800])
             .paddingX(10),
         addSpace(y: 5),
         kRichText(text,
@@ -204,11 +239,16 @@ class _SavingsState extends State<Savings> {
 
   Widget twinCardLiquedeSeal() {
     return twinCard(
-        "LiquedeSeal", "Keep your money away from unnecessary spending", [
-      ManyText(text: "up to"),
-      ManyText(text: " 11% ", style: KTextStyle(fontSize: 20)),
-      ManyText(text: "Interest rate p.a."),
-    ],);
+      "LiquedeSeal",
+      "Keep your money away from unnecessary spending",
+      [
+        ManyText(text: "up to"),
+        ManyText(
+            text: " 11% ",
+            style: KTextStyle(fontSize: 16, weight: FontWeight.bold)),
+        ManyText(text: "Interest rate p.a."),
+      ],
+    );
   }
 
   Widget twinCardLiquedeGoal() {
@@ -217,12 +257,12 @@ class _SavingsState extends State<Savings> {
       ManyText(text: "up to"),
       ManyText(
           text: " 11% ",
-          style: KTextStyle(fontSize: 20, weight: FontWeight.bold)),
+          style: KTextStyle(fontSize: 16, weight: FontWeight.bold)),
       ManyText(text: "Interest rate p.a."),
     ]);
   }
 
-  Widget activeSavingCard(){
+  Widget activeSavingCard(SavingsView savingsView) {
     return Material(
       elevation: 1,
       borderRadius: BorderRadius.circular(10),
@@ -239,7 +279,7 @@ class _SavingsState extends State<Savings> {
                     topRight: Radius.circular(10))),
             alignment: Alignment.centerLeft,
             child: kText("My LiquedeSeal",
-                weight: FontWeight.bold, fontSize: 14, color: white)
+                    weight: FontWeight.bold, fontSize: 12, color: white)
                 .paddingXY(
               x: 20,
             ),
@@ -250,8 +290,8 @@ class _SavingsState extends State<Savings> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   kText("Current Balance", fontSize: 12, color: Colors.grey),
-                  kText(formatMoney(0),
-                      color: black, fontSize: 18, weight: FontWeight.w900)
+                  kText(formatMoney(savingsView.amount ?? 0.0),
+                          color: black, fontSize: 18, weight: FontWeight.w900)
                       .paddingTop(0),
                   addSpace(y: 15),
                   Row(
@@ -259,15 +299,21 @@ class _SavingsState extends State<Savings> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          kText("Total at maturity", fontSize: 12, color: Colors.grey[500]),
+                          kText("Total at maturity",
+                              fontSize: 12, color: Colors.grey[500]),
                           addSpace(y: 5),
                           Container(
                             width: getPercentageWidth(30),
                             decoration: const BoxDecoration(
-                              color: kAppYellow,
-                              borderRadius: BorderRadius.all(Radius.circular(4))
-                            ),
-                            child: kText(formatMoney(53999), fontSize: 15, weight: FontWeight.bold).paddingXY(y: 4, x: 10),
+                                color: kAppYellow,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4))),
+                            child: kText(
+                                    formatMoney(
+                                        savingsView.targetAmount ?? 0.0),
+                                    fontSize: 14,
+                                    weight: FontWeight.bold)
+                                .paddingXY(y: 4, x: 10),
                           )
                         ],
                       ),
@@ -275,15 +321,18 @@ class _SavingsState extends State<Savings> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          kText("Total at maturity", fontSize: 12, color: Colors.grey[500]),
+                          kText("interest accrued",
+                              fontSize: 12, color: Colors.grey[500]),
                           addSpace(y: 5),
                           Container(
                             width: getPercentageWidth(30),
                             decoration: const BoxDecoration(
                                 color: kAppYellow,
-                                borderRadius: BorderRadius.all(Radius.circular(4))
-                            ),
-                            child: kText(formatMoney(53999), fontSize: 15, weight: FontWeight.bold).paddingXY(y: 4, x: 10),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4))),
+                            child: kText(formatMoney(savingsView.interestRate),
+                                    fontSize: 14, weight: FontWeight.bold)
+                                .paddingXY(y: 4, x: 10),
                           )
                         ],
                       ),
@@ -291,12 +340,12 @@ class _SavingsState extends State<Savings> {
                   )
                 ],
               ).paddingAll(20).stretch,
-
             ],
           ),
         ],
       ),
-    ).stretchSize(h: 180);
+    ).stretchSize(h: 180).onclickWithRipple(
+        () => goto(context, GoalDetails(savingsView: savingsView)));
   }
 
   String longText =
@@ -334,33 +383,56 @@ class _SavingsState extends State<Savings> {
           twinCardLiquedeSeal()
               .onclickWithRipple([
                 () => goBack(context),
-                () => delay(500, createLiquedeSealPlan)].chain())
-              .withElevation(1, r: 10).stretch,
+                () => delay(500, createLiquedeSealPlan)
+              ].chain())
+              .withElevation(1, r: 10)
+              .stretch,
           addSpace(x: 15),
           twinCardLiquedeGoal()
               .onclickWithRipple([
                 () => goBack(context),
-                () => delay(500,createLiquedeGoalPlan)].chain())
-              .withElevation(1, r: 10).stretch
+                () => delay(500, createLiquedeGoalPlan)
+              ].chain())
+              .withElevation(1, r: 10)
+              .stretch
         ],
       ).stretchSize(h: 170, w: getPercentageWidth(100)),
     );
   }
 
-  void addMoneyWithCard() {}
+  void addMoneyWithCard() async {
+    showFunWalletModal(context, (amount) {
+      goBack(context);
+      WalletService.I(context)
+          .fundWallet(FundWalletModel()
+            ..amount = amount
+            ..userId = UserService.I(context).userView?.id)
+          .listen((event) {
+        event.handleState(context);
+        event.performOnSuccess((p0) async {
+          requestPayment(context, event.message, amount);
+        });
+      });
+    });
+  }
+
   void addMoneyFromBank() {}
 
   void createLiquedeSealPlan() {
-    showBottomSheetFull(
-        context,
-        "Create a LiquedeSeal Saving plan",
+    showBottomSheetFull(context, "Create a LiquedeSeal Saving plan",
         const CreateLiquedeSealPlan());
   }
 
   void createLiquedeGoalPlan() {
-    showBottomSheetFull(
-        context,
-        "Create a LiquedeGoal Saving plan",
+    showBottomSheetFull(context, "Create a LiquedeGoal Saving plan",
         const CreateLiquedeGoalPlan());
+  }
+
+  void _getSavings(bool force) {
+    SavingsService.I(context)
+        .getUserSavings(force: force)
+        .handleStateAndPerformOnSuccess(context, (p0) {
+      setState(() {});
+    });
   }
 }

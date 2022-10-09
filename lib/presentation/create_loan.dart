@@ -365,7 +365,7 @@ class _CreateLoanScreenState extends State<CreateLoanScreen> {
       ..loanTypeId = 1)
         .handleStateAndPerformOnSuccess(context, (p0) {
       showSuccessPopUp(context, "Application successful", onClose: () {
-        goBack(context);
+        goBack(context, result: p0);
       });
     });
   }
@@ -381,7 +381,7 @@ class _CreateLoanScreenState extends State<CreateLoanScreen> {
       ..loanTypeId = 2)
         .handleStateAndPerformOnSuccess(context, (p0) {
       showSuccessPopUp(context, "Application successful", onClose: () {
-        goBack(context);
+        goBack(context, result: p0);
       });
     });
   }

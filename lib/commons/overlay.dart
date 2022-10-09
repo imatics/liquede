@@ -26,18 +26,13 @@ class OverlayScreen {
       content: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          // SpinKitRing(
-          //   lineWidth: 3,
-          //   color: Colors.blue[300]!,
-          //   size: 40,
-          // ),
-          appLoadingWidget,
+          appLoadingWidgetBig,
           const SizedBox(height: 20.0),
           kText(
             _message,
             defaultStyle: const TextStyle(
                 color: Colors.white,
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: FontWeight.w500,
                 fontStyle: FontStyle.italic),
           ),
@@ -76,8 +71,8 @@ class OverlayScreen {
           onWillPop: () async => true,
           child: Center(
             child: SizedBox(
-              height: 150,
-              width: 200,
+              height: 100,
+              width: 100,
               child: Material(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                 child: Padding(
@@ -86,25 +81,7 @@ class OverlayScreen {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      const SizedBox(
-                        height: 60,
-                        width: 60,
-//                         child: SpinKitFadingCircle(
-// //                color: Colors.white,
-//                            itemBuilder: (context, index){
-//                             return Container(
-//                               height: 4,
-//                               padding: const EdgeInsets.all(2),
-//                               decoration: BoxDecoration(
-//                                   color: index.isEven?Colors.orangeAccent:appColor,
-//                                   borderRadius: BorderRadius.circular(5),
-//                               ),
-//                             );
-//                            },
-//                           size: 60,
-//                         ),
-                      ),
-                      appLoadingWidget,
+                      appLoadingWidgetBig,
                       const SizedBox(height: 10.0),
                       Text(
                         _message,
@@ -192,7 +169,7 @@ void showOverlay(BuildContext context, {String message = "processing"}){
         child: Center(
           child: SizedBox(
             height: 150,
-            width: 200,
+            width: 150,
             child: Material(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
               child: Padding(
@@ -201,13 +178,13 @@ void showOverlay(BuildContext context, {String message = "processing"}){
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    appLoadingWidget,
-                    const SizedBox(height: 10.0),
+                    appLoadingWidgetBig,
+                    const SizedBox(height: 15.0),
                     Text(
                       message,
                       style: const TextStyle(
                         // color: $styles.colors.secondaryColor_900,
-                          fontSize: 12,
+                          fontSize: 14,
                           decoration: TextDecoration.none,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w400,
@@ -258,4 +235,30 @@ Future<bool> doWithOverlay(BuildContext context, Operation task,
     }
   }
   return false;
+}
+
+
+
+
+Future<DateTime?> showDatePickerDialog(BuildContext context, {DateTime?  initialDate, DateTime?  firstDate, DateTime?  lastDate}) {
+  return showDatePicker(
+      context: context,
+      initialDate: initialDate?? DateTime.now(),
+      firstDate:firstDate?? DateTime(1900, 1, 1),
+      lastDate: lastDate??DateTime.now().add(const Duration(days: 1000)),
+      builder: (context, child) => Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: ColorScheme.light(
+            primary: Colors.black, // header background color
+            onPrimary: Colors.white, // header text color
+            onSurface: Colors.black, // body text color
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+              primary: Colors.black, // button text color
+            ),
+          ),
+        ),
+        child: child!,
+      ));
 }

@@ -15,16 +15,16 @@ class FlutterWaveApi {
     Map<String, String> formParams = {};
 
     List<String> contentTypes = [
-      "application/json-patch+json",
       "application/json",
       "text/json",
       "application/_*+json"
     ];
     String contentType =
         contentTypes.length > 0 ? contentTypes[0] : "application/json";
+    List<String> authNames = ["Bearer"];
 
     var response = await flutterwaveClient.invokeAPI(path, 'GET', queryParams,
-        postBody, headerParams, formParams, contentType, []);
+        postBody, headerParams, formParams, contentType, authNames);
 
     if (response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);
@@ -35,33 +35,23 @@ class FlutterWaveApi {
     }
   }
 
-  Future<BaseResponse<BankAccountInfo>?> getAccountInfo(
-      String bankCode, String accountNumber) async {
-    Object? postBody = {"account_number": "$accountNumber", "account_bank": "$bankCode"};
-
-    // verify required params are set
-
-    // create path and map variables
+  Future<BaseResponse<BankAccountInfo>?> getAccountInfo(AccountDetailsRequestModel model) async {
+    AccountDetailsRequestModel postBody = model;
     String path = "/accounts/resolve".replaceAll("{format}", "json");
-
-    // query params
     List<QueryParam> queryParams = [];
     Map<String, String> headerParams = {};
     Map<String, String> formParams = {};
 
     List<String> contentTypes = [
-      "application/json-patch+json",
       "application/json",
-      "text/json",
-      "application/_*+json"
     ];
 
     String contentType =
         contentTypes.length > 0 ? contentTypes[0] : "application/json";
-
+    List<String> authNames = ["Bearer"];
 
     var response = await flutterwaveClient.invokeAPI(path, 'POST', queryParams,
-        postBody, headerParams, formParams, contentType, []);
+        postBody.toJson(), headerParams, formParams, contentType, authNames);
 
     if (response.statusCode >= 400) {
       throw new ApiException(response.statusCode, response.body);

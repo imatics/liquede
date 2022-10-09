@@ -2,7 +2,7 @@ part of swagger.api;
 
 class BankInfo {
 
-String? id = null;
+int? id = null;
 String? code = null;
 String? name = null;
 
