@@ -1,11 +1,19 @@
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:intl/intl.dart';
 import 'package:liquede/commons/constants.dart';
+import 'package:liquede/commons/overlay.dart';
 import 'package:liquede/commons/reusables.dart';
 import 'package:liquede/commons/utils.dart';
 import 'package:liquede/extensions/widget.dart';
 import 'package:liquede/extensions/String.dart';
+import 'package:liquede/presentation/automation.dart';
+import 'package:liquede/services/api/base_service.dart';
+import 'package:swagger/api.dart';
+
+import '../../services/api/saving_service.dart';
 
 class CreateLiquedeGoalPlan extends StatefulWidget {
   const CreateLiquedeGoalPlan({Key? key}) : super(key: key);
@@ -23,8 +31,16 @@ class _CreateLiquedeGoalPlanState extends State<CreateLiquedeGoalPlan> {
   String? selected;
   int valueEntered = 0;
 
+  bool tAndChecked = false;
+
+
   late TextEditingController _controller;
   late KInputFieldProps prop;
+  late KInputFieldProps nameProp;
+  late KInputFieldProps amountProp;
+  late KInputFieldProps dateProp;
+
+  Map? goalAutomationData;
 
   @override
   void initState() {
@@ -44,7 +60,45 @@ class _CreateLiquedeGoalPlanState extends State<CreateLiquedeGoalPlan> {
             radius: 5,
             borderWidth: 1),
         style: KTextStyle(color: black, a: TextAlign.center).build);
+    amountProp = KInputFieldProps(
+        textEditingController: TextEditingController(),
+        inputType: TextInputType.number,
+
+        inputFormatter: [CurrencyTextInputFormatter(symbol: nairaSymbol, decimalDigits: 0)],
+        inputDecoration: getUnderLineDecoration(
+            counter: const SizedBox(),
+            borderColor: black,
+            radius: 5,
+            hint: "Enter Target amount",
+            label: "Target Amount",
+            borderWidth: 1),
+        style: KTextStyle(color: black,fontSize: 12, weight: FontWeight.bold).build);
+    nameProp = KInputFieldProps(
+        textEditingController: TextEditingController(),
+        inputType: TextInputType.text,
+        inputDecoration: getUnderLineDecoration(
+            borderColor: black,
+            hint: "What are you saving for",
+            label: "Plan Name",
+            radius: 5,
+            borderWidth: 1),
+        style: KTextStyle(color: black,fontSize: 12).build);
+    dateProp = KInputFieldProps(
+        textEditingController: TextEditingController(),
+        inputType: TextInputType.none,
+        readOnly: true,
+        onclick: _showPicker,
+        inputDecoration: getUnderLineDecoration(
+            counter: const SizedBox(),
+            borderColor: black,
+            hint: "Target Date",
+            label: "Set Target Date",
+            radius: 5,
+            borderWidth: 1),
+        style: KTextStyle(color: black,fontSize: 12).build);
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -52,32 +106,11 @@ class _CreateLiquedeGoalPlanState extends State<CreateLiquedeGoalPlan> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            EditTextField(KInputFieldProps(
-                context: context,
-                hint: "What are you saving for",
-                textEditingController: TextEditingController())),
+            EditTextField(nameProp),
             addSpace(y: 20),
-            EditTextField(KInputFieldProps(
-                context: context,
-                hint: "Enter Target amount",
-                textEditingController: TextEditingController(),
-                inputType: TextInputType.number)),
+            EditTextField(amountProp),
             addSpace(y: 20),
-            Container(
-              decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  border:
-                  const Border(bottom: BorderSide(width: 1, color: black))),
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  kText("Set Target Date",
-                      weight: FontWeight.normal, color: grey),
-                  const Icon(Icons.arrow_drop_down)
-                ],
-              ).stretchSize(h: 50).onclickWithRipple(selectPaymentSource),
-            ),
+            EditTextField(dateProp),
             addSpace(y: 20),
             Container(
               decoration: const BoxDecoration(
@@ -87,25 +120,28 @@ class _CreateLiquedeGoalPlanState extends State<CreateLiquedeGoalPlan> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Image.asset("automate_goal".imagePng, height: 15, width: 15, color: black,),
+                  Image.asset("automate_goal".imagePng, height: 15, width: 15, color: goalAutomationData == null? black:green,),
                   addSpace(x: 20),
-                  kText("Automate this goal",
-                      weight: FontWeight.normal, color: Colors.black, fontSize: 13),
+                  kText(goalAutomationData == null? "Automate this goal" : "Goal automated",
+                      weight: FontWeight.normal, color: goalAutomationData == null? black:green, fontSize: 13),
                   const Spacer(),
                   const Icon(Icons.arrow_forward_ios, size: 13,)
                 ],
-              ).stretchSize(h: 45).onclickWithRipple(selectPaymentSource),
+              ).stretchSize(h: 45).onclickWithRipple(automateGoal),
             ),
             kText("Optional", fontSize: 11,weight: FontWeight.normal, color: grey).paddingY(6).left,
             addSpace(y: 30),
-            previewCard(200),
+            previewCard(amount: amountProp.textEditingController!.text.cleanMoneyValue, automation: goalAutomationData, maturity: targetDate),
             addSpace(y: 20),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Checkbox(
-                  value: false,
-                  onChanged: (v) {},
+                  value: tAndChecked,
+                  onChanged: (v) =>
+                    setState(() {
+                      tAndChecked = v == true;
+                    }),
                 ),
                 kText(authText, a: TextAlign.justify, fontSize: 13)
                     .paddingY(15)
@@ -113,7 +149,7 @@ class _CreateLiquedeGoalPlanState extends State<CreateLiquedeGoalPlan> {
               ],
             ).paddingRight(10),
             MaterialButton(
-              onPressed: createGoal,
+              onPressed: tAndChecked ? createGoal : null,
               color: black,
               child: kText("Create LiquedeGoal", color: white),
             ).stretchSize(h: 45),
@@ -132,22 +168,69 @@ class _CreateLiquedeGoalPlanState extends State<CreateLiquedeGoalPlan> {
     ]);
   }
 
+  void automateGoal() {
+    goto(context, Automation(title: "Automate Goal", goalAutomationData: goalAutomationData)).then((value){
+     setState(() {
+       goalAutomationData = value;
+     });
+    });
+  }
+
   String authText =
   """I authorize Lquede to debit my card or LiquedeFlex to the tune of amount i entered for a periodic savings at the date i have designated. I also acknowledge that i will be charged a fee if i terminate this liquedegoal before the provided target date.
   """;
 
   void createGoal() {
-    showSuccessPopUp(context, "LiquedeGoal successfully created", onClose: () {
-      goBack(context);
+    SavingsService.I(context)
+        .createLiquedeGoal(LiquiedeGoalInput()
+      ..durationInDays = targetDate?.difference(DateTime.now()).inDays
+      ..description = ""
+      ..startDate = DateTime.now()
+      ..maturityDate = targetDate
+      ..paid = false
+      ..debitFrequencyInDays = 0
+      ..monthlyPayment = goalAutomationData?["amount"]
+      ..cardId = 0
+      ..targetAmount = amountProp.textEditingController?.text.cleanMoneyValue
+      ..preferredRecurringPaymentDate = goalAutomationData?["date"]
+      ..savingPlanTypeId = 1
+      ..interestRate = 0
+      ..name = nameProp.textEditingController?.text)
+        .handleStateAndPerformOnSuccess(context, (p0) {
+      showSuccessPopUp(context, "LiquedeGoal successfully created", onClose: () {
+        goBack(context);
+      });
+      });
+    }
+
+
+
+  DateTime? targetDate;
+
+  void _showPicker(){
+    showDatePickerDialog(context).then((value){
+      if(value != null){
+       targetDate = value;
+       dateProp.textEditingController?.text = format1.format(targetDate!);
+       setState(() {});
+
+      }
     });
   }
+
 }
 
-Widget previewCard(double amount) {
+Widget previewCard(
+    {double amount = 0, Map? automation, DateTime? maturity}) {
   KTextStyle label = KTextStyle(
       fontSize: 14, color: Colors.grey[600], weight: FontWeight.w500);
   KTextStyle value =
   KTextStyle(fontSize: 15, color: Colors.black, weight: FontWeight.bold);
+
+  String fd = "${ordinal_suffix_of((automation?["date"] as DateTime?)?.day)}";
+  String date = DateFormat("MMM yyyy").format(maturity??DateTime.now());
+  double instalments = automation?["amount"]??0.0;
+
   return Material(
     color: const Color(0xFFe3e0c8),
     child: Container(
@@ -194,20 +277,43 @@ Widget previewCard(double amount) {
           kText("Maturity Date", defaultStyle: label.build!, fontSize: 12),
           kRichText([
             ManyText(
-                text: "3rd of Feb 2021",
+                text: "${ordinal_suffix_of((maturity??DateTime.now()).day)} of $date",
                 style: KTextStyle(style: value.build!)),
             ManyText(
-                text: "/10 Days",
+                text: " / ${(maturity??DateTime.now()).difference(DateTime.now()).inDays} Days",
                 style: KTextStyle(style: value.build!, fontSize: 12))
           ], style: value),
           addSpace(y: 20),
-          kText("Automation", defaultStyle: label.build!, fontSize: 12),
-          kText("${formatMoney(25000)}/3rd of every month", defaultStyle: value.build!),
-          addSpace(y: 20),
+          automation == null? SizedBox():Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              kText("Automation", defaultStyle: label.build!, fontSize: 12),
+              kText("$instalments/$fd of every month", defaultStyle: value.build!),
+              addSpace(y: 20),
+            ],
+          ),
           kText("Projected completion date", defaultStyle: label.build!, fontSize: 12),
-          kText("03/01/22", defaultStyle: value.build!,),
+          kText(format1.format(maturity??DateTime.now()), defaultStyle: value.build!,),
         ],
       ).paddingAll(20),
     ),
   );
+}
+
+String ordinal_suffix_of(i) {
+  if(i == null) {
+    return "";
+  }
+  var j = i % 10,
+      k = i % 100;
+  if (j == 1 && k != 11) {
+    return "${i}st";
+  }
+  if (j == 2 && k != 12) {
+    return "${i}nd";
+  }
+  if (j == 3 && k != 13) {
+    return "${i}rd";
+  }
+  return "${i}th";
 }

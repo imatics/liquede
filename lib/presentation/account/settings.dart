@@ -5,6 +5,7 @@ import 'package:liquede/commons/reusables.dart';
 import 'package:liquede/commons/utils.dart';
 import 'package:liquede/extensions/widget.dart';
 import 'package:liquede/presentation/account/profile.dart';
+import 'package:liquede/presentation/account/security.dart';
 
 class Settings extends StatelessWidget {
   const Settings({Key? key}) : super(key: key);
@@ -18,7 +19,7 @@ class Settings extends StatelessWidget {
         addSpace(y: 10),
         listItem(Icons.person, "Personal Details", const Icon(Icons.arrow_forward_ios_rounded, size: 14,)).onclickWithRipple(() => goto(context, const ProfilePage())),
         listItem(Icons.settings, "Preferences", const Icon(Icons.arrow_forward_ios_rounded, size: 14,)),
-        listItem(Icons.security, "Security & Privacy", const Icon(Icons.arrow_forward_ios_rounded, size: 14,)),
+        listItem(Icons.security, "Security & Privacy", const Icon(Icons.arrow_forward_ios_rounded, size: 14,)).onclickWithRipple(() => goto(context, const Security())),
         listItem(Icons.info, "Terms & Conditions", const Icon(Icons.arrow_forward_ios_rounded, size: 14,)),
       ],
     ).paddingX(30),

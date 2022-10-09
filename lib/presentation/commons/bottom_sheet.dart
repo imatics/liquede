@@ -18,8 +18,8 @@ class _CustomBottomSheetState extends State<_CustomBottomSheet> {
   }
 }
 
-void launchBottomSheet(BuildContext context, Widget child) {
-  showModalBottomSheet(
+Future launchBottomSheet(BuildContext context, Widget child) {
+  return showModalBottomSheet(
       context: context,
       backgroundColor: transparent,
       barrierColor: Colors.white60,
@@ -38,8 +38,8 @@ void launchBottomSheet(BuildContext context, Widget child) {
 }
 
 
-void launchBottomSheetFull(BuildContext context, Widget child, {double hFactor = 1, double horizontalPadding = 1}) {
-  showModalBottomSheet(
+Future launchBottomSheetFull(BuildContext context, Widget child, {double hFactor = 1, double horizontalPadding = 1}) {
+  return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: transparent,

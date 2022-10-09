@@ -5,6 +5,7 @@ import 'package:liquede/commons/constants.dart';
 import 'package:liquede/commons/reusables.dart';
 import 'package:liquede/commons/utils.dart';
 import 'package:liquede/extensions/widget.dart';
+import 'package:liquede/services/api/wallet_service.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({Key? key}) : super(key: key);
@@ -14,6 +15,13 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(context: context,
@@ -23,21 +31,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           searchBar(),
           ListView(
             padding: const EdgeInsets.only(top: 20),
-            children: [
-              listItem(TransactionType.credit, "John Doe", "Transfer", 40000),
-              listItem(TransactionType.debit, "John Doe", "Debit - 12 Nov 20",
-                  -4000),
-              listItem(TransactionType.credit, "John Doe", "Transfer", 40000),
-              listItem(TransactionType.savings, "John Doe", "Transfer", 40000),
-              listItem(TransactionType.debit, "John Doe", "Transfer", 40000),
-              listItem(TransactionType.credit, "John Doe", "Transfer", 40000),
-              listItem(TransactionType.debit, "John Doe", "Transfer", 40000),
-              listItem(TransactionType.savings, "John Doe", "Transfer", 40000),
-              listItem(TransactionType.credit, "John Doe", "Transfer", 40000),
-              listItem(TransactionType.debit, "John Doe", "Transfer", 40000),
-              listItem(TransactionType.credit, "John Doe", "Transfer", 40000),
-              listItem(TransactionType.debit, "John Doe", "Transfer", 40000),
-            ],
+            children: WalletService.I(context).transactions.map((e) => listItem(TransactionType.debit, e.title??"", "desc", e.amount)).toList(),
           ).stretch
         ],
       ).paddingX(20),
@@ -71,7 +65,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
 }
 
-  Widget listItem(TransactionType t, String name, String desc, double amount){
+  Widget listItem(TransactionType t, String name, String desc, String? amount){
     return Container(
       decoration: BoxDecoration(
         color: white,
@@ -79,17 +73,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
         border: Border.all(width: 0.5, color: Colors.grey[300]!)
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           t.icon,
           Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-            kText(name),
-            kText(desc, color: grey, fontSize: 13)
+            kText(name, fontSize: 13, weight: FontWeight.w600),
+            kText(desc, color: grey, fontSize: 11)
           ],).paddingX(20),
           const Spacer(),
-          kText(formatMoney(amount))
+          kText(amount, fontSize: 14, weight: FontWeight.w600, color: Colors.grey[700])
         ],
       ).paddingXY(x: 10, y: 10),
     ).paddingY(5);
@@ -115,8 +110,8 @@ Widget savings = const Icon(Icons.refresh, color: white,);
 
 Widget wrapper(Widget icon, Color color){
   return Container(
-    height: 40,
-    width: 40,
+    height: 30,
+    width: 30,
     child: icon,
     alignment: Alignment.center,
     decoration: BoxDecoration(
@@ -141,14 +136,14 @@ extension T on  TransactionType{
 
 Widget searchBar(BuildContext context) {
   return Container(
-    height: 45,
+    height: 40,
     decoration: BoxDecoration(
-        border: Border.all(color: black, width: 1),
-        borderRadius: BorderRadius.circular(4)
+        border: Border.all(color: grey, width: 1),
+        borderRadius: BorderRadius.circular(6)
     ),
     child: Row(
       children: [
-        Icon(Icons.search).paddingX(10),
+        Icon(Icons.search, size: 16,).paddingX(10),
         EditTextField(KInputFieldProps(context: context,
             textEditingController: TextEditingController(),
             fillColor: transparent)).stretch,

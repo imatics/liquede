@@ -23,7 +23,7 @@ class BaseResponse<T>{
   BaseResponse.fromJson(json) {
     print(json);
     if (json == null) return;
-    status = json['status'];
+    status = (json['status'] == "success" || json['status'] == true);
     message = json['message'];
     data = _deserialize(json['data'],T.toString()) as T;
     statusCode = json['statusCode'];
@@ -88,6 +88,8 @@ class BaseResponse<T>{
           return new CableSubscriptionModel.fromJson(value);
         case 'Card':
           return new Card.fromJson(value);
+        case 'BankAccountInfo':
+          return new BankAccountInfo.fromJson(value);
         case 'CardView':
           return new CardView.fromJson(value);
         case 'CardViewIEnumerableStandardResponse':
@@ -208,6 +210,8 @@ class BaseResponse<T>{
           return new UserViewPagedCollectionStandardResponse.fromJson(value);
         case 'UserViewStandardResponse':
           return new UserViewStandardResponse.fromJson(value);
+          case 'List<BankInfo>':
+          return BankInfo.listFromJson(value);
         case 'Wallet':
           return new Wallet.fromJson(value);
         case 'WalletModel':
@@ -222,6 +226,14 @@ class BaseResponse<T>{
           return new WalletViewStandardResponse.fromJson(value);
           case 'List<ProviderBundleResponse>':
           return ProviderBundleResponse.listFromJson(value);
+          case 'List<BeneficiaryModel>':
+          return BeneficiaryModel.listFromJson(value);
+          case 'List<LoanView>':
+          return LoanView.listFromJson(value);
+          case 'List<SavingsView>':
+          return SavingsView.listFromJson(value);
+          case 'BeneficiaryModel':
+          return BeneficiaryModel.fromJson(value);
         default:
           {
             Match? match = _RegList.firstMatch(targetType??"");

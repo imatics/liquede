@@ -48,35 +48,36 @@ Text getText(String? content,
   );
 }
 
-class KInputFieldProps {
+class KInputFieldProps<T> {
   KInputFieldProps(
       {this.validators,
-      this.onclick,
-      this.isPassword,
-      this.readOnly,
-      this.hint,
-      this.inputType,
-      this.inputAction,
-      this.onChange,
-      this.inputDecorator,
-      this.label,
-      this.focusNode,
-      this.nextFocusNode,
-      this.keyboardSide,
-      this.textEditingController,
-      this.maxLines,
-      this.minLines,
-      this.inputFormatter,
-      this.maxLength,
-      this.style,
+        this.onclick,
+        this.isPassword,
+        this.readOnly,
+        this.hint,
+        this.inputType,
+        this.inputAction,
+        this.onChange,
+        this.inputDecorator,
+        this.label,
+        this.focusNode,
+        this.nextFocusNode,
+        this.keyboardSide,
+        this.textEditingController,
+        this.maxLines,
+        this.minLines,
+        this.inputFormatter,
+        this.maxLength,
+        this.style,
         this.textAlign,
-      this.inputDecoration,
-      this.autoValidateMode,
+        this.inputDecoration,
+        this.autoValidateMode,
         this.fillColor,
         this.context,
-      this.enabled});
+        this.options,
+        this.enabled});
 
-  List<FormFieldValidator<String>>? validators;
+  List<String? Function(String? value)>? validators;
   Function()? onclick;
   BuildContext? context;
   bool? isPassword = false;
@@ -105,6 +106,7 @@ class KInputFieldProps {
   TextAlign? textAlign;
   StrutStyle? strutStyle;
   Color? fillColor;
+  List<T>? options;
 
   static KInputFieldProps copyFrom(KInputFieldProps props) {
     KInputFieldProps d = KInputFieldProps();
@@ -177,12 +179,17 @@ class KInputFieldProps {
       d.strutStyle = props.strutStyle;
     }
 
-    if (!props.validators.hasNothing) {
+    if (props.validators?.hasNothing == true) {
       d.validators = props.validators;
     }
 
     if (props.fillColor != null) {
       d.fillColor = props.fillColor;
+    }
+
+
+    if (!props.options.hasNothing) {
+      d.options = props.options;
     }
 
     return d;
@@ -306,6 +313,180 @@ Text kText2(String? content,
 
 
 
+// class EditTextField extends StatefulWidget {
+//   final KInputFieldProps fieldDecorator;
+//   const EditTextField(this.fieldDecorator, {Key? key}) : super(key: key);
+//
+//   @override
+//   _EditTextFieldState createState() => _EditTextFieldState();
+// }
+//
+// class _EditTextFieldState extends State<EditTextField> {
+//   bool textMasked = true;
+//
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//     super.initState();
+//
+//     assert(widget.fieldDecorator.textEditingController != null);
+//   }
+//
+//   InputDecoration getDecoration() {
+//     return (widget.fieldDecorator.inputDecoration ??
+//         InputDecoration(
+//           suffixIcon: getPasswordWidget(),
+//           contentPadding:
+//               const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+//           border: const OutlineInputBorder(
+//               borderRadius: BorderRadius.all(Radius.circular(8)),
+//               borderSide: BorderSide(color: transparent, width: 0.5)),
+//           focusedBorder: const OutlineInputBorder(
+//               borderRadius: BorderRadius.all(Radius.circular(8)),
+//               borderSide: BorderSide(color: transparent, width: 1)),
+//           enabledBorder: OutlineInputBorder(
+//               borderRadius: const BorderRadius.all(Radius.circular(8)),
+//               borderSide: BorderSide(color: Colors.grey[200]!, width: 0.5)),
+//           hintText: widget.fieldDecorator.hint,
+//           filled: true,
+//           fillColor: widget.fieldDecorator.fillColor??Colors.grey[200],
+//         ));
+//   }
+//
+//   InputDecoration getDecoration2() {
+//     return (widget.fieldDecorator.inputDecoration ??
+//         InputDecoration(
+//           contentPadding: const EdgeInsets.all(0),
+//           border:  InputBorder.none,
+//           isDense: true,
+//           focusedBorder: InputBorder.none,
+//           enabledBorder:InputBorder.none,
+//           hintText: widget.fieldDecorator.hint,
+//         ));
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//
+//     List<TextInputFormatter> formatters = widget.fieldDecorator.inputFormatter??[];
+//     if(widget.fieldDecorator.isMoney??false){
+//       formatters.add( CurrencyTextInputFormatter(symbol: nairaSymbol, decimalDigits: 0));
+//     }
+//
+//     TextStyle style = widget.fieldDecorator.style??const TextStyle();
+//     if(widget.fieldDecorator.isMoney??false){
+//       style = KTextStyle(style: style, useDefaultFont: true, color: secondaryColor,
+//         weight: FontWeight.w500,
+//         fontSize: 15,).build!;
+//     }
+//
+//
+//     Widget textField =  TextFormField(
+//       onTap: widget.fieldDecorator.onclick,
+//       validator: (text) {
+//         if (!widget.fieldDecorator.validators.hasNothing) {
+//           for (FormFieldValidator<String> f
+//               in widget.fieldDecorator.validators ?? []) {
+//             String? issue = f(text);
+//             if (!issue.hasNothing) {
+//               return issue;
+//             }
+//           }
+//         }
+//         return null;
+//       },
+//       controller: widget.fieldDecorator.textEditingController,
+//       readOnly: widget.fieldDecorator.readOnly ?? false,
+//       textInputAction: (widget.fieldDecorator.nextFocusNode == null)
+//           ? widget.fieldDecorator.inputAction
+//           : TextInputAction.next,
+//       focusNode: widget.fieldDecorator.focusNode,
+//       onEditingComplete: () {
+//         if(widget.fieldDecorator.context != null) {
+//           FocusScope.of(widget.fieldDecorator.context!)
+//             .requestFocus(widget.fieldDecorator.nextFocusNode);
+//         }
+//       },
+//       keyboardType: widget.fieldDecorator.inputType,
+//       inputFormatters:formatters,
+//       key: widget.key,
+//       enabled: widget.fieldDecorator.enabled,
+//       obscureText: (widget.fieldDecorator.isPassword ?? false) && textMasked,
+//       maxLines: widget.fieldDecorator.maxLines ?? 1,
+//       maxLength: widget.fieldDecorator.maxLength,
+//       style: style,
+//       decoration: widget.fieldDecorator.label == null? (widget.fieldDecorator.inputDecoration ?? getDecoration()) : getDecoration2(),
+//       autovalidateMode: widget.fieldDecorator.autoValidateMode,
+//       minLines: widget.fieldDecorator.minLines,
+//       // textDirection: fieldDecorator.textDirection,
+//       textAlign: widget.fieldDecorator.textAlign ?? TextAlign.start,
+//       strutStyle: widget.fieldDecorator.strutStyle,
+//       onFieldSubmitted: (e){
+//         if(widget.fieldDecorator.onSubmit != null){
+//           widget.fieldDecorator.onSubmit;
+//         }
+//         if(widget.fieldDecorator.nextFocusNode == null){
+//           FocusScope.of(context).requestFocus(FocusNode());
+//         }else{
+//           FocusScope.of(context).requestFocus(widget.fieldDecorator.nextFocusNode);
+//         }
+//         },
+//     );
+//     if(widget.fieldDecorator.label.hasNothing){
+//       return textField;
+//     }else{
+//       return Container(
+//         padding: const EdgeInsets.only(left: 10,right: 10, bottom: 5, top: 5),
+//         decoration: BoxDecoration(
+//           color: widget.fieldDecorator.fillColor??Colors.grey[200],
+//           borderRadius: BorderRadius.circular(8)
+//         ),
+//         child: Row(
+//           children: [
+//             Expanded(
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   kText(widget.fieldDecorator.label, fontSize: 10, color: textHintGrey),
+//                   textField.paddingMerge(t: 2, b: 5)
+//                 ],
+//               ),
+//             ), getPasswordWidget()?? const SizedBox(),
+//           ],
+//         ),
+//       );
+//     }
+//   }
+//
+//   Widget? getPasswordWidget() {
+//     if (widget.fieldDecorator.isPassword ?? false) {
+//       return IconButton(
+//           onPressed: () {
+//             setState(() {
+//               textMasked = !textMasked;
+//             });
+//           },
+//           icon: AnimatedCrossFade(
+//             firstChild: const Icon(
+//               Icons.visibility_off,
+//               color: grey,
+//             ),
+//             duration: defaultAnimationDuration,
+//             secondChild: const Icon(
+//               Icons.visibility,
+//               color: grey,
+//             ),
+//             crossFadeState: !textMasked
+//                 ? CrossFadeState.showSecond
+//                 : CrossFadeState.showFirst,
+//           ).center);
+//     }
+//     return null;
+//   }
+// }
+
+
+
 class EditTextField extends StatefulWidget {
   final KInputFieldProps fieldDecorator;
   const EditTextField(this.fieldDecorator, {Key? key}) : super(key: key);
@@ -329,57 +510,50 @@ class _EditTextFieldState extends State<EditTextField> {
     return (widget.fieldDecorator.inputDecoration ??
         InputDecoration(
           suffixIcon: getPasswordWidget(),
+          hintStyle: widget.fieldDecorator.style ?? KTextStyle(fontSize: 14, color: grey).build!,
           contentPadding:
-              const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-          border: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide(color: transparent, width: 0.5)),
-          focusedBorder: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide(color: transparent, width: 1)),
+          const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+          border: OutlineInputBorder(
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
+              borderSide:
+              BorderSide(color: Colors.grey[200]!, width: 0.5)),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
+              borderSide: BorderSide(color: Colors.grey[600]!, width: 1)),
           enabledBorder: OutlineInputBorder(
               borderRadius: const BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide(color: Colors.grey[200]!, width: 0.5)),
+              borderSide: BorderSide(color: Colors.grey[200]!, width: 1)),
           hintText: widget.fieldDecorator.hint,
           filled: true,
-          fillColor: widget.fieldDecorator.fillColor??Colors.grey[200],
-        ));
-  }
-
-  InputDecoration getDecoration2() {
-    return (widget.fieldDecorator.inputDecoration ??
-        InputDecoration(
-          contentPadding: const EdgeInsets.all(0),
-          border:  InputBorder.none,
-          isDense: true,
-          focusedBorder: InputBorder.none,
-          enabledBorder:InputBorder.none,
-          hintText: widget.fieldDecorator.hint,
+          fillColor: widget.fieldDecorator.fillColor ?? grey_50,
         ));
   }
 
   @override
   Widget build(BuildContext context) {
-
-    List<TextInputFormatter> formatters = widget.fieldDecorator.inputFormatter??[];
-    if(widget.fieldDecorator.isMoney??false){
-      formatters.add( CurrencyTextInputFormatter(symbol: nairaSymbol, decimalDigits: 0));
+    List<TextInputFormatter> formatters =
+        widget.fieldDecorator.inputFormatter ?? [];
+    if (widget.fieldDecorator.isMoney ?? false) {
+      // formatters.add( CurrencyTextInputFormatter(symbol: nairaSymbol, decimalDigits: 0));
     }
 
-    TextStyle style = widget.fieldDecorator.style??const TextStyle();
-    if(widget.fieldDecorator.isMoney??false){
-      style = KTextStyle(style: style, useDefaultFont: true, color: secondaryColor,
+    TextStyle style = widget.fieldDecorator.style ?? KTextStyle().build!;
+    if (widget.fieldDecorator.isMoney ?? false) {
+      style = KTextStyle(
+        style: style,
+        useDefaultFont: true,
+        color: black,
         weight: FontWeight.w500,
-        fontSize: 15,).build!;
+        fontSize: 15,
+      ).build!;
     }
 
-
-    Widget textField =  TextFormField(
+    return TextFormField(
       onTap: widget.fieldDecorator.onclick,
       validator: (text) {
         if (!widget.fieldDecorator.validators.hasNothing) {
           for (FormFieldValidator<String> f
-              in widget.fieldDecorator.validators ?? []) {
+          in widget.fieldDecorator.validators ?? []) {
             String? issue = f(text);
             if (!issue.hasNothing) {
               return issue;
@@ -395,94 +569,70 @@ class _EditTextFieldState extends State<EditTextField> {
           : TextInputAction.next,
       focusNode: widget.fieldDecorator.focusNode,
       onEditingComplete: () {
-        if(widget.fieldDecorator.context != null) {
+        if (widget.fieldDecorator.context != null) {
+          print(widget.fieldDecorator.nextFocusNode);
           FocusScope.of(widget.fieldDecorator.context!)
-            .requestFocus(widget.fieldDecorator.nextFocusNode);
+              .requestFocus(widget.fieldDecorator.nextFocusNode);
         }
       },
       keyboardType: widget.fieldDecorator.inputType,
-      inputFormatters:formatters,
+      inputFormatters: formatters,
       key: widget.key,
       enabled: widget.fieldDecorator.enabled,
       obscureText: (widget.fieldDecorator.isPassword ?? false) && textMasked,
       maxLines: widget.fieldDecorator.maxLines ?? 1,
       maxLength: widget.fieldDecorator.maxLength,
       style: style,
-      decoration: widget.fieldDecorator.label == null? (widget.fieldDecorator.inputDecoration ?? getDecoration()) : getDecoration2(),
+      onChanged: widget.fieldDecorator.onChange,
+      decoration: widget.fieldDecorator.inputDecoration ?? getDecoration(),
       autovalidateMode: widget.fieldDecorator.autoValidateMode,
       minLines: widget.fieldDecorator.minLines,
       // textDirection: fieldDecorator.textDirection,
       textAlign: widget.fieldDecorator.textAlign ?? TextAlign.start,
       strutStyle: widget.fieldDecorator.strutStyle,
-      onFieldSubmitted: (e){
-        if(widget.fieldDecorator.onSubmit != null){
+      onFieldSubmitted: (e) {
+        if (widget.fieldDecorator.onSubmit != null) {
           widget.fieldDecorator.onSubmit;
         }
-        if(widget.fieldDecorator.nextFocusNode == null){
+        if (widget.fieldDecorator.nextFocusNode == null) {
           FocusScope.of(context).requestFocus(FocusNode());
-        }else{
-          FocusScope.of(context).requestFocus(widget.fieldDecorator.nextFocusNode);
+        } else {
+          FocusScope.of(context)
+              .requestFocus(widget.fieldDecorator.nextFocusNode);
         }
-        },
+      },
     );
-    if(widget.fieldDecorator.label.hasNothing){
-      return textField;
-    }else{
-      return Container(
-        padding: const EdgeInsets.only(left: 10,right: 10, bottom: 5, top: 5),
-        decoration: BoxDecoration(
-          color: widget.fieldDecorator.fillColor??Colors.grey[200],
-          borderRadius: BorderRadius.circular(8)
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  kText(widget.fieldDecorator.label, fontSize: 10, color: textHintGrey),
-                  textField.paddingMerge(t: 2, b: 5)
-                ],
-              ),
-            ), getPasswordWidget()?? const SizedBox(),
-          ],
-        ),
-      );
-    }
   }
 
   Widget? getPasswordWidget() {
     if (widget.fieldDecorator.isPassword ?? false) {
-      return IconButton(
-          onPressed: () {
+      return InkWell(
+          onTap: () {
             setState(() {
               textMasked = !textMasked;
             });
           },
-          icon: AnimatedCrossFade(
-            firstChild: const Icon(
-              Icons.visibility_off,
-              color: grey,
-            ),
-            duration: defaultAnimationDuration,
-            secondChild: const Icon(
-              Icons.visibility,
-              color: grey,
-            ),
-            crossFadeState: !textMasked
-                ? CrossFadeState.showSecond
-                : CrossFadeState.showFirst,
-          ).center);
+          child: AnimatedContainer(
+            width: 50,
+            height: 40,
+            duration:defaultAnimationDuration,
+            child: kText(textMasked ? "show" : "hide",
+                color: grey)
+                .center,
+          ));
     }
     return null;
   }
 }
 
-Widget appBtn(String text, Function() onClick){
+
+
+Widget appBtn(String text, Function() onClick, {Color c = black, Color textColor = white, double? elevation, FontWeight w = FontWeight.bold, double? textSize}){
   return  MaterialButton(
     onPressed: onClick,
-    child: kText(text, color: white, weight: FontWeight.bold),
-    color: black,
+    child: kText(text, fontSize:textSize, color: textColor, weight: w),
+    color: c,
+    elevation: elevation,
   ).stretchSize(h: 45);
 }
 
@@ -491,9 +641,18 @@ enum BorderType { underline, outline, none }
 
 
     Widget get appLoadingWidget => const SpinKitRing(
-      color: Colors.grey,
+      color: Colors.black,
       size: 30,
       lineWidth: 2,
+      duration: Duration(milliseconds: 700),
+
+    );
+
+Widget get appLoadingWidgetBig => const SpinKitRing(
+      color: Colors.black,
+      size: 40,
+      lineWidth: 4,
+  duration: Duration(milliseconds: 700),
     );
 
 Widget getImage(String? image, {double w = 80, double h = 80, BoxFit f = BoxFit.contain}) {
@@ -627,8 +786,8 @@ showBottomSheetOption(BuildContext context, String title, List<OptionsAction> ac
 }
 
 
-showBottomSheetCustomChild(BuildContext context, String title, Widget child, {bool centerTitle = false}){
-  launchBottomSheet(context, Column(
+Future showBottomSheetCustomChild(BuildContext context, String title, Widget child, {bool centerTitle = false}){
+  return launchBottomSheet(context, Column(
     children: [
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -654,8 +813,8 @@ showBottomSheetCustomChild(BuildContext context, String title, Widget child, {bo
 
 }
 
-showBottomSheetFull(BuildContext context, String title, Widget child){
-  launchBottomSheetFull(context, SizedBox(
+Future showBottomSheetFull(BuildContext context, String title, Widget child){
+  return launchBottomSheetFull(context, SizedBox(
     height: getPercentageHeight(100),
     child: Column(
       children: [
@@ -663,14 +822,14 @@ showBottomSheetFull(BuildContext context, String title, Widget child){
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Spacer(),
-            kText(title, weight: FontWeight.bold, fontSize: 14),
+            kText(title, weight: FontWeight.bold, fontSize: 13),
             Expanded(
               child: const Icon(Icons.close, size: 25,).onclickWithRipple((){
                 goBack(context);
               }).right,
             )
           ],
-        ).paddingMerge(t:50, b: 20),
+        ).paddingMerge(t:30, b: 20),
         Expanded(child: child.paddingMerge(t: 10))
       ],
     ),
@@ -684,7 +843,7 @@ getDecoration({String? label,String? hint, Color? fillColor, Widget? password, W
     label: Text(label ?? ""),
     suffixIcon: password,
     contentPadding:
-    const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+    const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
     border:  OutlineInputBorder(
         borderRadius:  BorderRadius.all(Radius.circular(radius??8)),
         borderSide: BorderSide(color: borderColor?? transparent, width: borderWidth??0.5)),
@@ -701,12 +860,12 @@ getDecoration({String? label,String? hint, Color? fillColor, Widget? password, W
   );
 }
 
-getUnderLineDecoration({String? label,String? hint, Color? fillColor, Widget? password, Widget? counter, double? borderWidth,double? activeBorderWidth, Color? borderColor, Color? activeBorderColor,double? radius}){
+getUnderLineDecoration({String? label,String? hint, Color? fillColor, Widget? password, Widget? counter, double? borderWidth,double? activeBorderWidth, Color? borderColor, Color? activeBorderColor,double? radius, EdgeInsets? insets}){
   return InputDecoration(
     label: Text(label ?? ""),
     suffixIcon: password,
-    contentPadding:
-    const EdgeInsets.symmetric(vertical: 15),
+    contentPadding:insets??
+    const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
     border:  UnderlineInputBorder(
         borderSide: BorderSide(color: borderColor?? transparent, width: borderWidth??1)),
     focusedBorder:  UnderlineInputBorder(
@@ -719,5 +878,106 @@ getUnderLineDecoration({String? label,String? hint, Color? fillColor, Widget? pa
     fillColor: fillColor??Colors.grey[200],
   );
 }
+
+
+
+
+class CustomDropDownField<T> extends StatefulWidget {
+  CustomDropDownField(
+      {Key? key,
+        this.onChange,
+        this.validators,
+        this.selected,
+        this.hideLabel = false,
+        required this.options,
+        required this.label, required this.hint})
+      : super(key: key);
+  final List<String> options;
+  final String hint;
+  final Function(String)? onChange;
+  final String label;
+  final String? selected;
+  final bool hideLabel;
+  final List<FormFieldValidator<String>>? validators;
+
+  @override
+  State<CustomDropDownField> createState() => _CustomDropDownFieldState();
+}
+
+class _CustomDropDownFieldState extends State<CustomDropDownField> {
+  dynamic value;
+
+  @override
+  void initState() {
+    super.initState();
+    options = widget.options;
+    if(options.hasNothing && !widget.selected.hasNothing){
+      options = [widget.selected];
+    }
+
+  }
+
+  List<dynamic> options = [];
+
+  @override
+  Widget build(BuildContext context) {
+    if(widget.selected?.trim().isEmpty == false) {
+      value = widget.options.firstWhere((element) => element.toString().toLowerCase() == widget.selected?.toLowerCase());
+    }
+
+    return Wrap(
+      children: [
+        // kText(widget.label, defaultStyle:KTextStyle(fontSize: 12, color: grey).build!).paddingLeft(5).hideIf(widget.hideLabel),
+        DropdownButtonFormField<String>(
+          hint: Text(widget.hint, style: KTextStyle(fontSize: 12, color: grey).build!),
+          isDense: true,
+          decoration:  getUnderLineDecoration(
+              counter: const SizedBox(),
+              insets: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+              borderColor: black,
+              radius: 5,
+              label: widget.label,
+              borderWidth: 1),
+          items: widget.options
+              .map((e) => DropdownMenuItem<String>(value: e,child:kText(e, fontSize: 13),))
+              .toList(),
+          onChanged: (value) => onChange(value, context),
+          value: value,
+          validator: (value){
+            if (!widget.validators.hasNothing) {
+              for (FormFieldValidator<String> f
+              in widget.validators ?? []) {
+                String? issue = f(value);
+                if (!issue.hasNothing) {
+                  return issue;
+                }
+              }
+            }
+            return null;
+          },
+
+        ),
+      ],
+    );
+  }
+
+
+
+  void onChange(dynamic value, BuildContext context){
+    if(widget.onChange == null){
+      this.value = value;
+      setState(() {});
+      DropDownFieldNotifier(value).dispatch(context);
+    }else{
+      widget.onChange!(value);
+    }
+  }
+}
+
+class DropDownFieldNotifier<T> extends Notification {
+  final dynamic value;
+  DropDownFieldNotifier(this.value);
+}
+
 
 // limit, type,

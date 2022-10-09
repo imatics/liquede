@@ -44,10 +44,11 @@ Stream<NetworkEvent<T>> executeCall<T>(NetWorkCall<T> workCall){
           streamController.add(NetworkEvent<T>(message: value?.message??"Something went wrong",type: NetworkEventType.failed,));
         }
       }).onError((error, stackTrace){
-        print(error);
-        print(stackTrace);
-        streamController.add(NetworkEvent<T>(message: "Something went wrong",type: NetworkEventType.failed,));
-      });
+        if(error is ApiException){
+          streamController.add(NetworkEvent<T>(message: error.getServerMessage()??"Something went wrong",type: NetworkEventType.failed,));
+        }else{
+          streamController.add(NetworkEvent<T>(message: "Something went wrong",type: NetworkEventType.failed,));
+        }      });
     }else{
       streamController.add(NetworkEvent<T>(type: NetworkEventType.failed, message: networkErrorMessage));
     }
@@ -62,7 +63,7 @@ Stream<NetworkEvent<T>> executeCall<T>(NetWorkCall<T> workCall){
 
 Stream<NetworkEvent<T>> executeReturnOrCall<T>( ReturnDefault<T> rDefault, NetWorkCall<T> workCall, {bool mustEx = false}){
   final streamController = StreamController<NetworkEvent<T>>();
-  if(rDefault() != null || mustEx){
+  if(rDefault() != null && !mustEx){
     streamController.add(NetworkEvent(type: NetworkEventType.completed, message: "", data:  rDefault()));
     return streamController.stream;
   }else{
@@ -113,10 +114,15 @@ extension NetworkEventEXT<T> on NetworkEvent<T>{
     }
   }
 
+  performOnError(Action<String>? action, String message){
+    if(type == NetworkEventType.failed && action != null){
+      action.call(message);
+    }
+  }
+
 
   void handleState(BuildContext context, {String message = "Processing", String? errorMessage}){
     if(type == NetworkEventType.processing){
-      print(type);
       showOverlay(context, message: message);
     }else if(type == NetworkEventType.completed){
       hideOverlay(context);
@@ -127,9 +133,13 @@ extension NetworkEventEXT<T> on NetworkEvent<T>{
   }
 
 
-  void handleStateAndPerformOnSuccess(BuildContext context, Action<T> action, {String message = "Processing", String? errorMessage}){
-    handleState(context);
+  void handleStateAndPerformOnSuccess(BuildContext context, Action<T> action, {String message = "Processing", String? errorMessage,  Action<String>? onError,}){
+    handleState(context,message: message, errorMessage: errorMessage);
     performOnSuccess(action);
+    onError?.call(errorMessage??this.message);
+    if(onError!= null){
+    performOnError(onError, message);
+  }
   }
 
 }
@@ -151,10 +161,12 @@ extension StreamNetworkEventEXT<T> on Stream<NetworkEvent<T>>{
   }
 
 
-  void handleStateAndPerformOnSuccess(BuildContext context, Action<T> action, {String message = "Processing", String? errorMessage}){
+  void handleStateAndPerformOnSuccess(BuildContext context, Action<T> action, {String message = "Processing", String? errorMessage,  Action<String>? onError}){
         listen((event){
-      event.handleState(context);
+      event.handleState(context,errorMessage: errorMessage, message: message);
       event.performOnSuccess(action);
+      event.performOnError(onError, message);
+
     });
   }
 

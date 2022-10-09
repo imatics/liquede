@@ -6,6 +6,8 @@ import 'package:liquede/commons/size_config.dart';
 import 'package:liquede/commons/utils.dart';
 import 'package:liquede/extensions/string.dart';
 import 'package:liquede/extensions/widget.dart';
+import 'package:liquede/presentation/dashboard/dashboard.dart';
+import 'package:liquede/presentation/dashboard/home.dart';
 import 'package:liquede/presentation/onboarding/sign_up.dart';
 import 'package:liquede/services/api/base_service.dart';
 import 'package:liquede/services/api/user_service.dart';
@@ -19,7 +21,6 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
-
   final _key = GlobalKey<FormState>();
 
   @override
@@ -40,7 +41,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     );
     confirmPassProp = KInputFieldProps(
         hint: "Enter password again",
-        validators: [(e) => newPassProp.textEditingController?.text == e? null : "Password mismatch"],
+        validators: [
+          (e) => newPassProp.textEditingController?.text == e
+              ? null
+              : "Password mismatch"
+        ],
         textEditingController: TextEditingController(),
         label: "Confirm Password",
         isPassword: true);
@@ -53,9 +58,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     return BaseScaffold(
       context: context,
-      baseAppBar: AppBar(
-        automaticallyImplyLeading: false,
-      ),
+      baseAppBar: AppBar(),
       baseBody: LayoutBuilder(
         builder: (context, constraints) => SingleChildScrollView(
           child: Column(
@@ -96,20 +99,29 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             ..newPassword = newPassProp.textEditingController?.text)
           .handleStateAndPerformOnSuccess(context, (data) {
         showSuccessPopUp(context, "Password Reset Successful", onClose: () {
-          goBack(context);
-          goBack(context);
+          loginUser();
         });
       });
     });
   }
 
   requestOtp() {
-    if(_key.currentState?.validate() == true){
+    if (_key.currentState?.validate() == true) {
       UserService.I(context)
           .requestOTP(email: emailProps.textEditingController?.text)
           .handleStateAndPerformOnSuccess(context, (data) {
         resetPassword();
       });
     }
+  }
+
+  loginUser() {
+    UserService.I(context)
+        .login(LoginModel()
+          ..password = newPassProp.textEditingController?.text
+          ..email = emailProps.textEditingController?.text)
+        .handleStateAndPerformOnSuccess(context, (data) {
+      gotoAndClear(context, const Home());
+    }, message: "Logging you in\nJust a sec");
   }
 }

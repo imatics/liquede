@@ -21,10 +21,10 @@ class Link {
 
   Link.fromJson(Map<String, dynamic>? json) {
     if (json == null) return;
-    href = json['href'];
-    relations = (json['relations'] as List).map((item) => item as String).toList();
-    method = json['method'];
-    routeName = json['routeName'];
+    // href = json['href'];
+    // relations = (json['relations'] as List).map((item) => item as String).toList();
+    // method = json['method'];
+    // routeName = json['routeName'];
     // routeValues = new Object.fromJson(json['routeValues']);
   }
 

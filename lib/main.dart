@@ -20,7 +20,7 @@ void main()async {
   runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider<BaseWidgetState>(create: (context) => BaseWidgetState()),
-        ChangeNotifierProvider<NetworkServiceState2>(create: (context) => NetworkServiceState2()),
+        ChangeNotifierProvider<NetworkServiceState2>(create: (context) => networkState),
         ChangeNotifierProvider<UserService>(create: (context) => UserService()),
         ChangeNotifierProvider<WalletService>(create: (context) => WalletService()),
         ChangeNotifierProvider<BillsService>(create: (context) => BillsService()),
@@ -40,6 +40,7 @@ class MyApp extends StatelessWidget {
     debugPrint('app toured is ${_preference.seenAppTour}');
     return MaterialApp(
       title: 'Liquede',
+      debugShowCheckedModeBanner: false,
       theme: theme(),
       home: _preference.seenAppTour? const LoginScreen() :const OnboardingScreen(),
     );

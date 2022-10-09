@@ -21,7 +21,7 @@ class CreateLiquedeSealPlan extends StatefulWidget {
 
 class _CreateLiquedeSealPlanState extends State<CreateLiquedeSealPlan> {
   List<String> options = [
-    "Set duration by days",
+    // "Set duration by days",
     "Set duration by months",
   ];
 
@@ -238,14 +238,13 @@ class _CreateLiquedeSealPlanState extends State<CreateLiquedeSealPlan> {
         .createLiquedeSeal(LiquedeSealInput()
       ..amount = amountProp.textEditingController?.text.cleanMoneyValue
       ..durationInDays = _d.inDays
-      // ..cardId = -1
+      ..cardId = 0
       ..name = titleProps.textEditingController?.text)
         .handleStateAndPerformOnSuccess(context, (p0) {
-      showSuccessPopUp(context, "LiquedeSeal successfully created", onClose: () {
+      showSuccessPopUp(context, "Liquede Seal successfully created", onClose: () {
         goBack(context);
       });
     });
-
   }
 
 

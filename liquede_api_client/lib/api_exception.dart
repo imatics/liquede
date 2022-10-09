@@ -20,4 +20,8 @@ class ApiException implements Exception {
     return "ApiException $code: $message (Inner exception: ${innerException})\n\n" +
         stackTrace.toString();
   }
+
+  String? getServerMessage(){
+    return json.decode(message??"")["message"];
+  }
 }

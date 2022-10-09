@@ -122,6 +122,10 @@ class AppPreference with ChangeNotifier{
   bool get seenAppTour => _preferences.getBool("seenAppTour")??false;
 
 
+  set biometricEnabled(bool value)=> _preferences.setBool("biometric", value);
+  bool get biometricEnabled => _preferences.getBool("biometric")??false;
+
+
 
 
   void saveToken(){}

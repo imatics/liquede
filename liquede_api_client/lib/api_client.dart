@@ -225,6 +225,7 @@ class ApiClient {
       serialized = '';
     } else {
       serialized = json.encode(obj);
+      print(serialized);
     }
     return serialized;
   }
@@ -264,18 +265,25 @@ class ApiClient {
       return Response.fromStream(response);
     } else {
       var msgBody = contentType == "application/x-www-form-urlencoded" ? formParams : serialize(body);
+      var response;
       switch(method) {
         case "POST":
-          return client.post(url, headers: headerParams, body: msgBody);
+          response = await client.post(url, headers: headerParams, body: msgBody);
+          break;
         case "PUT":
-          return client.put(url, headers: headerParams, body: msgBody);
+          response = await client.put(url, headers: headerParams, body: msgBody);
+          break;
         case "DELETE":
-          return client.delete(url, headers: headerParams);
+          response = await client.delete(url, headers: headerParams);
+          break;
         case "PATCH":
-          return client.patch(url, headers: headerParams, body: msgBody);
+          response = await client.patch(url, headers: headerParams, body: msgBody);
+          break;
         default:
-          return client.get(url, headers: headerParams);
+          response =  await client.get(url, headers: headerParams);
       }
+      print(response?.body);
+      return response;
     }
   }
 

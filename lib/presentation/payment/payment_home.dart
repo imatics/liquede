@@ -9,6 +9,7 @@ import 'package:liquede/extensions/string.dart';
 import 'package:liquede/presentation/commons/bottom_sheet.dart';
 import 'package:liquede/presentation/payment/beneficiaries.dart';
 import 'package:liquede/presentation/payment/bill_purchase.dart';
+import 'package:liquede/presentation/payment/transfer.dart';
 import 'package:liquede/services/api/base_service.dart';
 import 'package:liquede/services/api/bills_service.dart';
 import 'package:swagger/api.dart';
@@ -62,7 +63,7 @@ class _PaymentHomeState extends State<PaymentHome> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   MaterialButton(
-                    onPressed: () {},
+                    onPressed: () => goto(context, const Transfer()),
                     child: kText("New"),
                   ),
                   addSpace(x: 20),
