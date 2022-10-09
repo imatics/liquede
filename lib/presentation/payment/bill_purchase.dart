@@ -63,7 +63,6 @@ class _BillsPurchaseState<T> extends State<BillsPurchase<T>> {
     _options = widget.options?.cast<T>();
     _amountCallback = widget.amountCallback;
     _builder = widget.builder;
-    // _onItemSelected = widget.onItemSelected;
     amountProps = KInputFieldProps(
         textEditingController: TextEditingController(),
         inputType: TextInputType.number,
