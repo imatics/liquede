@@ -346,6 +346,7 @@ class BaseScaffoldWidget extends Scaffold {
   // TODO: implement body
   Widget get body => SafeArea(top: false, bottom: true, child: baseBody!);
 
+
   @override
   // TODO: implement body
   Widget? get floatingActionButton => fab;

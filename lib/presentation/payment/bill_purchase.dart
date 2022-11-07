@@ -9,6 +9,9 @@ import 'package:liquede/commons/utils.dart';
 import 'package:liquede/extensions/widget.dart';
 import 'package:liquede/presentation/commons/bottom_sheet.dart';
 import 'package:liquede/services/api/base_service.dart';
+import 'package:liquede/services/api/user_service.dart';
+import 'package:liquede/services/api/wallet_service.dart';
+import 'package:swagger/api.dart';
 
 import 'list_item_selection.dart';
 
@@ -68,7 +71,9 @@ class _BillsPurchaseState<T> extends State<BillsPurchase<T>> {
         inputType: TextInputType.number,
         enabled: _amountCallback == null,
         hint: "Amount",
-        inputFormatter: [CurrencyTextInputFormatter(symbol: nairaSymbol, decimalDigits: 0)]);
+        inputFormatter: [
+          CurrencyTextInputFormatter(symbol: nairaSymbol, decimalDigits: 0)
+        ]);
     customer = KInputFieldProps(
         textEditingController: TextEditingController(),
         inputType: TextInputType.number,
@@ -114,7 +119,7 @@ class _BillsPurchaseState<T> extends State<BillsPurchase<T>> {
             kText("Enter Amount", fontSize: 10).paddingLeft(4),
             EditTextField(amountProps),
             Spacer(),
-            appBtn("Pay", ()=> makePayment(selectedItem)),
+            appBtn("Pay", () => makePayment(selectedItem)),
             addSpace(y: 50)
           ],
         ).paddingX(20),
@@ -126,7 +131,7 @@ class _BillsPurchaseState<T> extends State<BillsPurchase<T>> {
     Widget c;
     if (widget.customerIdValidator == null) {
       if (_streamData != null) {
-        c =  buildStreamDropdown();
+        c = buildStreamDropdown();
       } else if (_options != null) {
         c = buildDropDown(_options ?? []);
       } else {
@@ -134,7 +139,7 @@ class _BillsPurchaseState<T> extends State<BillsPurchase<T>> {
       }
     } else if (_key.currentState?.validate() == true) {
       if (_streamData != null) {
-        c =  buildStreamDropdown();
+        c = buildStreamDropdown();
       } else if (_options != null) {
         c = buildDropDown(_options ?? []);
       } else {
@@ -150,7 +155,7 @@ class _BillsPurchaseState<T> extends State<BillsPurchase<T>> {
     return Column(
       children: [
         c,
-      addSpace(y: 40),
+        addSpace(y: 40),
       ],
     );
   }
@@ -187,6 +192,8 @@ class _BillsPurchaseState<T> extends State<BillsPurchase<T>> {
                 Border(bottom: BorderSide(width: 2, color: Colors.grey[700]!))),
         child: DropdownButton<T>(
           value: selectedItem,
+          isDense: false,
+          isExpanded: true,
           underline: SizedBox(),
           onChanged: (v) {
             selectedItem = v;
@@ -216,14 +223,24 @@ class _BillsPurchaseState<T> extends State<BillsPurchase<T>> {
       goBack(context);
       widget.onPaymentAttempt(
           data,
-          (amountProps.textEditingController?.text ?? "0").replaceAll(nairaSymbol, "").replaceAll(",", ""),
-          customer.textEditingController?.text ?? "", p0);
+          (amountProps.textEditingController?.text ?? "0")
+              .replaceAll(nairaSymbol, "")
+              .replaceAll(",", ""),
+          customer.textEditingController?.text ?? "",
+          p0);
     });
   }
 }
 
 void showPinModal(BuildContext context, Function(String) onPinEntered) {
   TextEditingController controller = TextEditingController();
+  if(WalletService.I(context).walletPin.isEmpty){
+    showErrorPopUp(context, "You need to create Wallet pin to proceed.", buttonText: "Create Pin", onClose: (){
+      showCreatePinModal(context, () => showPinModal(context, onPinEntered));
+    });
+    return;
+  }
+
   launchBottomSheetFull(
       context,
       Column(
@@ -238,7 +255,10 @@ void showPinModal(BuildContext context, Function(String) onPinEntered) {
               textAlign: TextAlign.center,
               inputType: TextInputType.number,
               isPassword: true,
-              inputFormatter: [LengthLimitingTextInputFormatter(4), FilteringTextInputFormatter.digitsOnly],
+              inputFormatter: [
+                LengthLimitingTextInputFormatter(4),
+                FilteringTextInputFormatter.digitsOnly
+              ],
               style: KTextStyle(
                       weight: FontWeight.bold,
                       letterSpacing: 10,
@@ -254,4 +274,57 @@ void showPinModal(BuildContext context, Function(String) onPinEntered) {
         ],
       ),
       hFactor: 0.6);
+}
+
+void showCreatePinModal(BuildContext context, Function onPinCreated) {
+  TextEditingController controller = TextEditingController();
+  launchBottomSheetFull(
+      context,
+      Column(
+        children: [
+          kText("Create new pin", weight: FontWeight.w900, fontSize: 24)
+              .paddingX(40),
+          addSpace(y: 20),
+          addSpace(y: 30),
+          EditTextField(KInputFieldProps(
+              textEditingController: controller,
+              fillColor: Colors.grey[200],
+              textAlign: TextAlign.center,
+              inputType: TextInputType.number,
+              isPassword: true,
+              inputFormatter: [
+                LengthLimitingTextInputFormatter(4),
+                FilteringTextInputFormatter.digitsOnly
+              ],
+              style: KTextStyle(
+                      weight: FontWeight.bold,
+                      letterSpacing: 10,
+                      fontSize: 24,
+                      style: const TextStyle(letterSpacing: 5))
+                  .build)),
+          addSpace(y: 20),
+          MaterialButton(
+            onPressed: () {
+             createPin(context,int.tryParse(controller.text)??0, onPinCreated);
+            },
+            child: kText("Create", color: white, weight: FontWeight.bold),
+            color: black,
+          ).stretchSize(h: 45),
+        ],
+      ),
+      hFactor: 0.6);
+}
+
+void createPin(BuildContext context, int pin, Function onPinCreated) {
+  var id = UserService.I(context).userView?.id;
+  WalletService.I(context)
+      .createPin(WalletPinModel()
+        ..pin = pin
+        ..userId = id)
+      .handleStateAndPerformOnSuccess(context, (p0) {
+      goBack(context);
+    showSuccessPopUp(context, "Pin Created Successfully",
+        onClose: onPinCreated);
+
+  });
 }

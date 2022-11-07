@@ -239,6 +239,7 @@ class _CreateLiquedeSealPlanState extends State<CreateLiquedeSealPlan> {
       ..amount = amountProp.textEditingController?.text.cleanMoneyValue
       ..durationInDays = _d.inDays
       ..cardId = 0
+      ..paymentMethod = "LiquedeFlex"
       ..name = titleProps.textEditingController?.text)
         .handleStateAndPerformOnSuccess(context, (p0) {
       showSuccessPopUp(context, "Liquede Seal successfully created", onClose: () {

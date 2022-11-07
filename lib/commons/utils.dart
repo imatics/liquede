@@ -265,29 +265,27 @@ String? validateEmail(String? t) {
 }
 
 String? validatePhone(String? t) {
-  if(t == null){
-    return "Please input a valid phone number";
-  }else if(t.length == 11 || t.length == 14) {
-    return null;
-  }else{
-    return "Please input a valid phone number";
+  t = t??"".trim();
+  RegExp regExp = RegExp(r'^[a-zA-Z]+$');
+  if (t.isEmpty) {
+    return "Invalid phone number entered";
   }
-  // String text = t??"";
-  // var regExp = RegExp(r'^[0-9]+$');
-  // if (text.isEmpty) {
-  //   return 'Field cannot be empty!';
-  // } else if (text.length < 11 && text[0] == '0') {
-  //   return 'Please input a valid phone number';
-  // } else if (!regExp.hasMatch(text)) {
-  //   return 'Phone number invalid';
-  // }
+  if(t.startsWith("+234") && t.length == 14){
+    return null;
+  }
+  if(t.length != 11){
+    return "Invalid phone number entered";
+  }
   return null;
 }
 
 // 295591
-void showErrorPopUp(BuildContext context, String message,){
-  showCustomDialog(DialogType.error, context, "", message, "Close", () {
+void showErrorPopUp(BuildContext context, String message,{Function? onClose, String? buttonText}){
+  showCustomDialog(DialogType.error, context, "", message, buttonText??"Close", () {
     goBack(context);
+    if(onClose != null){
+      onClose();
+    }
   });
 }
 // void showSuccessPopUp(BuildContext context, String message){

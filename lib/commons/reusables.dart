@@ -792,8 +792,9 @@ Future showBottomSheetCustomChild(BuildContext context, String title, Widget chi
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Spacer().hideIf(!centerTitle),
+
           kText(title, weight: FontWeight.bold, fontSize: 14),
+          const Spacer().hideIf(!centerTitle),
           const Icon(Icons.close, size: 30,).onclickWithRipple((){
             goBack(context);
           }).hideIf(centerTitle),
@@ -807,13 +808,13 @@ Future showBottomSheetCustomChild(BuildContext context, String title, Widget chi
           ))
         ],
       ).paddingTop(10),
-      child.paddingMerge(t: 30, b: 65)
+      child.paddingMerge(t: 30, b:25)
     ],
   ));
 
 }
 
-Future showBottomSheetFull(BuildContext context, String title, Widget child){
+Future showBottomSheetFull(BuildContext context, String title, Widget child, {double hFactor = 1}){
   return launchBottomSheetFull(context, SizedBox(
     height: getPercentageHeight(100),
     child: Column(
@@ -833,7 +834,7 @@ Future showBottomSheetFull(BuildContext context, String title, Widget child){
         Expanded(child: child.paddingMerge(t: 10))
       ],
     ),
-  ));
+  ), hFactor: hFactor);
 
 }
 

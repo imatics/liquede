@@ -5,6 +5,7 @@ import 'package:liquede/commons/utils.dart';
 import 'package:liquede/extensions/string.dart';
 import 'package:liquede/extensions/widget.dart';
 import 'package:liquede/presentation/dashboard/home.dart';
+import 'package:liquede/services/api/user_service.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -15,7 +16,7 @@ class WelcomeScreen extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-         kText("Welcome \nPade", weight: FontWeight.bold, fontSize: 40).paddingMerge(t: 80),
+         kText("Welcome \n${UserService.I(context).userView?.firstName}", weight: FontWeight.bold, fontSize: 40).paddingMerge(t: 80),
          Container(
            decoration: BoxDecoration(
              image: DecorationImage(image: AssetImage("confetti_background".imagePng))

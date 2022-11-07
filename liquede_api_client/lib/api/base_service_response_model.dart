@@ -234,6 +234,8 @@ class BaseResponse<T>{
           return SavingsView.listFromJson(value);
           case 'BeneficiaryModel':
           return BeneficiaryModel.fromJson(value);
+          case 'List<ProviderBouquetResponse>':
+          return ProviderBouquetResponse.listFromJson(value);
         default:
           {
             Match? match = _RegList.firstMatch(targetType??"");

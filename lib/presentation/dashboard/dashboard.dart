@@ -324,6 +324,7 @@ class _DashBoardState extends State<DashBoard> {
   int _selectedFilter = 0;
 
   Widget chartCard() {
+    List<charts.Series<TimeSeriesSales, DateTime>> data = _createSampleData(WalletService.I(context).transactions);
     return Material(
       elevation: 1,
       borderRadius: BorderRadius.circular(12),
@@ -331,19 +332,15 @@ class _DashBoardState extends State<DashBoard> {
       child: Column(
         children: [
           charts.TimeSeriesChart(
-            _createSampleData(WalletService.I(context).transactions),
+            data,
             animate: true,
             dateTimeFactory: const charts.LocalDateTimeFactory(),
           ).stretch,
-          // SingleChildScrollView(
-          //   scrollDirection: Axis.horizontal,
-          //   child: hOption(filter, white, black, black, white, (index) {
-          //     _selectedFilter = index;
-          //     setState(() {});
-          //   }, _selectedFilter, w: 80),
-          // ).paddingY(5)
         ],
-      ).stretchSize(h: 240).paddingAll(10),
+      ).replace(Container(
+        color: Colors.grey[100],
+        child: kText("Chart Unavailable", color: grey).center,
+      ), data.isEmpty).stretchSize(h: 240).paddingAll(10),
     );
   }
 
@@ -360,9 +357,9 @@ class _DashBoardState extends State<DashBoard> {
                 Icons.person,
                 size: 50,
               ).left.paddingY(30),
-              kText("Emmanuel Otueme", weight: FontWeight.bold, fontSize: 16),
+              kText(UserService.I(context).userView?.fullName, weight: FontWeight.bold, fontSize: 16),
               addSpace(y: 10),
-              kText("090123940", fontSize: 12, weight: FontWeight.bold),
+              kText(UserService.I(context).userView?.phoneNumber, fontSize: 12, weight: FontWeight.bold),
             ],
           ).paddingLeft(30),
           addSpace(y: 30),
@@ -408,6 +405,7 @@ class _DashBoardState extends State<DashBoard> {
           setState(() {});
         }
       });
+      ws.getWalletPin(id).performOnSuccess((p0) { });
     }
   }
 
@@ -428,6 +426,8 @@ class _DashBoardState extends State<DashBoard> {
   static List<charts.Series<TimeSeriesSales, DateTime>> _createSampleData(List<TransactionView> list) {
 
     List<TimeSeriesSales> data = [];
+
+    list.sort((a, b) => a.dateCreated?.compareTo(b.dateCreated??DateTime.now())??-1);
 
     for(var v in list){
       if(v.dateCreated != null && v.amount != null){

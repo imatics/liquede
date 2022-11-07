@@ -278,7 +278,7 @@ class _SavingsState extends State<Savings> {
                     topLeft: Radius.circular(10),
                     topRight: Radius.circular(10))),
             alignment: Alignment.centerLeft,
-            child: kText("My LiquedeSeal",
+            child: kText(savingsView.name,
                     weight: FontWeight.bold, fontSize: 12, color: white)
                 .paddingXY(
               x: 20,

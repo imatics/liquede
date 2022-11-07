@@ -73,8 +73,15 @@ extension DoubleExtension2 on double{
   }
 
   double percentOf(double value){
-    return (this * 100)/value;
+    if(value == 0){
+      return 0;
+    }
+    if(this == 0){
+      return 0;
+    }
+    return (this / value)/100;
   }
+
 
   double percent(){
     return (this / 100);

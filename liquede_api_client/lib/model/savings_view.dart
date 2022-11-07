@@ -2,6 +2,7 @@ part of swagger.api;
 
 class SavingsView {
 
+  int? id = null;
   String? name = null;
   String? description = null;
   String? savingPlanType = null;
@@ -28,6 +29,7 @@ class SavingsView {
 
   SavingsView.fromJson(Map<String, dynamic>? json) {
     if (json == null) return;
+    id = json['id'];
     name = json['name'];
     description = json['description'];
     savingPlanType = json['savingPlanType'];
@@ -48,6 +50,7 @@ class SavingsView {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'name': name,
       'description': description,
       'savingPlanType': savingPlanType,

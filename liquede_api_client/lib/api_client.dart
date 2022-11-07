@@ -18,7 +18,7 @@ class ApiClient {
   final _RegList = new RegExp(r'^List<(.*)>$');
   final _RegMap = new RegExp(r'^Map<String,(.*)>$');
 
-  ApiClient({this.basePath: "https://liquideapi.herokuapp.com"}) {
+  ApiClient({this.basePath: "https://liquiderescue.herokuapp.com"}) {
     // Setup authentications (key: authentication name, value: authentication).
     _authentications['Bearer'] = new OAuth(accessToken: "");
   }

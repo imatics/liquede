@@ -9,7 +9,9 @@ import 'package:liquede/extensions/string.dart';
 import 'package:liquede/presentation/commons/bottom_sheet.dart';
 import 'package:liquede/presentation/payment/beneficiaries.dart';
 import 'package:liquede/presentation/payment/bill_purchase.dart';
+import 'package:liquede/presentation/payment/electriciry.dart';
 import 'package:liquede/presentation/payment/transfer.dart';
+import 'package:liquede/presentation/payment/tv_subscription.dart';
 import 'package:liquede/services/api/base_service.dart';
 import 'package:liquede/services/api/bills_service.dart';
 import 'package:swagger/api.dart';
@@ -128,8 +130,8 @@ class _PaymentHomeState extends State<PaymentHome> {
       children: [
         paymentItem("airtime".imagePng, "Airtime", false, openAirtime),
         paymentItem("data".imagePng, "Data", false, openData),
-        paymentItem("cable".imagePng, "Cable TV", false, () => null),
-        paymentItem("electricity".imagePng, "Utility", false, () => null),
+        paymentItem("cable".imagePng, "Cable TV", false, openCableTV),
+        paymentItem("electricity".imagePng, "Utility", false, () => goto(context, Electricity())),
         // paymentItem("", "Internet", false, () => null),
         // paymentItem("", "Fees", false, () => null),
         // paymentItem("", "Others", false, () => null),
@@ -164,9 +166,12 @@ class _PaymentHomeState extends State<PaymentHome> {
                 kText(data.name ?? "", weight: FontWeight.bold, fontSize: 12),
             horizontalTitleGap: 2,
             onTap: () => openBillsPurchaseAirtime(data),
-            leading: Image.asset("${data.shortname}_logo".imagePng,
-                height: 40, width: 40, fit: BoxFit.cover),
-          ).paddingY(10),
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(40),
+              child: Image.asset("${data.shortname}_logo".imagePng,
+                  height: 40, width: 40, fit: BoxFit.cover),
+            ).paddingXY(x:10, y: 15),
+          ),
           streamData: (e) =>
               BillsService.I(context).getAirtimeProviders().map((event) {
             return NetworkEvent<List<BaxiProviderResponse>>(
@@ -190,9 +195,12 @@ class _PaymentHomeState extends State<PaymentHome> {
                 kText(data.name ?? "", weight: FontWeight.bold, fontSize: 12),
             horizontalTitleGap: 2,
             onTap: () => openBillsPurchaseData(data),
-            leading: Image.asset("${data.shortname}_logo".imagePng,
-                height: 40, width: 40, fit: BoxFit.cover),
-          ).paddingY(10),
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(40),
+              child: Image.asset("${data.shortname}_logo".imagePng,
+                  height: 40, width: 40, fit: BoxFit.cover),
+            ).paddingAll(10),
+          ),
           streamData: (e) =>
               BillsService.I(context).getDataProviders().map((event) {
             return NetworkEvent<List<ProviderResponse>>(
@@ -211,6 +219,7 @@ class _PaymentHomeState extends State<PaymentHome> {
             title: "${airtime.name} Airtime ",
             builder: (c, d) => kText(d),
             closeOnSelect: true,
+            customerIdValidator: (e) => validatePhone(e),
             optionHint: "",
             onPaymentAttempt: (selectedOption, amount, customerID, pin) => purchaseAirtime(amount, customerID, pin, airtime.shortname??""),
             customerIdHint: "Phone Number",
@@ -228,7 +237,7 @@ class _PaymentHomeState extends State<PaymentHome> {
             optionHint: "Select",
             customerIdHint: "Phone Number",
             customerIdValidator: (e) => validatePhone(e),
-            onPaymentAttempt: (selectedOption, amount, customerID, pin) => purchaseData(selectedOption!, amount, customerID, pin, data.serviceType??""),
+            onPaymentAttempt: (selectedOption, amount, customerID, pin) => purchaseData(selectedOption!, amount, customerID, pin, data.shortname??""),
             amountCallback: (index, data) =>
                 formatMoney(data.price?.toDouble()),
             streamData: (e) =>
@@ -236,10 +245,44 @@ class _PaymentHomeState extends State<PaymentHome> {
             image: "${data.shortname}_logo".imagePng));
   }
 
+
+
+
+  void openCableTV() {
+    goto(
+        context,
+        ListItemSelection<String>(
+          closeOnSelect: false,
+          onItemSelected: (index, data) {},
+          options: ["DSTV", "GOTV", "Startimes"],
+          title: "Cable TV",
+          builder: (context, data) => ListTile(
+            title:
+            kText(data ?? "", weight: FontWeight.normal, fontSize: 12),
+            horizontalTitleGap: 2,
+            onTap: (){
+              goto(context, TvSubscription(serviceType: data.toLowerCase()));
+            },
+            leading: Image.asset(data.toLowerCase().imagePng,
+                height: 40, width: 40, fit: BoxFit.contain
+          ).paddingX(10),
+          ).paddingY(10),
+        ));
+  }
+
+
+
   void purchaseData(ProviderBundleResponse data, String amount, String customerID, String pin, String serviceType) {
     BillsService.I(context)
         .purchaseDataBundle(DataBundlePurchaseInput()..amount = "${data.price}" ..phoneNumber = customerID ..serviceType ..serviceType = serviceType ..dataCode = "${data.datacode}" ..pin = int.parse(pin))
-        .handleStateAndPerformOnSuccess(context, (p0) {});
+        .listen((event) {
+      event.handleStateAndPerformOnSuccess(context, (p0) {
+        showSuccessPopUp(context, event.message, onClose: (){
+          goBack(context);
+          goBack(context);
+        });
+      });
+    });
   }
 
   void purchaseAirtime(String amount, String customerID, String pin, String serviceType) {
@@ -252,6 +295,9 @@ class _PaymentHomeState extends State<PaymentHome> {
         });
       });
     });
-
   }
+
+
+
+
 }

@@ -3,6 +3,7 @@ part of swagger.api;
 class LoanView {
 
   int? userId = null;
+  int? id = null;
   UserView? user = null;
   String? amount = null;
   int? loanTermInMonth = null;
@@ -22,6 +23,7 @@ class LoanView {
 
   LoanView.fromJson(Map<String, dynamic>? json) {
     if (json == null) return;
+    id = json['id'];
     userId = json['userId'];
     user = new UserView.fromJson(json['user']);
     amount = json['amount'];
@@ -36,6 +38,7 @@ class LoanView {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'userId': userId,
       'user': user,
       'amount': amount,

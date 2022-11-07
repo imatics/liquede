@@ -305,36 +305,13 @@ class BillsApi {
   Future<BaseResponse<List<ProviderBundleResponse>>?> getProviderBundles(String serviceType, String accountNumber) async {
     Object? postBody = null;
 
-    // verify required params are set
-    if(serviceType == null) {
-     throw new ApiException(400, "Missing required param: serviceType");
-    }
-    if(accountNumber == null) {
-     throw new ApiException(400, "Missing required param: accountNumber");
-    }
-
-    // create path and map variables
     String path = "/api/Bills/airtime/data-bundles/{ServiceType}/{AccountNumber}".replaceAll("{format}","json").replaceAll("{" + "ServiceType" + "}", serviceType.toString()).replaceAll("{" + "AccountNumber" + "}", accountNumber.toString());
-
-    // query params
     List<QueryParam> queryParams = [];
     Map<String, String> headerParams = {};
     Map<String, String> formParams = {};
-
     List<String> contentTypes = [];
-
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
     List<String> authNames = ["Bearer"];
-
-    if(contentType.startsWith("multipart/form-data")) {
-      bool hasFields = false;
-      // MultipartRequest mp = new MultipartRequest(null, null);
-      // if(hasFields)
-      //   postBody = mp;
-    }
-    else {
-          }
-
     var response = await defaultApiClient.invokeAPI(path,
                                              'POST',
                                              queryParams,

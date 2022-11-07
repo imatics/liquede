@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:liquede/commons/base_scaffold.dart';
 import 'package:liquede/commons/constants.dart';
 import 'package:liquede/commons/reusables.dart';
@@ -69,11 +70,12 @@ class _SignUpState extends State<SignUp> {
       ..hint = "johndoe@mail.com"
       ..label = "Email";
     phoneNumberProps = KInputFieldProps.copyFrom(firstNameProp)
-      ..validators = [validateField]
+      ..validators = [validatePhone]
       ..inputType = TextInputType.phone
       ..textEditingController = TextEditingController(text: "+22350097951")
       ..focusNode = phoneNumberFN
       ..nextFocusNode = passwordFN
+      ..inputFormatter = [FilteringTextInputFormatter.digitsOnly]
       ..hint = "080XXXXXXXXX"
       ..label = "Mobile Number";
     passwordProps = KInputFieldProps.copyFrom(firstNameProp)
@@ -140,7 +142,7 @@ class _SignUpState extends State<SignUp> {
                 ],
               ),
               // addSpace(y: 10),
-              kText("Or Sign up via").paddingMerge(b: 20, t: 10).center,
+              kText("Or Sign up via").paddingMerge(b: 20, t: 10).center.hideIf(true),
               addSpace(y: 10),
               kText("I already have an account. Sign In").onclickWithRipple(() => gotoAndClear(context, const LoginScreen())).center,
               addSpace(y: 10),
@@ -151,7 +153,7 @@ class _SignUpState extends State<SignUp> {
                   icons(Icons.facebook),
                   icons(Icons.facebook),
                 ],
-              )
+              ).hideIf(true)
             ],
           ).withForm(_key).paddingX(20),
         );
@@ -174,7 +176,12 @@ class _SignUpState extends State<SignUp> {
   }
 
   void attemptSignUp(BuildContext context){
+
     if(_key.currentState!.validate()){
+      if(!_checkboxState){
+        showToast("You need to accept the terms of service to continue");
+        return;
+      }
       Register model = Register()
       ..firstName = firstNameProp.textEditingController?.text
       ..middleName = ""

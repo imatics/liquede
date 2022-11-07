@@ -31,6 +31,9 @@ class WalletService extends BaseService{
   List<TransactionView> _transactions = [];
   List<TransactionView>  get transactions => _transactions;
 
+  String _walletPin = "";
+  String get walletPin => _walletPin;
+
   String? _balance;
   String get balance => _balance??"##.##";
 
@@ -64,6 +67,7 @@ class WalletService extends BaseService{
     }).map<NetworkEvent<WalletView>>((event){
       if(event.type == NetworkEventType.completed){
         _walletDetails = event.data;
+        _walletPin = "${model.pin}";
       }
       return event;
     });
@@ -194,6 +198,9 @@ class WalletService extends BaseService{
         .map<NetworkEvent<List<BankInfo>>>((event) {
       if (event.type == NetworkEventType.completed) {
         _bankList = event.data ?? [];
+        _bankList.sort((a, b) {
+         return a.name?.compareTo(b.name??"z")??-1;
+        },);
       }
       return event;
     });
@@ -220,6 +227,19 @@ class WalletService extends BaseService{
         .map<NetworkEvent<BeneficiaryModel>>((event) {
       if (event.type == NetworkEventType.completed && event.data != null) {
         _beneficiaries.add(event.data!);
+      }
+      return event;
+    });
+  }
+
+
+  Stream<NetworkEvent<int>> getWalletPin(int userID) {
+    return executeCall(() async {
+      return _api.getTransactionPin(userID);
+    })
+        .map<NetworkEvent<int>>((event) {
+      if (event.type == NetworkEventType.completed && event.data != null) {
+        _walletPin = "${event.data??""}";
       }
       return event;
     });

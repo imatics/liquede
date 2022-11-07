@@ -33,11 +33,11 @@ class _CreateLiquedeGoalPlanState extends State<CreateLiquedeGoalPlan> {
 
   bool tAndChecked = false;
 
-
   late TextEditingController _controller;
   late KInputFieldProps prop;
   late KInputFieldProps nameProp;
   late KInputFieldProps amountProp;
+  late KInputFieldProps amountSealProp;
   late KInputFieldProps dateProp;
 
   Map? goalAutomationData;
@@ -63,8 +63,9 @@ class _CreateLiquedeGoalPlanState extends State<CreateLiquedeGoalPlan> {
     amountProp = KInputFieldProps(
         textEditingController: TextEditingController(),
         inputType: TextInputType.number,
-
-        inputFormatter: [CurrencyTextInputFormatter(symbol: nairaSymbol, decimalDigits: 0)],
+        inputFormatter: [
+          CurrencyTextInputFormatter(symbol: nairaSymbol, decimalDigits: 0)
+        ],
         inputDecoration: getUnderLineDecoration(
             counter: const SizedBox(),
             borderColor: black,
@@ -72,7 +73,34 @@ class _CreateLiquedeGoalPlanState extends State<CreateLiquedeGoalPlan> {
             hint: "Enter Target amount",
             label: "Target Amount",
             borderWidth: 1),
-        style: KTextStyle(color: black,fontSize: 12, weight: FontWeight.bold).build);
+        style: KTextStyle(color: black, fontSize: 12, weight: FontWeight.bold)
+            .build);
+
+    amountSealProp = KInputFieldProps(
+        textEditingController: TextEditingController(),
+        inputType: TextInputType.number,
+        validators: [
+          (e) {
+            if (e.cleanMoneyValue >
+                (amountProp.textEditingController?.text.cleanMoneyValue ??
+                    0.0)) {
+              return "Amount to seal can't be more the target amount";
+            }
+            return null;
+          }
+        ],
+        inputFormatter: [
+          CurrencyTextInputFormatter(symbol: nairaSymbol, decimalDigits: 0)
+        ],
+        inputDecoration: getUnderLineDecoration(
+            counter: const SizedBox(),
+            borderColor: black,
+            radius: 5,
+            hint: "Enter amount to Seal",
+            label: "Amount to Seal",
+            borderWidth: 1),
+        style: KTextStyle(color: black, fontSize: 12, weight: FontWeight.bold)
+            .build);
     nameProp = KInputFieldProps(
         textEditingController: TextEditingController(),
         inputType: TextInputType.text,
@@ -82,7 +110,7 @@ class _CreateLiquedeGoalPlanState extends State<CreateLiquedeGoalPlan> {
             label: "Plan Name",
             radius: 5,
             borderWidth: 1),
-        style: KTextStyle(color: black,fontSize: 12).build);
+        style: KTextStyle(color: black, fontSize: 12).build);
     dateProp = KInputFieldProps(
         textEditingController: TextEditingController(),
         inputType: TextInputType.none,
@@ -95,10 +123,8 @@ class _CreateLiquedeGoalPlanState extends State<CreateLiquedeGoalPlan> {
             label: "Set Target Date",
             radius: 5,
             borderWidth: 1),
-        style: KTextStyle(color: black,fontSize: 12).build);
+        style: KTextStyle(color: black, fontSize: 12).build);
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -110,38 +136,59 @@ class _CreateLiquedeGoalPlanState extends State<CreateLiquedeGoalPlan> {
             addSpace(y: 20),
             EditTextField(amountProp),
             addSpace(y: 20),
+            EditTextField(amountSealProp),
+            addSpace(y: 20),
             EditTextField(dateProp),
             addSpace(y: 20),
             Container(
               decoration: const BoxDecoration(
-                  border:
-                  Border(bottom: BorderSide(width: 0.5, color: grey))),
+                  border: Border(bottom: BorderSide(width: 0.5, color: grey))),
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Image.asset("automate_goal".imagePng, height: 15, width: 15, color: goalAutomationData == null? black:green,),
+                  Image.asset(
+                    "automate_goal".imagePng,
+                    height: 15,
+                    width: 15,
+                    color: goalAutomationData == null ? black : green,
+                  ),
                   addSpace(x: 20),
-                  kText(goalAutomationData == null? "Automate this goal" : "Goal automated",
-                      weight: FontWeight.normal, color: goalAutomationData == null? black:green, fontSize: 13),
+                  kText(
+                      goalAutomationData == null
+                          ? "Automate this goal"
+                          : "Goal automated",
+                      weight: FontWeight.normal,
+                      color: goalAutomationData == null ? black : green,
+                      fontSize: 13),
                   const Spacer(),
-                  const Icon(Icons.arrow_forward_ios, size: 13,)
+                  const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 13,
+                  )
                 ],
               ).stretchSize(h: 45).onclickWithRipple(automateGoal),
             ),
-            kText("Optional", fontSize: 11,weight: FontWeight.normal, color: grey).paddingY(6).left,
+            kText("Optional",
+                    fontSize: 11, weight: FontWeight.normal, color: grey)
+                .paddingY(6)
+                .left,
             addSpace(y: 30),
-            previewCard(amount: amountProp.textEditingController!.text.cleanMoneyValue, automation: goalAutomationData, maturity: targetDate),
+            previewCard(
+                amount: amountProp.textEditingController!.text.cleanMoneyValue,
+                amountToSeal:
+                    amountProp.textEditingController!.text.cleanMoneyValue,
+                automation: goalAutomationData,
+                maturity: targetDate),
             addSpace(y: 20),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Checkbox(
                   value: tAndChecked,
-                  onChanged: (v) =>
-                    setState(() {
-                      tAndChecked = v == true;
-                    }),
+                  onChanged: (v) => setState(() {
+                    tAndChecked = v == true;
+                  }),
                 ),
                 kText(authText, a: TextAlign.justify, fontSize: 13)
                     .paddingY(15)
@@ -169,67 +216,77 @@ class _CreateLiquedeGoalPlanState extends State<CreateLiquedeGoalPlan> {
   }
 
   void automateGoal() {
-    goto(context, Automation(title: "Automate Goal", goalAutomationData: goalAutomationData)).then((value){
-     setState(() {
-       goalAutomationData = value;
-     });
+    goto(
+            context,
+            Automation(
+                title: "Automate Goal", goalAutomationData: goalAutomationData))
+        .then((value) {
+      setState(() {
+        goalAutomationData = value;
+      });
     });
   }
 
   String authText =
-  """I authorize Lquede to debit my card or LiquedeFlex to the tune of amount i entered for a periodic savings at the date i have designated. I also acknowledge that i will be charged a fee if i terminate this liquedegoal before the provided target date.
+      """I authorize Liquede to debit my card or LiquedeFlex to the tune of amount i entered for a periodic savings at the date i have designated. I also acknowledge that i will be charged a fee if i terminate this liquedegoal before the provided target date.
   """;
 
   void createGoal() {
     SavingsService.I(context)
         .createLiquedeGoal(LiquiedeGoalInput()
-      ..durationInDays = targetDate?.difference(DateTime.now()).inDays
-      ..description = ""
-      ..startDate = DateTime.now()
-      ..maturityDate = targetDate
-      ..paid = false
-      ..debitFrequencyInDays = 0
-      ..monthlyPayment = goalAutomationData?["amount"]
-      ..cardId = 0
-      ..targetAmount = amountProp.textEditingController?.text.cleanMoneyValue
-      ..preferredRecurringPaymentDate = goalAutomationData?["date"]
-      ..savingPlanTypeId = 1
-      ..interestRate = 0
-      ..name = nameProp.textEditingController?.text)
+          ..durationInDays = targetDate?.difference(DateTime.now()).inDays
+          ..description = ""
+          ..startDate = DateTime.now()
+          ..maturityDate = targetDate
+          ..paid = false
+          ..debitFrequencyInDays = 30
+          ..amount = amountSealProp.textEditingController?.text.cleanMoneyValue
+          ..debitFrequencyInDays = 0
+          ..monthlyPayment = goalAutomationData?["amount"]
+          ..cardId = 0
+          ..paymentMethod = "LiquedeFlex"
+          ..targetAmount =
+              amountProp.textEditingController?.text.cleanMoneyValue
+          ..preferredRecurringPaymentDate = goalAutomationData?["date"]
+          ..savingPlanTypeId = 1
+          ..interestRate = 0
+          ..name = nameProp.textEditingController?.text)
         .handleStateAndPerformOnSuccess(context, (p0) {
-      showSuccessPopUp(context, "LiquedeGoal successfully created", onClose: () {
+      showSuccessPopUp(context, "LiquedeGoal successfully created",
+          onClose: () {
         goBack(context);
       });
-      });
-    }
-
-
-
-  DateTime? targetDate;
-
-  void _showPicker(){
-    showDatePickerDialog(context).then((value){
-      if(value != null){
-       targetDate = value;
-       dateProp.textEditingController?.text = format1.format(targetDate!);
-       setState(() {});
-
-      }
     });
   }
 
+  DateTime? targetDate;
+
+  void _showPicker() {
+    showDatePickerDialog(context,
+            initialDate: DateTime.now(), firstDate: DateTime.now())
+        .then((value) {
+      if (value != null) {
+        targetDate = value;
+        dateProp.textEditingController?.text = format1.format(targetDate!);
+        setState(() {});
+      }
+    });
+  }
 }
 
 Widget previewCard(
-    {double amount = 0, Map? automation, DateTime? maturity}) {
+    {double amount = 0,
+    double amountToSeal = 0,
+    Map? automation,
+    DateTime? maturity}) {
   KTextStyle label = KTextStyle(
       fontSize: 14, color: Colors.grey[600], weight: FontWeight.w500);
   KTextStyle value =
-  KTextStyle(fontSize: 15, color: Colors.black, weight: FontWeight.bold);
+      KTextStyle(fontSize: 15, color: Colors.black, weight: FontWeight.bold);
 
-  String fd = "${ordinal_suffix_of((automation?["date"] as DateTime?)?.day)}";
-  String date = DateFormat("MMM yyyy").format(maturity??DateTime.now());
-  double instalments = automation?["amount"]??0.0;
+  String fd = ordinal_suffix_of((automation?["date"] as DateTime?)?.day);
+  String date = DateFormat("MMM yyyy").format(maturity ?? DateTime.now());
+  double instalments = automation?["amount"] ?? 0.0;
 
   return Material(
     color: const Color(0xFFe3e0c8),
@@ -245,16 +302,18 @@ Widget previewCard(
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  kText("Amount to Seal", defaultStyle: label.build!, fontSize: 13),
+                  kText("Amount to Seal",
+                      defaultStyle: label.build!, fontSize: 13),
                   addSpace(y: 5),
-                  kText(formatMoney(amount), defaultStyle: value.build!),
+                  kText(formatMoney(amountToSeal), defaultStyle: value.build!),
                 ],
               ),
               const Spacer(),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  kText("Interest to earn", defaultStyle: label.build!, fontSize: 12),
+                  kText("Interest to earn",
+                      defaultStyle: label.build!, fontSize: 12),
                   addSpace(y: 5),
                   kRichText([
                     ManyText(
@@ -277,23 +336,33 @@ Widget previewCard(
           kText("Maturity Date", defaultStyle: label.build!, fontSize: 12),
           kRichText([
             ManyText(
-                text: "${ordinal_suffix_of((maturity??DateTime.now()).day)} of $date",
+                text:
+                    "${ordinal_suffix_of((maturity ?? DateTime.now()).day)} of $date",
                 style: KTextStyle(style: value.build!)),
             ManyText(
-                text: " / ${(maturity??DateTime.now()).difference(DateTime.now()).inDays} Days",
+                text:
+                    " / ${(maturity ?? DateTime.now()).difference(DateTime.now()).inDays} Days",
                 style: KTextStyle(style: value.build!, fontSize: 12))
           ], style: value),
           addSpace(y: 20),
-          automation == null? SizedBox():Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              kText("Automation", defaultStyle: label.build!, fontSize: 12),
-              kText("$instalments/$fd of every month", defaultStyle: value.build!),
-              addSpace(y: 20),
-            ],
+          automation == null
+              ? SizedBox()
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    kText("Automation",
+                        defaultStyle: label.build!, fontSize: 12),
+                    kText("$instalments/$fd of every month",
+                        defaultStyle: value.build!),
+                    addSpace(y: 20),
+                  ],
+                ),
+          kText("Projected completion date",
+              defaultStyle: label.build!, fontSize: 12),
+          kText(
+            format1.format(maturity ?? DateTime.now()),
+            defaultStyle: value.build!,
           ),
-          kText("Projected completion date", defaultStyle: label.build!, fontSize: 12),
-          kText(format1.format(maturity??DateTime.now()), defaultStyle: value.build!,),
         ],
       ).paddingAll(20),
     ),
@@ -301,11 +370,10 @@ Widget previewCard(
 }
 
 String ordinal_suffix_of(i) {
-  if(i == null) {
+  if (i == null) {
     return "";
   }
-  var j = i % 10,
-      k = i % 100;
+  var j = i % 10, k = i % 100;
   if (j == 1 && k != 11) {
     return "${i}st";
   }

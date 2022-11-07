@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:liquede/commons/base_scaffold.dart';
 import 'package:liquede/commons/constants.dart';
 import 'package:liquede/commons/encryption.dart';
+import 'package:liquede/commons/extenstions.dart';
 import 'package:liquede/commons/utils.dart';
 import 'package:liquede/extensions/string.dart';
 import 'package:liquede/extensions/widget.dart';
@@ -28,10 +29,17 @@ class _GoalDetailsState extends State<GoalDetails> {
     // TODO: implement initState
     super.initState();
     _getWithdrawalPenalty();
+    try{
+      progress = (widget.savingsView.amount??0).percentOf(widget.savingsView.targetAmount??0);
+    }catch(e){
+      progress = 0;
+    }
+
   }
 
   @override
   Widget build(BuildContext context) {
+    print(widget.savingsView.toJson());
     return BaseScaffold(
       context: context,
       title: widget.savingsView.name,
@@ -39,38 +47,57 @@ class _GoalDetailsState extends State<GoalDetails> {
     );
   }
 
+  double progress = 0;
+
   Widget _buildBody() {
+    print(progress);
     return SingleChildScrollView(
       child: Column(
         children: [
           Container(
             decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.amber[100],
-                border: Border.all(color: Colors.black, width: 0.5)),
-            padding: const EdgeInsets.all(13),
-            child: Container(
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                  border: Border.all(color: Colors.black, width: 0.5)),
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  kText("0%", fontSize: 20, weight: FontWeight.w900),
-                  addSpace(y: 5),
-                  kText("Complete", fontSize: 12, weight: FontWeight.w500),
-                ],
-              ),
+              color: Colors.grey[900]
             ),
-          ).paddingAll(20),
+            height: 110,
+            width: 110,
+            padding: const EdgeInsets.all(10),
+            child: Stack(
+              fit: StackFit.expand,
+              alignment: Alignment.center,
+              children: [
+                CircularProgressIndicator(
+                  color:  Colors.amber[900],
+                  strokeWidth: 25,
+                  backgroundColor: Colors.amber[100],
+                  value: progress,
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                      border: Border.all(color: Colors.grey, width: 0.5)),
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      kText("${widget.savingsView.amount?.percentOf(widget.savingsView.targetAmount??0).toInt()}%", fontSize: 16, weight: FontWeight.w900),
+                      addSpace(y: 5),
+                      kText("Complete", fontSize: 10, weight: FontWeight.w500),
+                    ],
+                  ),
+                ),
+              ],
+            ).paddingAll(3),
+          ).paddingY(30),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               labelValue("Value (+ interest)",
-                  formatMoney(widget.savingsView.interestRate ?? 0.0)),
+                  formatMoney(widget.savingsView.amount ?? 0.0)),
               labelValue("Actual Savings",
-                  formatMoney(widget.savingsView.targetAmount ?? 0.0),
+                  formatMoney(widget.savingsView.amount ?? 0.0),
                   alignment: CrossAxisAlignment.end),
             ],
           ),
@@ -112,18 +139,20 @@ class _GoalDetailsState extends State<GoalDetails> {
     });
   }
 
-  void _addMoney() {}
+  void _addMoney() {
+    showBottomSheet(false);
+  }
   void _withdraw() {
     // showCustomDialog(DialogType.error, context, "Warning", "Premature withdrawal will attract a penalty of $nairaSymbol${SavingsService.I(context).withdrawalPenalty}", "Proceed", () {
     //
     // }, hasClose: true, showIcon: false);
-    showBottomSheet(false);
+    showBottomSheet(true);
   }
 
   showBottomSheet(bool withDrw) {
     TextEditingController _controller = TextEditingController();
     var _key = GlobalKey<FormState>();
-    List<String> items = ["Liquede Flex"];
+    List<String> items = ["LiquedeFlex", if(!withDrw)"Card"];
     String? accountSelect;
     launchBottomSheetFull(
         context,
@@ -133,10 +162,10 @@ class _GoalDetailsState extends State<GoalDetails> {
             child: StatefulBuilder(
               builder: (context, inState) => Column(
                 children: [
-                  kText(withDrw ? "Withdraw from LiquedeGoal":"Save Into LiqudeGoal ",
+                  kText(withDrw ?"Withdraw from LiquedeGoal":"Save Into LiqudeGoal ",
                       fontSize: 14, color: Colors.black),
                   addSpace(y: 30),
-                  kText(withDrw? "Save from":"Send To", weight: FontWeight.w400, fontSize: 13).left,
+                  kText(withDrw?"Send To":"Save from", weight: FontWeight.w400, fontSize: 13).left,
                   DropdownButtonFormField<String>(
                     isDense: true,
                     elevation: 0,
@@ -163,7 +192,7 @@ class _GoalDetailsState extends State<GoalDetails> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   kText(e, fontSize: 15),
-                                  kText(WalletService.I(context).balance,
+                                  if(e != "Card")kText(WalletService.I(context).balance,
                                       fontSize: 15, weight: FontWeight.w600),
                                 ],
                               ),
@@ -200,7 +229,7 @@ class _GoalDetailsState extends State<GoalDetails> {
                       .hideIf(SavingsService.I(context).withdrawalPenalty == 0 || !withDrw),
                   MaterialButton(
                     onPressed: () => doTransfer(_key, "${_controller.text.cleanMoneyValue??"0.0"}"),
-                    child: kText("Withdraw",
+                    child: kText(withDrw? "Withdraw" : "Save Now",
                         weight: FontWeight.bold, color: Colors.white),
                     color: Colors.black,
                   ).stretchSize(h: 45).paddingTop(20),
@@ -214,7 +243,7 @@ class _GoalDetailsState extends State<GoalDetails> {
 
   doTransfer(GlobalKey<FormState> key, String amount) {
     if (key.currentState?.validate() == true) {
-       SavingsService.I(context).withDrawPrematurely(SavingsWithdrawalModel()..amount = amount ..planId = widget.savingsView.durationInDays).handleStateAndPerformOnSuccess(context, (p0) {
+       SavingsService.I(context).withDrawPrematurely(SavingsWithdrawalModel()..amount = amount ..planId = widget.savingsView.id).handleStateAndPerformOnSuccess(context, (p0) {
          goBack(context);
        });
     }

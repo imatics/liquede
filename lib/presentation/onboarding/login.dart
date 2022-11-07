@@ -46,14 +46,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
     email = KInputFieldProps(
         hint: "Email or mobile number",
-        textEditingController: TextEditingController(text: "otuemeemmanuel@gmail.com"),
+        // textEditingController: TextEditingController(text: "otuemeemmanuel@gmail.com"),
+        textEditingController: TextEditingController(),
         label: "Email",
         validators: [validateEmail],
         inputType: TextInputType.emailAddress);
     password = KInputFieldProps(
         hint: "Enter Password",
         validators: [validatePassword],
-        textEditingController: TextEditingController(text: "123456"),
+        // textEditingController: TextEditingController(text: "123456"),
+        textEditingController: TextEditingController(),
         label: "Password",
         isPassword: true);
   }
@@ -63,53 +65,56 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return BaseScaffold(
-      context: context,
-      baseAppBar: AppBar(
-        toolbarHeight: 0,
-        automaticallyImplyLeading: false,
-      ),
-      baseBody: LayoutBuilder(
-        builder: (context, constraints) => SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              addSpace(y: 65),
-              kText("Hello!", weight: FontWeight.bold),
-              addSpace(y: 15),
-              kText("Glad you're \nback!",
-                  weight: FontWeight.w900, fontSize: 35),
-              addSpace(y: 15),
-              Image.asset("padlock".imagePng).center.paddingY(35).stretch,
-              addSpace(y: 20),
-              Row(
-                children: [
-                  EditTextField(email).stretch,
-                  Row(
-                    children: [
-                      addSpace(x: 5),
-                      Image.asset("biometric".imagePng, height: 30,)
-                          .paddingXY(y: 5, x: 5)
-                          .onclickWithRipple(loginSilent),
-                    ],
-                  ).hideIf(!AppPreference.I(context).biometricEnabled)
-                ],
-              ),
-              addSpace(y: 20),
-              EditTextField(password).stretchSize(h: 50),
-              addSpace(y: 20),
-              MaterialButton(
-                onPressed: login,
-                color: black,
-                child: kText("Login", color: white),
-              ).stretchSize(h: 45),
-              addSpace(y: 30),
-              kText("I forgot my password", fontSize: 13).onclickWithRipple(() => doForgotPassword(context)).center,
-              addSpace(y: 10),
-              kText("I don't have an account. Sign Up", fontSize: 13).onclickWithRipple(() => gotoAndClear(context, const SignUp())).center,
-              addSpace(y: 40),
-            ],
-          ).withForm(_key).paddingX(20).stretchSize(h: getPercentageHeight(90)),
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: BaseScaffold(
+        context: context,
+        baseAppBar: AppBar(
+          toolbarHeight: 0,
+          automaticallyImplyLeading: false,
+        ),
+        baseBody: LayoutBuilder(
+          builder: (context, constraints) => SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                addSpace(y: 65),
+                kText("Hello!", weight: FontWeight.bold),
+                addSpace(y: 15),
+                kText("Glad you're \nback!",
+                    weight: FontWeight.w900, fontSize: 35),
+                addSpace(y: 15),
+                Image.asset("padlock".imagePng).center.paddingY(35).stretch,
+                addSpace(y: 20),
+                Row(
+                  children: [
+                    EditTextField(email).stretch,
+                    Row(
+                      children: [
+                        addSpace(x: 5),
+                        Image.asset("biometric".imagePng, height: 30,)
+                            .paddingXY(y: 5, x: 5)
+                            .onclickWithRipple(loginSilent),
+                      ],
+                    ).hideIf(!AppPreference.I(context).biometricEnabled)
+                  ],
+                ),
+                addSpace(y: 20),
+                EditTextField(password).stretchSize(h: 50),
+                addSpace(y: 20),
+                MaterialButton(
+                  onPressed: login,
+                  color: black,
+                  child: kText("Login", color: white),
+                ).stretchSize(h: 45),
+                addSpace(y: 30),
+                kText("I forgot my password", fontSize: 13).onclickWithRipple(() => doForgotPassword(context)).center,
+                addSpace(y: 10),
+                kText("I don't have an account. Sign Up", fontSize: 13).onclickWithRipple(() => gotoAndClear(context, const SignUp())).center,
+                addSpace(y: 40),
+              ],
+            ).withForm(_key).paddingX(20).stretchSize(h: getPercentageHeight(90)),
+          ),
         ),
       ),
     );

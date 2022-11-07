@@ -5,6 +5,7 @@ class LiquedeSealInput {
   String? name = null;
 
   String? description = null;
+  String? paymentMethod = null;
 
   int? durationInDays = null;
 
@@ -23,6 +24,7 @@ class LiquedeSealInput {
     if (json == null) return;
     name = json['name'];
     description = json['description'];
+    paymentMethod = json['paymentMethod'];
     durationInDays = json['durationInDays'];
     amount = json['amount'];
     cardId = json['cardId'];
@@ -34,6 +36,7 @@ class LiquedeSealInput {
       'description': description,
       'durationInDays': durationInDays,
       'amount': amount,
+      'paymentMethod': paymentMethod,
       'cardId': cardId
      };
   }

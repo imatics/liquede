@@ -8,7 +8,6 @@ import 'package:liquede/extensions/widget.dart';
 import 'package:liquede/presentation/create_loan.dart';
 import 'package:liquede/services/api/base_service.dart';
 import 'package:liquede/services/api/loan_service.dart';
-import 'package:liquede/services/api/wallet_service.dart';
 import 'package:swagger/api.dart';
 
 class LoanScreen extends StatefulWidget {
@@ -20,11 +19,12 @@ class LoanScreen extends StatefulWidget {
 
 class _LoanScreenState extends State<LoanScreen> {
   bool creditRequested = false;
+  late LoanService ls;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    ls = LoanService.I(context);
     getLoans();
   }
 
@@ -230,7 +230,7 @@ class _LoanScreenState extends State<LoanScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         addSpace(y: 20),
-        kText("My Loan Applications",weight: FontWeight.bold),
+        kText("My Loan Applications", weight: FontWeight.bold),
         ...LoanService.I(context)
             .userLoans
             .map((e) => loanItemCard(e).paddingY(10))
@@ -256,43 +256,51 @@ class _LoanScreenState extends State<LoanScreen> {
       borderRadius: BorderRadius.circular(10),
       child: SizedBox(
           child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  labelValue("Loan Amount", loan.amount ?? ""),
-                  Container(
-                    color: grey_50,
-                    child: kText(loan.status, fontSize: 10),
-                    padding: const EdgeInsets.all(4),
-                  )
-                ],
-              ).paddingY(20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  labelValue("Interest", "${loan.loanTermInMonth}"),
-                  labelValue("Monthly Instalments", "${loan.loanTermInMonth}"),
-                  labelValue("Total Repayment", loan.amount ?? ""),
-                ],
-              ).paddingBottom(20),
-              MaterialButton(
-                onPressed: (){},
-                child: kText("Cancel Loan Request", fontSize:12, color: black, weight: FontWeight.normal),
-                color: transparent,
-                elevation: 0,
-              ).stretchSize(h: 40).paddingBottom(20).hideIf(loan.status != "PENDING")
+              labelValue("Loan Amount", loan.amount ?? ""),
+              Container(
+                color: grey_50,
+                child: kText(loan.status, fontSize: 10),
+                padding: const EdgeInsets.all(4),
+              )
             ],
-          )).paddingX(20),
+          ).paddingY(20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              labelValue("Interest", "${loan.loanTermInMonth}"),
+              labelValue("Monthly Instalments", "${loan.loanTermInMonth}"),
+              labelValue("Total Repayment", loan.amount ?? ""),
+            ],
+          ).paddingBottom(20),
+          MaterialButton(
+            onPressed: () => cancelRequest(loan.id!),
+            child: kText("Cancel Loan Request",
+                fontSize: 12, color: black, weight: FontWeight.normal),
+            color: transparent,
+            elevation: 0,
+          )
+              .stretchSize(h: 40)
+              .paddingBottom(20)
+              .hideIf(loan.status != "PENDING")
+        ],
+      )).paddingX(20),
     );
   }
 
   void getLoans() {
-    LoanService.I(context)
-        .getUserLoans()
-        .handleStateAndPerformOnSuccess(context, (p0) {
+    ls.getUserLoans().handleStateAndPerformOnSuccess(context, (p0) {
       setState(() {});
+    });
+  }
+
+  void cancelRequest(int id) {
+    ls.cancelLoan("$id").handleStateAndPerformOnSuccess(context, (p0) {
+     getLoans();
     });
   }
 }

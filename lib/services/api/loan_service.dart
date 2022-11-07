@@ -63,5 +63,17 @@ class LoanService extends BaseService{
   }
 
 
+  Stream<NetworkEvent> cancelLoan(String id) {
+    return executeCall(()async{
+      return _api.cancelLoan(id);
+    }).map<NetworkEvent>((event){
+      if(event.type ==  NetworkEventType.completed){
+        _userLoans = event.data??[];
+      }
+      return event;
+    });
+  }
+
+
 
 }

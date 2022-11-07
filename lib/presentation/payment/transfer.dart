@@ -8,6 +8,7 @@ import 'package:liquede/commons/utils.dart';
 import 'package:liquede/extensions/string.dart';
 import 'package:liquede/extensions/widget.dart';
 import 'package:liquede/services/api/base_service.dart';
+import 'package:liquede/services/api/bills_service.dart';
 import 'package:liquede/services/api/user_service.dart';
 import 'package:liquede/services/api/wallet_service.dart';
 import 'package:swagger/api.dart';
@@ -23,14 +24,13 @@ class Transfer extends StatefulWidget {
 
 class _TransferState extends State<Transfer> {
   late KInputFieldProps accountNumberProps;
+  late KInputFieldProps bankProps;
   late KInputFieldProps amountProps;
 
   final _key1 = GlobalKey<FormState>();
   final _key2 = GlobalKey<FormState>();
   bool _saveToBeneficiaries = false;
   BankAccountInfo? info;
-
-
 
   @override
   void initState() {
@@ -43,6 +43,14 @@ class _TransferState extends State<Transfer> {
         onChange: (e) => clearInfoCache(),
         validators: [validateField]);
 
+    bankProps = KInputFieldProps(
+        textEditingController: TextEditingController(),
+        inputType: TextInputType.none,
+        hint: "Select Bank",
+        readOnly: true,
+        onclick: showSearchableBottomSheet,
+        validators: [validateField]);
+
     amountProps = KInputFieldProps(
       textEditingController: TextEditingController(),
       inputType: TextInputType.number,
@@ -53,11 +61,7 @@ class _TransferState extends State<Transfer> {
       ],
     );
     getBankInfo();
-
-
   }
-
-
 
   int _currentPage = 1;
   bool reverse = false;
@@ -120,9 +124,9 @@ class _TransferState extends State<Transfer> {
             .paddingAll(5),
         EditTextField(accountNumberProps),
         addSpace(y: 20),
-        kText("Bank", fontSize: 11, weight: FontWeight.w600)
-            .paddingAll(5),
-        buildDropDown(),
+        kText("Bank", fontSize: 11, weight: FontWeight.w600).paddingAll(5),
+        // buildDropDown(),
+        EditTextField(bankProps),
         const Spacer(),
         appBtn("Next", verifyAndNext),
         addSpace(y: 50),
@@ -195,16 +199,17 @@ class _TransferState extends State<Transfer> {
     WalletService.I(context)
         .getBankList()
         .handleStateAndPerformOnSuccess(context, (list) {
-      _selectedItem = list.firstWhere(
-          (element) => element.code?.contains("044") == true);
+      _selectedItem =
+          list.firstWhere((element) => element.code?.contains("044") == true);
       setState(() {});
 
-      if(widget.beneficiaryModel != null){
-        accountNumberProps.textEditingController?.text = widget.beneficiaryModel!.accountNumber??"";
-        _selectedItem = list.firstWhere(
-                (element) => element.code?.contains(widget.beneficiaryModel!.bankCode??" ") == true);
+      if (widget.beneficiaryModel != null) {
+        accountNumberProps.textEditingController?.text =
+            widget.beneficiaryModel!.accountNumber ?? "";
+        _selectedItem = list.firstWhere((element) =>
+            element.code?.contains(widget.beneficiaryModel!.bankCode ?? " ") ==
+            true);
       }
-
     }, onError: (s) {
       goBack(context);
     });
@@ -288,18 +293,59 @@ class _TransferState extends State<Transfer> {
           .handleStateAndPerformOnSuccess(context, (p0) {
         _pop();
       });
-    }else{
+    } else {
       _pop();
     }
-
   }
 
-  void _pop(){
+  void _pop() {
     goBack(context);
-    if(widget.beneficiaryModel != null){
+    if (widget.beneficiaryModel != null) {
       goBack(context);
     }
   }
 
-
+  void showSearchableBottomSheet() {
+    String searchText = "";
+    KInputFieldProps<String> props = KInputFieldProps();
+    props.textEditingController = TextEditingController();
+    showBottomSheetFull(context, "Select Bank",
+        StatefulBuilder(builder: (context, bState) {
+      props.onChange = (e) {
+        searchText = e;
+        bState(() {});
+      };
+      List<BankInfo> banks = [];
+      if (searchText.isNotEmpty) {
+        banks = WalletService.I(context)
+            .bankList
+            .where((e) =>
+                e.name
+                    ?.toLowerCase()
+                    .contains(searchText.toLowerCase().trim()) ==
+                true)
+            .toList();
+      } else {
+        banks = WalletService.I(context).bankList;
+      }
+      return Column(
+        children: [
+          EditTextField(props),
+          ListView(
+            children: banks
+                .map((e) => ListTile(
+                      title: kText(e.name),
+                      onTap: () {
+                        _selectedItem = e;
+                        bankProps.textEditingController?.text =
+                            _selectedItem?.name ?? "";
+                        Navigator.of(context).pop();
+                      },
+                    ))
+                .toList(),
+          ).stretch,
+        ],
+      );
+    }));
+  }
 }
